@@ -1,0 +1,18 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jQuery.validity", "jQuery.validity\jQuery.validity.csproj", "{FB158FC1-3E22-47B5-BFF0-0C6427C03A03}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FB158FC1-3E22-47B5-BFF0-0C6427C03A03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB158FC1-3E22-47B5-BFF0-0C6427C03A03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
