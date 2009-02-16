@@ -1,11 +1,22 @@
 ﻿/* _ _____                                  _ _     _ _ _         
-  (_)  _  |                                | (_)   | (_) |        
+  (_)  _  |                                | (_)   | (_) | (alpha)
    _| | | |_   _  ___ _ __ _   ___   ____ _| |_  __| |_| |_ _   _ 
   | | | | | | | |/ _ \ '__| | | \ \ / / _` | | |/ _` | | __| | | |
   | \ \/' / |_| |  __/ |  | |_| |\ V / (_| | | | (_| | | |_| |_| |
   | |\_/\_\\__,_|\___|_|   \__, (_)_/ \__,_|_|_|\__,_|_|\__|\__, |
  _/ |                       __/ |                            __/ |
 |__/                       |___/                            |___/ 
+*/
+/*!
+ * jQuery.validity alpha (v. 0.9.0)
+ * http://code.google.com/p/validity
+ *
+ * Copyright (c) 2009, Wyatt Allen
+ * Licenced under the New BSD Licence
+ * http://www.opensource.org/licenses/bsd-license.php
+ *
+ * Revision 3. Feb. 15 2009
+ *
 */
 (function($) {
     //// Static Functions and Properties /////////////////
@@ -113,6 +124,7 @@
     jQuery.fn.Sum = function(msg, sum){
         if(this.length > 0){            
             var actual = numericSum(this);
+            
             var valid = sum == actual;
             
             if(!valid)
@@ -122,7 +134,7 @@
         }
         
         else 
-            return true;
+            return false;
     }
     
     // Validates an inclusive upper-bound on the numeric sum of the values of all matched elements.
@@ -228,11 +240,12 @@
             raiseModalError($(obj.get(0)), msg);
     }
     
+    // Yield the sum of the values of all fields matched in obj that can be parsed.
     function numericSum(obj){
         var accumulator = 0;
         
-        this.each(
-            function(idx){
+        obj.each(
+            function(){
                 var n = parseFloat(this.value);
                 
                 if(!isNaN(n))
