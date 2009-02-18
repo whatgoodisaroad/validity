@@ -5,12 +5,12 @@
         <script type="text/javascript" src="jquery.validity.js"></script>
         <script type="text/javascript">
             function switchOutputs(){
-                if($.validity.config.outputMode == "Modal"){
-                    $.validity.config.outputMode = "Summary";
+                if($.validity.settings.outputMode == "Modal"){
+                    $.validity.settings.outputMode = "Summary";
                     $('#SwitchLink').html('Change From Summary to Modal');
                 }
                 else{
-                    $.validity.config.outputMode = "Modal";
+                    $.validity.settings.outputMode = "Modal";
                     $('#SwitchLink').html('Change From Modal to Summary');
                 }
                 
@@ -113,7 +113,7 @@
             </p>
             <pre>
                 $.validity.Clear();
-                var valid = $("input[type='text']").AreEqual('Error: Passwords do not match.');
+                var valid = $("input[type='password']").AreEqual('Error: Passwords do not match.');
             </pre>
             <p>
                 Password:<input type="password" id="Pass" name="Pass" />Confirm Password:<input type="password" id="PassConf" name="PassConf" />

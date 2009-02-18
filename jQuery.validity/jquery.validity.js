@@ -1,42 +1,71 @@
-﻿/* _ _____                                  _ _     _ _ _         
-  (_)  _  |                                | (_)   | (_) | (alpha)
-   _| | | |_   _  ___ _ __ _   ___   ____ _| |_  __| |_| |_ _   _ 
-  | | | | | | | |/ _ \ '__| | | \ \ / / _` | | |/ _` | | __| | | |
-  | \ \/' / |_| |  __/ |  | |_| |\ V / (_| | | | (_| | | |_| |_| |
-  | |\_/\_\\__,_|\___|_|   \__, (_)_/ \__,_|_|_|\__,_|_|\__|\__, |
- _/ |                       __/ |                            __/ |
-|__/                       |___/                            |___/ 
-*/
-/*!
- * jQuery.validity alpha (v. 0.9.0)
+﻿/*!
+ * jQuery.validity alpha 2 (v. 0.9.1)
  * http://code.google.com/p/validity
  *
  * Copyright (c) 2009, Wyatt Allen
- * Licenced under the New BSD Licence
- * http://www.opensource.org/licenses/bsd-license.php
+ * All rights reserved.
  *
  * Revision 3. Feb. 15 2009
  *
+ * Redistribution and use in source and binary forms, with or without 
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * Redistributions of source code must retain the above copyright notice, this 
+ * list of conditions and the following disclaimer.
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, 
+ * this list of conditions and the following disclaimer in the documentation 
+ * and/or other materials provided with the distribution.
+ * 
+ * The name of the Wyatt Allen may not be used to endorse or promote products 
+ * derived from this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+ * POSSIBILITY OF SUCH DAMAGE.
 */
-(function($) {
+(function() {
+    // Private defaults definition.
+    defaults =  {
+        outputMode: "Modal", // [Modal|Summary|None|Custom]
+        outputMethod: null
+    };
+    
     //// Static Functions and Properties /////////////////
     jQuery.validity = {
-        // Central location for validity configuration properties.
-        config: {
-            outputMode: "Modal", // [Modal|Summary|None|Custom]
-            outputMethod: null
-        },
+        // Settings file.
+        settings: jQuery.extend(defaults, { }),
         
         // Remove all errors on the page.
         Clear: function(){
-            if($.validity.config.outputMode.toUpperCase() == "MODAL")
-                $('.validity-modal-msg').remove();
+            if(jQuery.validity.settings.outputMode.toUpperCase() == "MODAL")
+                jQuery('.validity-modal-msg').remove();
                 
-            else if($.validity.config.outputMode.toUpperCase() == "SUMMARY"){
-                $('#validity-summary-output').hide().html('');
-                $('.validity-erroneous').removeClass('validity-erroneous');
+            else if(jQuery.validity.settings.outputMode.toUpperCase() == "SUMMARY"){
+                jQuery('#validity-summary-output').hide().html('');
+                jQuery('.validity-erroneous').removeClass('validity-erroneous');
             }
+        },
+        
+        // Output an general validation error (withut associated controls)
+        // in whatever manner has been configured.
+        GeneralError: function(msg){
+            raiseError(null, msg);
+        },
+        
+        // Initialize validity with custom settings.
+        Setup: function(options){
+            jQuery.validity.settings = jQuery.extend(defaults, options);
         }
+
     };
     
     //// Public Methods /////////////////
@@ -75,7 +104,7 @@
         if(this.length > 0){
             var temp = this.get(0).value;
             var valid = true;
-            var obj = this;
+            var $obj = this;
             
             this.each(
                 function(){
@@ -85,19 +114,20 @@
             );
             
             if(!valid)
-                raiseAggregateError(obj, msg);
+                raiseAggregateError($obj, msg);
             
             return valid;
         }
         
-        else return true;
+        else 
+            return true;
     };
     
     // Validate that all matched elements bear distinct values.
     jQuery.fn.AreNotEqual = function(msg){
         if(this.length > 0){
             var values = new Array();
-            var obj = this;
+            var $obj = this;
             var valid = true;
             
             this.each(
@@ -112,7 +142,7 @@
             );
             
             if(!valid)
-                raiseAggregateError(obj, msg);
+                raiseAggregateError($obj, msg);
             
             return valid;
         }
@@ -134,7 +164,7 @@
         }
         
         else 
-            return false;
+            return true;
     }
     
     // Validates an inclusive upper-bound on the numeric sum of the values of all matched elements.
@@ -162,10 +192,10 @@
     
     // Private function to validate an element based on a 
     // linear set of conditions.
-    function validate(elem, regimen){
+    function validate($elem, regimen){
         var valid = true;
         
-        elem.each(
+        $elem.each(
             function() {
                 for(key in regimen){
                     if(!eval(key)){
@@ -182,30 +212,30 @@
     
     // Raise an error appropriately for the element with the message.
     function raiseError(elem, msg){
-        if($.validity.config.outputMode.toUpperCase() == "MODAL")
-            raiseModalError($(elem), msg);
+        if(jQuery.validity.settings.outputMode.toUpperCase() == "MODAL")
+            raiseModalError(jQuery(elem), msg);
             
-        else if($.validity.config.outputMode.toUpperCase() == "SUMMARY")
-            raiseSummaryError($(elem), msg);
+        else if(jQuery.validity.settings.outputMode.toUpperCase() == "SUMMARY")
+            raiseSummaryError(jQuery(elem), msg);
     };
     
     // Raise an error with a modal message.
-    function raiseModalError(obj, msg){
-        var off = obj.offset();
+    function raiseModalError($obj, msg){
+        var off = $obj.offset();
         
-        var computedLeft = off.left + obj.width() + 4;
+        var computedLeft = off.left + $obj.width() + 4;
         var computedTop = off.top - 10;
         
-        if($('#validity-msg-' + obj.attr('id')).length == 0)
-            $('#validity-modal-output').append(
-                "<div id='validity-msg-" + obj.attr('id') + "' " + 
+        if(jQuery('#validity-msg-' + $obj.attr('id')).length == 0)
+            jQuery('#validity-modal-output').append(
+                "<div id='validity-msg-" + $obj.attr('id') + "' " + 
                 "class='validity-modal-msg' " + 
                 "style='left: " + computedLeft + "px;top: " + computedTop + "px;'" + 
                 "onclick='$(this).remove()'>" + 
                 msg + "</div>"
             );
         else
-            $('#validity-msg-' + obj.attr('id'))
+            jQuery('#validity-msg-' + $obj.attr('id'))
                 .css({ 
                     left: computedLeft + 'px', 
                     top: computedTop + 'px' 
@@ -214,46 +244,43 @@
     };
     
     // Display error in a summary output.
-    function raiseSummaryError(obj, msg){
+    function raiseSummaryError($obj, msg){
         pumpToSummary(msg);
         
-        obj.addClass('validity-erroneous');
+        $obj.addClass('validity-erroneous');
     };
     
     // Merely outputs text to the summary.
     function pumpToSummary(msg){
-        $('#validity-summary-output').show().append('* ' + msg + '<br />');
+        jQuery('#validity-summary-output').show().append('* ' + msg + '<br />');
     }
     
     // Raise a single error for several elements.
     function raiseAggregateError(obj, msg){
-        if($.validity.config.outputMode.toUpperCase() == "MODAL")
+        if(jQuery.validity.settings.outputMode.toUpperCase() == "MODAL")
             raiseAggregateModalError(obj, msg);
             
-        else if($.validity.config.outputMode.toUpperCase() == "SUMMARY")
+        else if(jQuery.validity.settings.outputMode.toUpperCase() == "SUMMARY")
             raiseSummaryError(obj, msg);
     }
     
     // Raise a modal error on the first matched element.
     function raiseAggregateModalError(obj, msg){
         if(obj.length > 0)
-            raiseModalError($(obj.get(0)), msg);
+            raiseModalError(jQuery(obj.get(0)), msg);
     }
     
     // Yield the sum of the values of all fields matched in obj that can be parsed.
     function numericSum(obj){
         var accumulator = 0;
-        
         obj.each(
             function(){
                 var n = parseFloat(this.value);
-                
                 if(!isNaN(n))
                     accumulator += n;
             }
         );
-        
         return accumulator;
     }
-})(jQuery);
+})();
 
