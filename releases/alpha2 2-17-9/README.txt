@@ -1,6 +1,6 @@
 README for...
 
-  jQuery.validity alpha (v. 0.9.0)
+  jQuery.validity alpha 2 (v. 0.9.1)
   http://code.google.com/p/validity
   Copyright (c) 2009, Wyatt Allen
   Licenced under the New BSD Licence
