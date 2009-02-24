@@ -101,14 +101,21 @@
     
     // Validate that all matched elements bear the same values.
     jQuery.fn.AreEqual = function(msg){
+        return this.AreEqual(msg, function(val) { 
+                return val; 
+            }
+        );
+    };
+    
+    jQuery.fn.AreEqual = function(msg, transform){
         if(this.length > 0){
-            var temp = this.get(0).value;
+            var temp = transform(this.get(0).value);
             var valid = true;
             var $obj = this;
             
             this.each(
                 function(){
-                    if(this.value != temp)
+                    if(transform(this.value) != temp)
                         valid = false;
                 }
             );
@@ -124,7 +131,14 @@
     };
     
     // Validate that all matched elements bear distinct values.
-    jQuery.fn.AreNotEqual = function(msg){
+    jQuery.fn.AreNotEqual = function(msg) {
+        return this.AreNotEqualTransform(msg, function(val) { 
+                return val; 
+            }
+        );
+    };
+    
+    jQuery.fn.AreNotEqualTransform = function(msg, transform){
         if(this.length > 0){
             var values = new Array();
             var $obj = this;
@@ -132,12 +146,14 @@
             
             this.each(
                 function(idx){
+                    var transformedValue = transform(this.value);
+                
                     for(i in values){
-                        if(this.value != '' && values[i] == this.value)
+                        if(transformedValue != '' && values[i] == transformedValue)
                             valid = false;
                     }
                     
-                    values[idx] = this.value;
+                    values[idx] = transformedValue;
                 }
             );
             
