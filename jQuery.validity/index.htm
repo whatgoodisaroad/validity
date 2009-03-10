@@ -5,12 +5,12 @@
         <script type="text/javascript" src="jquery.validity.js"></script>
         <script type="text/javascript">
             function switchOutputs(){
-                if($.validity.settings.outputMode == "Modal"){
-                    $.validity.settings.outputMode = "Summary";
+                if($.validity.settings.outputMode == "MODAL"){
+                    $.validity.Setup({outputMode:"Summary"});
                     $('#SwitchLink').html('Change From Summary to Modal');
                 }
                 else{
-                    $.validity.settings.outputMode = "Modal";
+                    $.validity.Setup({outputMode:"Modal"});
                     $('#SwitchLink').html('Change From Modal to Summary');
                 }
                 

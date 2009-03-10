@@ -63,6 +63,12 @@
     <Content Include="jquery.validity.js" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AjaxValidationResponse.htm" />
+    <Content Include="docs.htm" />
+    <Content Include="logo.big.png" />
+    <Content Include="logo.small.png" />
+    <Content Include="tileable.big.png" />
+    <Content Include="tileable.small.png" />
     <Content Include="web.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

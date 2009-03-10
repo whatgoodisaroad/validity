@@ -1,42 +1,24 @@
-﻿/*!
- * jQuery.validity alpha 2 (v. 0.9.1)
- * http://code.google.com/p/validity
+﻿/*
+ * jQuery.validity beta v0.9.2
+ * http://code.google.com/p/validity/
+ * 
+ * Copyright (c) 2009 Wyatt Allen
+ * Dual licensed under the MIT and GPL licenses.
+ * http://docs.jquery.com/License
  *
- * Copyright (c) 2009, Wyatt Allen
- * All rights reserved.
- *
- * Revision 3. Feb. 15 2009
- *
- * Redistribution and use in source and binary forms, with or without 
- * modification, are permitted provided that the following conditions are met:
- * 
- * Redistributions of source code must retain the above copyright notice, this 
- * list of conditions and the following disclaimer.
- * 
- * Redistributions in binary form must reproduce the above copyright notice, 
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution.
- * 
- * The name of the Wyatt Allen may not be used to endorse or promote products 
- * derived from this software without specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
- * POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Date: 2009-03-08 (Sun, 8 March 2009)
+ * Revision: 8
+ */
 (function() {
     // Private defaults definition.
-    defaults =  {
-        outputMode: "Modal", // [Modal|Summary|None|Custom]
-        outputMethod: null
+    var defaults =  {
+        outputMode:             "MODAL", // [Modal|Summary|None|Custom]
+        
+        // Methods for custom output modes.
+        // One pumps new errors, the other should clear them all.
+        RaiseCustomOutputModeError:             function($obj, msg) { },
+        RaiseCustomOutputModeAggregateError:    function($obj, msg) { },
+        CustomOutputModeClear:                  function() { }
     };
     
     //// Static Functions and Properties /////////////////
@@ -46,13 +28,16 @@
         
         // Remove all errors on the page.
         Clear: function(){
-            if(jQuery.validity.settings.outputMode.toUpperCase() == "MODAL")
+            if(jQuery.validity.settings.outputMode == "MODAL")
                 jQuery('.validity-modal-msg').remove();
                 
-            else if(jQuery.validity.settings.outputMode.toUpperCase() == "SUMMARY"){
+            else if(jQuery.validity.settings.outputMode == "SUMMARY"){
                 jQuery('#validity-summary-output').hide().html('');
                 jQuery('.validity-erroneous').removeClass('validity-erroneous');
             }
+            
+            else if(jQuery.validity.settings.outputMode == "CUSTOM")
+                jQuery.validity.settings.CustomOutputModeClear();
         },
         
         // Output an general validation error (withut associated controls)
@@ -64,8 +49,19 @@
         // Initialize validity with custom settings.
         Setup: function(options){
             jQuery.validity.settings = jQuery.extend(defaults, options);
+            
+            // The actual output mode should always be upper cased.
+            jQuery.validity.settings.outputMode = jQuery.validity.settings.outputMode.toUpperCase();
+        },
+        
+        // If the expression is false, raise the specified general error.
+        // A specific version of this exists for jQuery objects.
+        // This is not a debug assertion. It is a validator that is called
+        // like a debug assertion.
+        Assert: function(expression, msg){
+            if(!expression)
+                GeneralError(msg);
         }
-
     };
     
     //// Public Methods /////////////////
@@ -107,7 +103,9 @@
         );
     };
     
-    jQuery.fn.AreEqual = function(msg, transform){
+    // Validate that all matched elements bear the same values.
+    // Accepts a function to transform the values for testing.
+    jQuery.fn.AreEqualTransform = function(msg, transform){
         if(this.length > 0){
             var temp = transform(this.get(0).value);
             var valid = true;
@@ -138,6 +136,8 @@
         );
     };
     
+    // Validate that all matched elements bear distinct values.
+    // Accepts a function to transform the values for testing.
     jQuery.fn.AreNotEqualTransform = function(msg, transform){
         if(this.length > 0){
             var values = new Array();
@@ -181,7 +181,7 @@
         
         else 
             return true;
-    }
+    };
     
     // Validates an inclusive upper-bound on the numeric sum of the values of all matched elements.
     jQuery.fn.SumMax = function(msg, max){
@@ -197,11 +197,63 @@
         
         else 
             return true;
-    }
+    };
     
     // Validate matched elements based on a user-defined regimen.
     jQuery.fn.ValidateRegimen = function(regimen){ 
         return validate(this, regimen); 
+    };
+    
+    // Validate the control based on the Json result from the specified
+    // URL, with the specified data sent by the specified post.
+    // In order for the validator to work, the Json result must have 
+    // A boolean property 'valid' representing whether the validator passed,
+    // and, in the case that valid is false, a string 'msg' representing
+    // the error message.
+    jQuery.fn.JsonValidate = function(url, method, data) {
+        return this.AjaxValidate(
+            url, 
+            method,
+            data, 
+            function(response) { 
+                return eval('(' + response + ')'); 
+            }
+        );
+    };
+    
+    // Validate the control based on the result of an ajax call to the 
+    // specified url with the specified data sent by the specified method.
+    // The interpreter argument should be a function capable of taking the
+    // response and returning an object with a 'valid' boolean representing
+    // whether the validation passed, and, if valid is false, a 'msg' string 
+    // reprsenting the error message.
+    jQuery.fn.AjaxValidate = function(url, method, data, interpreter) {
+        var sync = true;
+        var elem = this.get(0);
+        jQuery.ajax({
+                url:url,
+                data:data,
+                method:method,
+                async:false,
+                
+                success: function(response){
+                    var data = interpreter(response);
+                    if(!data.valid){
+                        raiseError(elem, data.msg);
+                        sync = false;
+                    }
+                }
+            }
+        );
+        return sync;
+    };
+    
+    // If the expression is false, raise the specified error.
+    // This is not a debug assertion. It's a validator
+    // that is called like a debug assertion.
+    jQuery.fn.Assert = function(expression, msg){
+        if(!expression)
+            raiseError(this, msg);
     }
     
     //// Private Functions /////////////////
@@ -228,11 +280,14 @@
     
     // Raise an error appropriately for the element with the message.
     function raiseError(elem, msg){
-        if(jQuery.validity.settings.outputMode.toUpperCase() == "MODAL")
+        if(jQuery.validity.settings.outputMode == "MODAL")
             raiseModalError(jQuery(elem), msg);
             
-        else if(jQuery.validity.settings.outputMode.toUpperCase() == "SUMMARY")
+        else if(jQuery.validity.settings.outputMode == "SUMMARY")
             raiseSummaryError(jQuery(elem), msg);
+            
+        else if(jQuery.validity.settings.outputMode == "CUSTOM")
+            jQuery.validity.settings.RaiseCustomOutputModeError(jQuery(elem), msg);
     };
     
     // Raise an error with a modal message.
@@ -247,7 +302,7 @@
                 "<div id='validity-msg-" + $obj.attr('id') + "' " + 
                 "class='validity-modal-msg' " + 
                 "style='left: " + computedLeft + "px;top: " + computedTop + "px;'" + 
-                "onclick='$(this).remove()'>" + 
+                "onclick='jQuery(this).remove()'>" + 
                 msg + "</div>"
             );
         else
@@ -273,11 +328,14 @@
     
     // Raise a single error for several elements.
     function raiseAggregateError(obj, msg){
-        if(jQuery.validity.settings.outputMode.toUpperCase() == "MODAL")
+        if(jQuery.validity.settings.outputMode == "MODAL")
             raiseAggregateModalError(obj, msg);
             
-        else if(jQuery.validity.settings.outputMode.toUpperCase() == "SUMMARY")
+        else if(jQuery.validity.settings.outputMode == "SUMMARY")
             raiseSummaryError(obj, msg);
+            
+        else if(jQuery.validity.settings.outputMode == "CUSTOM")
+            jQuery.validity.settings.RaiseCustomOutputModeAggregateError(obj, msg);
     }
     
     // Raise a modal error on the first matched element.
@@ -299,4 +357,3 @@
         return accumulator;
     }
 })();
-
