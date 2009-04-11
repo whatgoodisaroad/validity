@@ -76,6 +76,7 @@
         end:function() { 
             var report = jQuery.validity.report; 
             jQuery.validity.report = null; 
+            // TODO: scrollto if enabled
             return report;
         }
     };
@@ -84,16 +85,12 @@
     
     // Validate whether the field has a value.
     jQuery.fn.require = function(msg){
-        return validate(this, function(elem) { return elem.value.length > 0; }, msg) ? 
-            this : 
-            $phi;
+        return validate(this, function(elem) { return elem.value.length > 0; }, msg);
     };
     
     // Validate whether the field matches a regex.
     jQuery.fn.match = function(msg, regex){
-        return validate(this, function(elem) { return elem.value.length == 0 || regex.test(elem.value); }, msg) ? 
-            this : 
-            $phi;
+        return validate(this, function(elem) { return elem.value.length == 0 || regex.test(elem.value); }, msg);
     }
         
     // Validate that all matched elements bear the same values.
@@ -193,24 +190,24 @@
     
     //// Private Functions /////////////////
     
+    function validate($elem, regimen, message){
+        var elements = new Array();
+        $elem.each(
+            function() {
+                if(regimen(this))
+                    elements.push(this);
+                else
+                    raiseError(this, message);            
+            }
+        );
+        return $(elements);
+    }
+    
     function addToReport(){
         if(jQuery.validity.isTransactionOpen()){
             jQuery.validity.report.errors++;
             jQuery.validity.report.valid = false;
         }
-    }
-    
-    function validate($elem, regimen, message){
-        var valid = true;        
-        $elem.each(
-            function() {
-                if(!regimen(this)){
-                    raiseError(this, message);
-                    valid = false;                    
-                }
-            }
-        );
-        return valid;
     }
     
     // Raise an error appropriately for the element with the message.
