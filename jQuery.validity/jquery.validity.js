@@ -1,5 +1,5 @@
 ﻿/*
- * jQuery.validity beta v0.9.2
+ * jQuery.validity beta v0.9.3
  * http://code.google.com/p/validity/
  * 
  * Copyright (c) 2009 Wyatt Allen
@@ -12,14 +12,20 @@
 (function() {
     // Private defaults definition.
     var defaults =  {
-        outputMode:             "MODAL", // [Modal|Summary|None|Custom]
+        outputMode:"MODAL", // [Modal|Summary|None|Custom]
         
         // Methods for custom output modes.
         // One pumps new errors, the other should clear them all.
-        RaiseCustomOutputModeError:             function($obj, msg) { },
-        RaiseCustomOutputModeAggregateError:    function($obj, msg) { },
-        CustomOutputModeClear:                  function() { }
+        raiseCustomOutputModeError:function($obj, msg) { },
+        raiseCustomOutputModeAggregateError:function($obj, msg) { },
+        customOutputModeClear:function() { },
+        
+        scrollTo:false,
+        summaryHeader:"Could not submit because of the following errors:",
+        modalErrorsClickable:true
     };
+    
+    var $phi = jQuery([]);
     
     //// Static Functions and Properties /////////////////
     jQuery.validity = {
@@ -27,7 +33,7 @@
         settings: jQuery.extend(defaults, { }),
         
         // Remove all errors on the page.
-        Clear: function(){
+        clear:function(){
             if(jQuery.validity.settings.outputMode == "MODAL")
                 jQuery('.validity-modal-msg').remove();
                 
@@ -37,17 +43,15 @@
             }
             
             else if(jQuery.validity.settings.outputMode == "CUSTOM")
-                jQuery.validity.settings.CustomOutputModeClear();
+                jQuery.validity.settings.customOutputModeClear();
         },
         
         // Output an general validation error (withut associated controls)
         // in whatever manner has been configured.
-        GeneralError: function(msg){
-            raiseError(null, msg);
-        },
+        generalError:function(msg){ raiseError(null, msg); },
         
         // Initialize validity with custom settings.
-        Setup: function(options){
+        setup:function(options){
             jQuery.validity.settings = jQuery.extend(defaults, options);
             
             // The actual output mode should always be upper cased.
@@ -58,54 +62,49 @@
         // A specific version of this exists for jQuery objects.
         // This is not a debug assertion. It is a validator that is called
         // like a debug assertion.
-        Assert: function(expression, msg){
-            if(!expression)
-                GeneralError(msg);
+        assertThat:function(expression, msg){ if(!expression) GeneralError(msg); },
+        
+        report:null,
+        
+        isTransactionOpen:function() { return jQuery.validity.report != null; },
+        
+        start:function() { 
+            jQuery.validity.clear();
+            jQuery.validity.report = { errors:0, valid:true }; 
+        },
+        
+        end:function() { 
+            var report = jQuery.validity.report; 
+            jQuery.validity.report = null; 
+            return report;
         }
     };
     
     //// Public Methods /////////////////
     
     // Validate whether the field has a value.
-    jQuery.fn.Require = function(msg){
-        var regimen = new Array();
-        
-        regimen['this.value.length > 0'] = msg;
-        
-        return validate(this, regimen);
+    jQuery.fn.require = function(msg){
+        return validate(this, function(elem) { return elem.value.length > 0; }, msg) ? 
+            this : 
+            $phi;
     };
     
     // Validate whether the field matches a regex.
-    jQuery.fn.Match = function(msg, regex){
-        var regimen = new Array();
-        
-        regimen['/' + regex + '/.test(this.value)'] = msg;
-        
-        return validate(this, regimen);
+    jQuery.fn.match = function(msg, regex){
+        return validate(this, function(elem) { return elem.value.length == 0 || regex.test(elem.value); }, msg) ? 
+            this : 
+            $phi;
     }
-    
-    // Validate that a field has a value, then, if that fails,
-    // validate that it matches a regex.
-    jQuery.fn.RequireThenMatch = function(rmsg, mmsg, regex){
-        var regimen = new Array();
         
-        regimen['this.value.length > 0']            = rmsg;
-        regimen['/' + regex + '/.test(this.value)'] = mmsg;
-        
-        return validate(this, regimen);
-    }
-    
     // Validate that all matched elements bear the same values.
-    jQuery.fn.AreEqual = function(msg){
-        return this.AreEqual(msg, function(val) { 
-                return val; 
-            }
-        );
+    // Wrapper for the transform.
+    jQuery.fn.areEqual = function(msg){
+        return this.areEqualTransform(msg, function(val) { return val; } );
     };
     
     // Validate that all matched elements bear the same values.
     // Accepts a function to transform the values for testing.
-    jQuery.fn.AreEqualTransform = function(msg, transform){
+    jQuery.fn.areEqualTransform = function(msg, transform){
         if(this.length > 0){
             var temp = transform(this.get(0).value);
             var valid = true;
@@ -118,27 +117,22 @@
                 }
             );
             
-            if(!valid)
+            if(valid)
+                return this;
+            else
                 raiseAggregateError($obj, msg);
-            
-            return valid;
-        }
-        
-        else 
-            return true;
+        }     
+        return $phi;
     };
     
     // Validate that all matched elements bear distinct values.
-    jQuery.fn.AreNotEqual = function(msg) {
-        return this.AreNotEqualTransform(msg, function(val) { 
-                return val; 
-            }
-        );
+    jQuery.fn.areNotEqual = function(msg) {
+        return this.areNotEqualTransform(msg, function(val) { return val; } );
     };
     
     // Validate that all matched elements bear distinct values.
     // Accepts a function to transform the values for testing.
-    jQuery.fn.AreNotEqualTransform = function(msg, transform){
+    jQuery.fn.areNotEqualTransform = function(msg, transform){
         if(this.length > 0){
             var values = new Array();
             var $obj = this;
@@ -147,139 +141,82 @@
             this.each(
                 function(idx){
                     var transformedValue = transform(this.value);
-                
                     for(i in values){
                         if(transformedValue != '' && values[i] == transformedValue)
                             valid = false;
                     }
-                    
                     values[idx] = transformedValue;
                 }
             );
             
-            if(!valid)
+            if(valid)
+                return this;
+            else
                 raiseAggregateError($obj, msg);
-            
-            return valid;
         }
-        
-        else return true;
+        return $phi;
     };
     
     // Validate that the numeric sum of all values is equal to a given value.
-    jQuery.fn.Sum = function(msg, sum){
+    jQuery.fn.sum = function(msg, sum){
         if(this.length > 0){            
             var actual = numericSum(this);
             
             var valid = sum == actual;
             
-            if(!valid)
-                raiseAggregateError(this, msg);
-            
-            return valid;
+            if(valid)
+                return this;
+            else
+                return $phi;
         }
-        
-        else 
-            return true;
+        return $phi;
     };
     
     // Validates an inclusive upper-bound on the numeric sum of the values of all matched elements.
-    jQuery.fn.SumMax = function(msg, max){
+    jQuery.fn.sumMax = function(msg, max){
         if(this.length > 0){            
             var actual = numericSum(this);
             var valid = max >= actual;
             
-            if(!valid)
-                raiseAggregateError(this, msg);
-            
-            return valid;
+            if(valid)
+                return this;
+            else
+                raiseAggregateError($obj, msg);
         }
-        
-        else 
-            return true;
-    };
-    
-    // Validate matched elements based on a user-defined regimen.
-    jQuery.fn.ValidateRegimen = function(regimen){ 
-        return validate(this, regimen); 
-    };
-    
-    // Validate the control based on the Json result from the specified
-    // URL, with the specified data sent by the specified post.
-    // In order for the validator to work, the Json result must have 
-    // A boolean property 'valid' representing whether the validator passed,
-    // and, in the case that valid is false, a string 'msg' representing
-    // the error message.
-    jQuery.fn.JsonValidate = function(url, method, data) {
-        return this.AjaxValidate(
-            url, 
-            method,
-            data, 
-            function(response) { 
-                return eval('(' + response + ')'); 
-            }
-        );
-    };
-    
-    // Validate the control based on the result of an ajax call to the 
-    // specified url with the specified data sent by the specified method.
-    // The interpreter argument should be a function capable of taking the
-    // response and returning an object with a 'valid' boolean representing
-    // whether the validation passed, and, if valid is false, a 'msg' string 
-    // reprsenting the error message.
-    jQuery.fn.AjaxValidate = function(url, method, data, interpreter) {
-        var sync = true;
-        var elem = this.get(0);
-        jQuery.ajax({
-                url:url,
-                data:data,
-                method:method,
-                async:false,
-                
-                success: function(response){
-                    var data = interpreter(response);
-                    if(!data.valid){
-                        raiseError(elem, data.msg);
-                        sync = false;
-                    }
-                }
-            }
-        );
-        return sync;
+        return $phi;
     };
     
     // If the expression is false, raise the specified error.
     // This is not a debug assertion. It's a validator
     // that is called like a debug assertion.
-    jQuery.fn.Assert = function(expression, msg){
-        if(!expression)
-            raiseError(this, msg);
-    }
+    jQuery.fn.assert = function(expression, msg){ if(!expression) raiseError(this, msg); }
     
     //// Private Functions /////////////////
     
-    // Private function to validate an element based on a 
-    // linear set of conditions.
-    function validate($elem, regimen){
-        var valid = true;
-        
+    function addToReport(){
+        if(jQuery.validity.isTransactionOpen()){
+            jQuery.validity.report.errors++;
+            jQuery.validity.report.valid = false;
+        }
+    }
+    
+    function validate($elem, regimen, message){
+        var valid = true;        
         $elem.each(
             function() {
-                for(key in regimen){
-                    if(!eval(key)){
-                        raiseError(this, regimen[key]);
-                        valid = false;
-                        break;
-                    }
+                if(!regimen(this)){
+                    raiseError(this, message);
+                    valid = false;                    
                 }
             }
         );
-        
         return valid;
     }
     
     // Raise an error appropriately for the element with the message.
     function raiseError(elem, msg){
+        addToReport();
+        
         if(jQuery.validity.settings.outputMode == "MODAL")
             raiseModalError(jQuery(elem), msg);
             
@@ -287,26 +224,26 @@
             raiseSummaryError(jQuery(elem), msg);
             
         else if(jQuery.validity.settings.outputMode == "CUSTOM")
-            jQuery.validity.settings.RaiseCustomOutputModeError(jQuery(elem), msg);
+            jQuery.validity.settings.raiseCustomOutputModeError(jQuery(elem), msg);
     };
     
     // Raise an error with a modal message.
     function raiseModalError($obj, msg){
-        var off = $obj.offset();
-        
+        var off = $obj.offset();        
         var computedLeft = off.left + $obj.width() + 4;
         var computedTop = off.top - 10;
+        var errorId = '#validity-msg-' + $obj.attr('id');
         
-        if(jQuery('#validity-msg-' + $obj.attr('id')).length == 0)
+        if(jQuery(errorId).length == 0)
             jQuery('#validity-modal-output').append(
-                "<div id='validity-msg-" + $obj.attr('id') + "' " + 
+                "<div id='" + errorId + "' " + 
                 "class='validity-modal-msg' " + 
                 "style='left: " + computedLeft + "px;top: " + computedTop + "px;'" + 
-                "onclick='jQuery(this).remove()'>" + 
+                (jQuery.validity.settings.modalErrorsClickable ? " onclick='jQuery(this).remove()'>" : ">") + 
                 msg + "</div>"
             );
         else
-            jQuery('#validity-msg-' + $obj.attr('id'))
+            jQuery(errorId)
                 .css({ 
                     left: computedLeft + 'px', 
                     top: computedTop + 'px' 
@@ -323,11 +260,15 @@
     
     // Merely outputs text to the summary.
     function pumpToSummary(msg){
-        jQuery('#validity-summary-output').show().append('* ' + msg + '<br />');
+        jQuery('#validity-summary-output')
+            .show()
+            .append('* ' + msg + '<br />');
     }
     
     // Raise a single error for several elements.
     function raiseAggregateError(obj, msg){
+        addToReport();
+        
         if(jQuery.validity.settings.outputMode == "MODAL")
             raiseAggregateModalError(obj, msg);
             
@@ -335,7 +276,7 @@
             raiseSummaryError(obj, msg);
             
         else if(jQuery.validity.settings.outputMode == "CUSTOM")
-            jQuery.validity.settings.RaiseCustomOutputModeAggregateError(obj, msg);
+            jQuery.validity.settings.raiseCustomOutputModeAggregateError(obj, msg);
     }
     
     // Raise a modal error on the first matched element.
