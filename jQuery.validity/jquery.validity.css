@@ -1,18 +1,15 @@
-﻿#validity-modal-output{ }
-#validity-summary-output{ 
-	padding: 4px;
-	display: none;
+﻿#validity-modal-output { }
+.validity-modal-msg {
+	position:absolute;
+	z-index:2;
+	background-color:#999;
+	border:solid 1px #000;
+	padding:4px;
+	cursor:pointer;
 }
+.validity-modal-msg:hover { background-color:#aaa; }
 
-.validity-modal-msg{
-	position: absolute;
-	z-index: 2;
-	background-color: #999;
-	color: #fff;
-	border: solid 1px #000;
-	padding: 4px;
-	cursor: pointer;
-}
-.validity-modal-msg:hover{ background-color: #aaa; }
+#validity-summary-container { display:none; }
+#validity-summary-output { }
 
-.validity-erroneous{ border: solid 2px #f56600 !important; }
+.validity-erroneous { border:solid 2px #f56600 !important; }

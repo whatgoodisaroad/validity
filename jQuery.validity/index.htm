@@ -15,9 +15,11 @@
                 }
                 
                 $('.validity-modal-msg').remove();
-                $('#validity-summary-output').hide().html('');
+                $('#validity-summary-container').hide();
+                $('#validity-summary-output').html("");
                 $('.validity-erroneous').removeClass('validity-erroneous');
             }
+
             function validatePassword(){
                 $.validity.start();
                 $("input[type='password']").areEqual('Error: Passwords do not match.');
@@ -27,9 +29,16 @@
         
         <link rel="Stylesheet" type="text/css" href="jquery.validity.css" />
         <style type="text/css">
-            body{font-family:Arial,Helvetica,Sans-Serif;padding:0;margin:0;background-color:#555;font-size:smaller;}
-            #main{width:1000px;background-color:#bbb;padding:10px;margin: 20px;}
-            #validity-summary-output{border:solid 1px #f56600;}
+            body {
+            	font-family:Arial,Helvetica,Sans-Serif;
+            	padding:0;
+            	margin:0;
+            	background-color:#555;
+            	font-size:smaller;}
+            
+            #main { width:1000px; background-color:#bbb; padding:10px; margin: 20px; }
+            
+            #validity-summary-container { border:solid 1px #f56600; }
         </style>
         
         <title>jQuery.validity Demo</title>
@@ -61,7 +70,9 @@
                 [<a id="SwitchLink" href="#x" onclick="switchOutputs()">Change From Modal To Summary</a>]
             </p>
             <div id="validity-modal-output"></div>
-            <div id="validity-summary-output"></div>
+            <div id="validity-summary-container">
+                <ul id="validity-summary-output"></ul>
+            </div>
             <h2>Requiring Fields:</h2>
             <p>
                 Below is a required field. For this demo, its id attribute is set to be 'req'. We validate it with the code:
@@ -117,28 +128,31 @@
                 var result = $.validity.end();
             </pre>
             <p>
-                Password:<input type="password" id="Pass" name="Pass" />Confirm Password:<input type="password" id="PassConf" name="PassConf" />
+                Password:
+                <input type="password" id="Pass" name="Pass" />
+                Confirm Password:
+                <input type="password" id="PassConf" name="PassConf" />
                 <input type="button" value="Validate These Fields!" onclick="validatePassword();" />
             </p>
             <h2>Uniqueness:</h2>
             <p>
-                The converse to the AreEqual method - where no two matched elements have different values - the AreNotEqual method will 
+                The converse to the areEqual method - where no two matched elements have different values - the areNotEqual method will 
                 validate that no two elements have the same value. This is useful in situations where repeat values are not allowed. (It
                 should be noted that fields where no value is entered will be ignored.) We validate this in much the same way as the 
                 AreEqual:
             </p>
             <pre>
                 $.validity.start();
-                $('input.Name').areNotEqual('Error: A name was repeated.');
+                $('input.Name').distinct('Error: A name was repeated.');
                 var result = $.validity.end();
             </pre>
             <p>
                 Enter Names: 
-                <input type="text" class="Name" />&nbsp;
-                <input type="text" class="Name" />&nbsp;
-                <input type="text" class="Name" />&nbsp;
-                <input type="text" class="Name" />&nbsp;
-                <input type="button" value="Validate These Fields!" onclick="$.validity.start();$('input.Name').areNotEqual('Error: A name was repeated.');$.validity.end();" />
+                <input id="u1" type="text" class="Name" />&nbsp;
+                <input id="u2" type="text" class="Name" />&nbsp;
+                <input id="u3" type="text" class="Name" />&nbsp;
+                <input id="u4" type="text" class="Name" />&nbsp;
+                <input type="button" value="Validate These Fields!" onclick="$.validity.start();$('input.Name').distinct('Error: A name was repeated.');$.validity.end();" />
             </p>
         </div>
     </body>

@@ -1,57 +1,85 @@
 ﻿/*
- * jQuery.validity beta v0.9.3
+ * jQuery.validity beta v0.9.4
  * http://code.google.com/p/validity/
  * 
  * Copyright (c) 2009 Wyatt Allen
  * Dual licensed under the MIT and GPL licenses.
  * http://docs.jquery.com/License
  *
- * Date: 2009-03-08 (Sun, 8 March 2009)
- * Revision: 8
+ * Date: 2009-04-12 (Sun, 12 April 2009)
+ * Revision: ???
  */
-(function() {
-    // Private defaults definition.
+(function(jQuery) {
+    //// Private Static Properties /////////////////
+    
+    var outputModes = {
+        modal:"MODAL",
+        summary:"SUMMARY",
+        custom:"CUSTOM",
+        none:"NONE"
+    };
+
+    // Defaults definition.
     var defaults =  {
-        outputMode:"MODAL", // [Modal|Summary|None|Custom]
+        outputMode:outputModes.modal,
         
         // Methods for custom output modes.
-        // One pumps new errors, the other should clear them all.
         raiseCustomOutputModeError:function($obj, msg) { },
         raiseCustomOutputModeAggregateError:function($obj, msg) { },
         customOutputModeClear:function() { },
         
         scrollTo:false,
-        summaryHeader:"Could not submit because of the following errors:",
+        summaryOutputWrapper:"<li/>",
         modalErrorsClickable:true
     };
     
+    // A jQuery empty set. Used as return value for validators 
+    // to terminate execution of the chain.
     var $phi = jQuery([]);
+        
+    var selectors = {
+        summaryContainer:"#validity-summary-container",
+        summaryOutput:"#validity-summary-output",
+        modalOutput:"#validity-modal-output",
+        modalErrors:".validity-modal-msg",
+        erroneousInputs:".validity-erroneous"
+    };
     
-    //// Static Functions and Properties /////////////////
+    var classes = {
+        modalError:"validity-modal-msg",
+        erroneousInput:"validity-erroneous"
+    };
+    
+    var prefixes = {
+        modalErrorId:"validity-modal-msg-"
+    };
+    
+    //// Public Static Functions and Properties /////////////////
     jQuery.validity = {
-        // Settings file.
-        settings: jQuery.extend(defaults, { }),
+        // Settings location
+        settings:jQuery.extend(defaults, { }),
         
         // Remove all errors on the page.
-        clear:function(){
-            if(jQuery.validity.settings.outputMode == "MODAL")
-                jQuery('.validity-modal-msg').remove();
+        clear:function() {
+            if(jQuery.validity.settings.outputMode == outputModes.modal)
+                jQuery(selectors.modalErrors).remove();
                 
-            else if(jQuery.validity.settings.outputMode == "SUMMARY"){
-                jQuery('#validity-summary-output').hide().html('');
-                jQuery('.validity-erroneous').removeClass('validity-erroneous');
+            else if(jQuery.validity.settings.outputMode == outputModes.summary) {
+                jQuery(selectors.summaryContainer).hide();
+                jQuery(selectors.summaryOutput).html('');
+                jQuery(selectors.erroneousInputs).removeClass(classes.erroneousInput);
             }
             
-            else if(jQuery.validity.settings.outputMode == "CUSTOM")
+            else if(jQuery.validity.settings.outputMode == outputModes.custom)
                 jQuery.validity.settings.customOutputModeClear();
         },
         
         // Output an general validation error (withut associated controls)
         // in whatever manner has been configured.
-        generalError:function(msg){ raiseError(null, msg); },
+        generalError:function(msg) { raiseError(null, msg); },
         
         // Initialize validity with custom settings.
-        setup:function(options){
+        setup:function(options) {
             jQuery.validity.settings = jQuery.extend(defaults, options);
             
             // The actual output mode should always be upper cased.
@@ -62,7 +90,7 @@
         // A specific version of this exists for jQuery objects.
         // This is not a debug assertion. It is a validator that is called
         // like a debug assertion.
-        assertThat:function(expression, msg){ if(!expression) GeneralError(msg); },
+        assertThat:function(expression, msg) { if(!expression) GeneralError(msg); },
         
         report:null,
         
@@ -84,31 +112,31 @@
     //// Public Methods /////////////////
     
     // Validate whether the field has a value.
-    jQuery.fn.require = function(msg){
+    jQuery.fn.require = function(msg) {
         return validate(this, function(elem) { return elem.value.length > 0; }, msg);
     };
     
     // Validate whether the field matches a regex.
-    jQuery.fn.match = function(msg, regex){
+    jQuery.fn.match = function(msg, regex) {
         return validate(this, function(elem) { return elem.value.length == 0 || regex.test(elem.value); }, msg);
-    }
-        
-    // Validate that all matched elements bear the same values.
-    // Wrapper for the transform.
-    jQuery.fn.areEqual = function(msg){
-        return this.areEqualTransform(msg, function(val) { return val; } );
+    };
+    
+    jQuery.fn.range = function(msg, min, max) {
+        return validate(this, function(elem) { var f = parseFloat(elem.value); return f > min && f < max; }, msg);
     };
     
     // Validate that all matched elements bear the same values.
     // Accepts a function to transform the values for testing.
-    jQuery.fn.areEqualTransform = function(msg, transform){
-        if(this.length > 0){
+    jQuery.fn.equal = function(msg, transform) {
+        if(transform == null)
+            transform = function(val) { return val; };
+        
+        if(this.length > 0) {
             var temp = transform(this.get(0).value);
             var valid = true;
-            var $obj = this;
             
             this.each(
-                function(){
+                function() {
                     if(transform(this.value) != temp)
                         valid = false;
                 }
@@ -117,29 +145,26 @@
             if(valid)
                 return this;
             else
-                raiseAggregateError($obj, msg);
+                raiseAggregateError(this, msg);
         }     
         return $phi;
     };
     
     // Validate that all matched elements bear distinct values.
-    jQuery.fn.areNotEqual = function(msg) {
-        return this.areNotEqualTransform(msg, function(val) { return val; } );
-    };
-    
-    // Validate that all matched elements bear distinct values.
-    // Accepts a function to transform the values for testing.
-    jQuery.fn.areNotEqualTransform = function(msg, transform){
+    // Accepts an optional function to transform the values for testing.
+    jQuery.fn.distinct = function(msg, transform) {
+        if(transform == null)
+            transform = function(val) { return val; };
+
         if(this.length > 0){
             var values = new Array();
-            var $obj = this;
             var valid = true;
             
             this.each(
                 function(idx){
                     var transformedValue = transform(this.value);
                     for(i in values){
-                        if(transformedValue != '' && values[i] == transformedValue)
+                        if(transformedValue.length > 0 && values[i] == transformedValue)
                             valid = false;
                     }
                     values[idx] = transformedValue;
@@ -149,7 +174,7 @@
             if(valid)
                 return this;
             else
-                raiseAggregateError($obj, msg);
+                raiseAggregateError(this, msg);
         }
         return $phi;
     };
@@ -157,11 +182,7 @@
     // Validate that the numeric sum of all values is equal to a given value.
     jQuery.fn.sum = function(msg, sum){
         if(this.length > 0){            
-            var actual = numericSum(this);
-            
-            var valid = sum == actual;
-            
-            if(valid)
+            if(sum == numericSum(this))
                 return this;
             else
                 return $phi;
@@ -172,13 +193,10 @@
     // Validates an inclusive upper-bound on the numeric sum of the values of all matched elements.
     jQuery.fn.sumMax = function(msg, max){
         if(this.length > 0){            
-            var actual = numericSum(this);
-            var valid = max >= actual;
-            
-            if(valid)
+            if(max >= numericSum(this))
                 return this;
             else
-                raiseAggregateError($obj, msg);
+                raiseAggregateError(this, msg);
         }
         return $phi;
     };
@@ -186,11 +204,11 @@
     // If the expression is false, raise the specified error.
     // This is not a debug assertion. It's a validator
     // that is called like a debug assertion.
-    jQuery.fn.assert = function(expression, msg){ if(!expression) raiseError(this, msg); }
+    jQuery.fn.assert = function(expression, msg) { if(!expression) raiseError(this, msg); };
     
     //// Private Functions /////////////////
     
-    function validate($elem, regimen, message){
+    function validate($elem, regimen, message) {
         var elements = new Array();
         $elem.each(
             function() {
@@ -214,65 +232,72 @@
     function raiseError(elem, msg){
         addToReport();
         
-        if(jQuery.validity.settings.outputMode == "MODAL")
-            raiseModalError(jQuery(elem), msg);
+        if(jQuery.validity.settings.outputMode == outputModes.modal)
+            raiseModalError(elem, msg);
             
-        else if(jQuery.validity.settings.outputMode == "SUMMARY")
-            raiseSummaryError(jQuery(elem), msg);
+        else if(jQuery.validity.settings.outputMode == outputModes.summary)
+            raiseSummaryError(elem, msg);
             
-        else if(jQuery.validity.settings.outputMode == "CUSTOM")
-            jQuery.validity.settings.raiseCustomOutputModeError(jQuery(elem), msg);
-    };
+        else if(jQuery.validity.settings.outputMode == outputModes.custom)
+            jQuery.validity.settings.raiseCustomOutputModeError(elem, msg);
+    }
     
     // Raise an error with a modal message.
-    function raiseModalError($obj, msg){
-        var off = $obj.offset();        
-        var computedLeft = off.left + $obj.width() + 4;
-        var computedTop = off.top - 10;
-        var errorId = '#validity-msg-' + $obj.attr('id');
+    function raiseModalError(obj, msg){
+        var $obj = jQuery(obj);
         
-        if(jQuery(errorId).length == 0)
-            jQuery('#validity-modal-output').append(
-                "<div id='" + errorId + "' " + 
-                "class='validity-modal-msg' " + 
-                "style='left: " + computedLeft + "px;top: " + computedTop + "px;'" + 
-                (jQuery.validity.settings.modalErrorsClickable ? " onclick='jQuery(this).remove()'>" : ">") + 
-                msg + "</div>"
-            );
+        var off = $obj.offset();        
+        var errorStyle = { 
+            left:parseInt(off.left + $obj.width() + 4) + "px", 
+            top:parseInt(off.top - 10) + "px" 
+        };
+        
+        var errorId = prefixes.modalErrorId + obj.id;
+        var errorSelector = "#" + errorId;
+        
+        if (jQuery(errorSelector).length == 0)
+            jQuery("<div/>")
+                .attr("id", errorId)
+                .addClass(classes.modalError)
+                .css(errorStyle)
+                .text(msg)
+                .click(jQuery.validity.settings.modalErrorsClickable ?
+                    function() { jQuery(this).remove(); } : null 
+                )
+                .appendTo(selectors.modalOutput);
         else
-            jQuery(errorId)
-                .css({ 
-                    left: computedLeft + 'px', 
-                    top: computedTop + 'px' 
-                })
-                .html(msg);
-    };
+            jQuery(errorSelector)
+                .css(errorStyle)
+                .text(msg);
+    }
     
     // Display error in a summary output.
-    function raiseSummaryError($obj, msg){
+    function raiseSummaryError(obj, msg){
         pumpToSummary(msg);
         
-        $obj.addClass('validity-erroneous');
-    };
+        jQuery(obj).addClass(classes.erroneousInput);
+    }
     
     // Merely outputs text to the summary.
-    function pumpToSummary(msg){
-        jQuery('#validity-summary-output')
-            .show()
-            .append('* ' + msg + '<br />');
+    function pumpToSummary(msg) {
+        jQuery(jQuery.validity.settings.summaryOutputWrapper)
+            .text(msg)
+            .appendTo(selectors.summaryOutput);
+        jQuery(selectors.summaryContainer)
+            .show();
     }
     
     // Raise a single error for several elements.
     function raiseAggregateError(obj, msg){
         addToReport();
         
-        if(jQuery.validity.settings.outputMode == "MODAL")
+        if(jQuery.validity.settings.outputMode == outputModes.modal)
             raiseAggregateModalError(obj, msg);
             
-        else if(jQuery.validity.settings.outputMode == "SUMMARY")
+        else if(jQuery.validity.settings.outputMode == outputModes.summary)
             raiseSummaryError(obj, msg);
             
-        else if(jQuery.validity.settings.outputMode == "CUSTOM")
+        else if(jQuery.validity.settings.outputMode == outputModes.custom)
             jQuery.validity.settings.raiseCustomOutputModeAggregateError(obj, msg);
     }
     
@@ -294,4 +319,4 @@
         );
         return accumulator;
     }
-})();
+})(jQuery);
