@@ -6,8 +6,8 @@
  * Dual licensed under the MIT and GPL licenses.
  * http://docs.jquery.com/License
  *
- * Date: 2009-04-12 (Sun, 12 April 2009)
- * Revision: 12
+ * Date: 2009-04-13 (Mon, 13 April 2009)
+ * Revision: 13
  */
 (function(jQuery) {
     //// Private Static Properties /////////////////
