@@ -256,7 +256,7 @@
             top:parseInt(off.top - 10) + "px" 
         };
         
-        var errorId = prefixes.modalErrorId + obj.id;
+        var errorId = prefixes.modalErrorId + $obj.attr("id");
         var errorSelector = "#" + errorId;
         
         if (jQuery(errorSelector).length == 0)
