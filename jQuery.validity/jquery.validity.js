@@ -7,7 +7,7 @@
  * http://docs.jquery.com/License
  *
  * Date: 2009-04-12 (Sun, 12 April 2009)
- * Revision: ???
+ * Revision: 12
  */
 (function(jQuery) {
     //// Private Static Properties /////////////////
@@ -27,14 +27,15 @@
         raiseCustomOutputModeError:function($obj, msg) { },
         raiseCustomOutputModeAggregateError:function($obj, msg) { },
         customOutputModeClear:function() { },
+        firstCustomOutputErrorId:function() { },
         
         scrollTo:false,
         summaryOutputWrapper:"<li/>",
         modalErrorsClickable:true
     };
     
-    // A jQuery empty set. Used as return value for validators 
-    // to terminate execution of the chain.
+    // A jQuery empty set. Used as return value by validators 
+    // to terminate execution of a chain.
     var $phi = jQuery([]);
         
     var selectors = {
@@ -104,7 +105,10 @@
         end:function() { 
             var report = jQuery.validity.report; 
             jQuery.validity.report = null; 
-            // TODO: scrollto if enabled
+            
+            if (jQuery.validity.settings.scrollTo)
+                location.hash = firstErrorId();
+            
             return report;
         }
     };
@@ -318,5 +322,19 @@
             }
         );
         return accumulator;
+    }
+    
+    function firstErrorId() {
+        if(jQuery.validity.settings.outputMode == outputModes.modal)
+            return jQuery(selectors.modalErrors + ":first").attr("id");
+               
+        else if(jQuery.validity.settings.outputMode == outputModes.summary)
+            return jQuery(selectors.erroneousInputs + ":first").attr("id");
+            
+        else if(jQuery.validity.settings.outputMode == outputModes.custom)
+            return jQuery.validity.settings.firstCustomOutputErrorId();
+            
+        else
+            return "_";
     }
 })(jQuery);

@@ -22,7 +22,7 @@
 
             function validatePassword(){
                 $.validity.start();
-                $("input[type='password']").areEqual('Error: Passwords do not match.');
+                $("input[type='password']").equal('Error: Passwords do not match.');
                 $.validity.end();
             }
         </script>
@@ -71,6 +71,7 @@
             </p>
             <div id="validity-modal-output"></div>
             <div id="validity-summary-container">
+                Here's a summary of the validation failures:
                 <ul id="validity-summary-output"></ul>
             </div>
             <h2>Requiring Fields:</h2>
@@ -124,7 +125,7 @@
             </p>
             <pre>
                 $.validity.start();
-                $("input[type='password']").areEqual('Error: Passwords do not match.');
+                $("input[type='password']").equal('Error: Passwords do not match.');
                 var result = $.validity.end();
             </pre>
             <p>
