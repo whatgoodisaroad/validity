@@ -15,6 +15,7 @@
     var outputModes = {
         modal:"MODAL",
         summary:"SUMMARY",
+        label:"LABEL",
         custom:"CUSTOM",
         none:"NONE"
     };
@@ -43,12 +44,14 @@
         summaryOutput:"#validity-summary-output",
         modalOutput:"#validity-modal-output",
         modalErrors:".validity-modal-msg",
-        erroneousInputs:".validity-erroneous"
+        erroneousInputs:".validity-erroneous",
+        errorLabels:"label.error"
     };
     
     var classes = {
         modalError:"validity-modal-msg",
-        erroneousInput:"validity-erroneous"
+        erroneousInput:"validity-erroneous",
+        labelError:"error"
     };
     
     var prefixes = {
@@ -74,6 +77,9 @@
                 jQuery(selectors.summaryOutput).html('');
                 jQuery(selectors.erroneousInputs).removeClass(classes.erroneousInput);
             }
+            
+            else if(jQuery.validity.settings.outputMode == outputModes.label)
+                jQuery(selectors.errorLabels).remove();
             
             else if(jQuery.validity.settings.outputMode == outputModes.custom)
                 jQuery.validity.settings.customOutputModeClear();
@@ -265,8 +271,29 @@
         else if(jQuery.validity.settings.outputMode == outputModes.summary)
             raiseSummaryError(elem, msg);
             
+        else if(jQuery.validity.settings.outputMode == outputModes.label)
+            raiseLabelError(elem, msg);
+            
         else if(jQuery.validity.settings.outputMode == outputModes.custom)
             jQuery.validity.settings.raiseCustomOutputModeError(elem, msg);
+    }
+    
+    function raiseLabelError(obj, msg){
+        var $obj = jQuery(obj);
+        
+        var errorId = $obj.attr("id");
+        var errorSelector = "#" + errorId;
+        var labelSelector = "label[for='" + errorId + "']";
+        
+        if(jQuery(labelSelector).length == 0)
+            jQuery("<label/>")
+                .attr("for", errorId)
+                .addClass("error")
+                .text(msg)
+                .insertAfter(errorSelector);
+        else
+            jQuery(labelSelector)
+                .text(msg);
     }
     
     // Raise an error with a modal message.
@@ -334,6 +361,11 @@
             raiseModalError(jQuery(obj.get(0)), msg);
     }
     
+    function raiseAggregateLabelError(obj, msg){
+        if(obj.length > 0)
+            raiseLabelError(jQuery(obj.get(0)), msg);
+    }
+    
     // Yield the sum of the values of all fields matched in obj that can be parsed.
     function numericSum(obj){
         var accumulator = 0;
@@ -353,6 +385,9 @@
                
         else if(jQuery.validity.settings.outputMode == outputModes.summary)
             return jQuery(selectors.erroneousInputs + ":first").attr("id");
+            
+        else if(jQuery.validity.settings.outputMode == outputModes.label)
+            return jQuery(selectors.errorLabels + ":first").attr("id");
             
         else if(jQuery.validity.settings.outputMode == outputModes.custom)
             return jQuery.validity.settings.firstCustomOutputErrorId();

@@ -13,3 +13,5 @@
 #validity-summary-output { }
 
 .validity-erroneous { border:solid 2px #f56600 !important; }
+
+label.error { color:#f00; }
