@@ -55,6 +55,10 @@
         modalErrorId:"validity-modal-msg-"
     };
     
+    var patterns = {
+        integer:/^\d$/
+    };
+    
     //// Public Static Functions and Properties /////////////////
     jQuery.validity = {
         // Settings location
@@ -122,6 +126,9 @@
     
     // Validate whether the field matches a regex.
     jQuery.fn.match = function(msg, regex) {
+        if(typeof(regex) == "string") 
+            regex = patterns[regex];
+        
         return validate(this, function(elem) { return elem.value.length == 0 || regex.test(elem.value); }, msg);
     };
     
