@@ -126,8 +126,24 @@
     };
     
     jQuery.fn.range = function(msg, min, max) {
-        return validate(this, function(elem) { var f = parseFloat(elem.value); return f > min && f < max; }, msg);
+        return validate(this, function(elem) { var f = parseFloat(elem.value); return f >= min && f <= max; }, msg);
     };
+    
+    jQuery.fn.greaterThan = function(msg, min) {
+        return validate(this, function(elem) { return parseFloat(elem.value) > min; }, msg);
+    }
+    
+    jQuery.fn.greaterThanOrEqualTo = function(msg, min) {
+        return validate(this, function(elem) { return parseFloat(elem.value) >= min; }, msg);
+    }
+    
+    jQuery.fn.lessThan = function(msg, max) {
+        return validate(this, function(elem) { return parseFloat(elem.value) < max; }, msg);
+    }
+    
+    jQuery.fn.lessThanOrEqualTo = function(msg, min) {
+        return validate(this, function(elem) { return parseFloat(elem.value) <= min; }, msg);
+    }
     
     // Validate that all matched elements bear the same values.
     // Accepts a function to transform the values for testing.
