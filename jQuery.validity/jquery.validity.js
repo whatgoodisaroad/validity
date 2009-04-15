@@ -59,8 +59,15 @@
     };
     
     var patterns = {
-        integer:/^\d$/
-    };
+        integer:/^(\d|-)?(\d|,)*\.?\d*$/,
+        date:/^(0[1-9]|1[012])[- \/.](0[1-9]|[12][0-9]|3[01])[- \/.](19|20)\d\d$/,
+        email:/^\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/,
+        currency:/^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/,
+        positiveDecimal:/(^\d*\.?\d*[1-9]+\d*$)|(^[1-9]+\d*\.\d*$)/,
+        decimal:/^[+-]?([0-9]*\.?[0-9]+|[0-9]+\.?[0-9]*)([eE][+-]?[0-9]+)?$/,
+        zip:/^\d{5}(-\d{4})?$/,
+        phone:/^([\(]{1}[0-9]{3}[\)]{1}[\.| |\-]{0,1}|^[0-9]{3}[\.|\-| ]?)?[0-9]{3}(\.|\-| )?[0-9]{4}$/
+        };
     
     //// Public Static Functions and Properties /////////////////
     jQuery.validity = {
@@ -144,19 +151,19 @@
     
     jQuery.fn.greaterThan = function(msg, min) {
         return validate(this, function(elem) { return parseFloat(elem.value) > min; }, msg);
-    }
+    };
     
     jQuery.fn.greaterThanOrEqualTo = function(msg, min) {
         return validate(this, function(elem) { return parseFloat(elem.value) >= min; }, msg);
-    }
+    };
     
     jQuery.fn.lessThan = function(msg, max) {
         return validate(this, function(elem) { return parseFloat(elem.value) < max; }, msg);
-    }
+    };
     
     jQuery.fn.lessThanOrEqualTo = function(msg, min) {
         return validate(this, function(elem) { return parseFloat(elem.value) <= min; }, msg);
-    }
+    };
     
     // Validate that all matched elements bear the same values.
     // Accepts a function to transform the values for testing.
