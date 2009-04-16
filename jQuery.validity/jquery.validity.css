@@ -1,5 +1,4 @@
-﻿#validity-modal-output { }
-.validity-modal-msg {
+﻿.validity-modal-msg {
 	position:absolute;
 	z-index:2;
 	background-color:#999;
@@ -14,4 +13,4 @@
 
 .validity-erroneous { border:solid 2px #f56600 !important; }
 
-label.error { color:#f00; }
+label.error { color:#f00; margin-left: 4px; }

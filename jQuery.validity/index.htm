@@ -4,22 +4,6 @@
         <script type="text/javascript" src="jquery.js"></script>
         <script type="text/javascript" src="jquery.validity.js"></script>
         <script type="text/javascript">
-            function switchOutputs(){
-                if($.validity.settings.outputMode == "MODAL"){
-                    $.validity.setup({outputMode:"Summary"});
-                    $('#SwitchLink').html('Change From Summary to Modal');
-                }
-                else{
-                    $.validity.setup({outputMode:"Modal"});
-                    $('#SwitchLink').html('Change From Modal to Summary');
-                }
-                
-                $('.validity-modal-msg').remove();
-                $('#validity-summary-container').hide();
-                $('#validity-summary-output').html("");
-                $('.validity-erroneous').removeClass('validity-erroneous');
-            }
-
             function validatePassword(){
                 $.validity.start();
                 $("input[type='password']").equal('Error: Passwords do not match.');
@@ -67,7 +51,9 @@
                 <i>validity</i> has four 'Output Modes': 'Modal', 'Summary', 'None' and 'Custom'. You will select the output
                 mode that is most appropriate for your application, or write your own with the custom output.
                 Below, the error summary will appear if an error is encountered and the outputMethod is set to 'Summary'.
-                [<a id="SwitchLink" href="#x" onclick="switchOutputs()">Change From Modal To Summary</a>]
+                [<a href="#_" onclick="$.validity.clear();$.validity.setup({outputMode:'label'});">Set to Label</a>] 
+                [<a href="#_" onclick="$.validity.clear();$.validity.setup({outputMode:'modal'});">Set to Modal</a>] 
+                [<a href="#_" onclick="$.validity.clear();$.validity.setup({outputMode:'summary'});">Set to Summary</a>]
             </p>
             <div id="validity-modal-output"></div>
             <div id="validity-summary-container">
@@ -95,12 +81,12 @@
             </p>
             <pre>
                 $.validity.start();
-                $('#qty1').match('Error: Quantity Must Be Formatted as an Integer.', /^\d*$/);
+                $('#qty1').match('Error: Quantity Must Be Formatted as an Integer.', "integer");
                 var result = $.validity.end();
             </pre>
             <p>
                 Optional: Enter Quantity:<input type="text" id='qty1' name='qty1' />
-                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#qty1').match('Error: Quantity Must Be Formatted as an Integer.', /^\d*$/);$.validity.end();" />
+                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#qty1').match('Error: Quantity Must Be Formatted as an Integer.', 'integer');$.validity.end();" />
             </p>
             <h2>Chaining:</h2>
             <p>
@@ -110,12 +96,12 @@
                 $.validity.start();
                 $('#qty2')
                     .require('Error: A Name Is Required.')
-                    .match('Error: Quantity Must Be Formatted as an Integer.', /^\d*$/);
+                    .match('Error: Quantity Must Be Formatted as an Integer.', "integer");
                 var result = $.validity.end();
             </pre>
             <p>
                 Required: Enter Quantity: <input type="text" id="qty2" name="qty2" />
-                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#qty2').require('Error: A Name Is Required.').match('Error: Quantity Must Be Formatted as an Integer.', /^\d*$/);$.validity.end();" />
+                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#qty2').require('Error: A Name Is Required.').match('Error: Quantity Must Be Formatted as an Integer.', 'integer');$.validity.end();" />
             </p>
             <h2>Equality:</h2>
             <p>
