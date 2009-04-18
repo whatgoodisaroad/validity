@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>Simple</title>
+        <link type="text/css" rel="Stylesheet" href="jquery.validity.css" />
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="jquery.validity.js"></script>
+        <script type="text/javascript">
+            $(function() { 
+                $("form").bind("submit", function() {
+                    $.validity.start();
+                    
+                    $("#number")
+                        .require("Required")
+                        .match("It needs to be a number", "number");
+                    
+                    return $.validity.end().valid;
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <form method="get" action="simple.htm">
+            Enter a number:
+            <input type="text" id="number" name="number" />
+            <input type="submit" />
+        </form>
+    </body>
+</html>

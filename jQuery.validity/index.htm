@@ -20,7 +20,7 @@
             	background-color:#555;
             	font-size:smaller;}
             
-            #main { width:1000px; background-color:#bbb; padding:10px; margin: 20px; }
+            #main { width:900px; background-color:#bbb; padding:10px; margin: 20px; }
             
             #validity-summary-container { border:solid 1px #f56600; }
         </style>
@@ -30,67 +30,87 @@
     <body>
         <div id='main'>
             <h1>jQuery.validity Demo</h1>
-            <h2>Overview:</h2>
-            <!--<p>
-                <i>validity</i> is a flexible, platform-agnostic clientside validation framework implemented as a jQuery plugin.
-                Instead of balancing a complex validation tool built into your web-framework to validate on both the client and 
-                the server, why not do the clientside validation in a clientside language and the serverside validation in a 
-                serverside language? Enter <i>validity</i>, a cross-browser clientside validation tool tailored to the nuances
-                of a webpage's structure. 
-            </p>
-            <p>
-                <i>validity</i> makes use of jQuery's selector engine to perform safe validation on groups of inputs based on 
-                CSS selectors rather than on explicit elements. This means that <i>validity</i> is most effective in pages where 
-                the inputs which are displayed, and the datatypes those inputs should accept are dynamic. Validation functions
-                are also fairly declarative and English-like, making validation easy to write and debug. Additionally, 
-                <i>validity</i> is agnostic of the web-framework being used. It is equally adept in ASP.NET, Rails, PHP and JSP 
-                environments.
-            </p>-->
             <h2>Output Mode:</h2>
             <p>
                 <i>validity</i> has four 'Output Modes': 'Modal', 'Summary', 'None' and 'Custom'. You will select the output
                 mode that is most appropriate for your application, or write your own with the custom output.
                 Below, the error summary will appear if an error is encountered and the outputMethod is set to 'Summary'.
+                <br />
                 [<a href="#_" onclick="$.validity.clear();$.validity.setup({outputMode:'label'});">Set to Label</a>] 
                 [<a href="#_" onclick="$.validity.clear();$.validity.setup({outputMode:'modal'});">Set to Modal</a>] 
                 [<a href="#_" onclick="$.validity.clear();$.validity.setup({outputMode:'summary'});">Set to Summary</a>]
             </p>
-            <div id="validity-modal-output"></div>
             <div id="validity-summary-container">
                 Here's a summary of the validation failures:
                 <ul id="validity-summary-output"></ul>
             </div>
+            <h2>Validation Functions:</h2>
+            <p>
+                To use <i>validity</i> you will be writing validation functions. The basic template for a validation
+                function is as follows:
+            </p>
+            <pre>
+                function myValidationFunction(){
+                    $.validity.start();                         // First we tell validity that 
+                                                                // we're going to start validating.
+                    
+                    // Any of the validity functions called between the start and end functions
+                    // will be monitored and the results recorded.
+                    // This is where your custom code will go.
+                    
+                    var result = $.validity.end();              // Now we tell validity that we're
+                                                                // done validating and we'd like to
+                                                                // know what the results were.
+                    
+                    return result.valid;                        // The 'valid' property of the result
+                                                                // is a boolean representing whether 
+                                                                // no failures occurred.
+                }
+            </pre>
+            <p>
+                This function is now good to be bound to the 'onsubmit' property of a form, or to be tested
+                before a custom Ajax submittal. Here's an example of binding the function to a form:
+            </p>
+            <pre>
+                $("form").bind("submit", myValidationFunction);
+            </pre>
+            <p>
+                Now, whenever that form tries to submit, it will ask the validation function whether it should.
+            </p>
             <h2>Requiring Fields:</h2>
             <p>
-                Below is a required field. For this demo, its id attribute is set to be 'req'. We validate it with the code:
+                Below is a required field. For this demo, its id attribute is set to be 'req'. The 'require' method
+                accepts a string of the error to display when an input fails. We validate with the code:
             </p>
             <pre>
                 $.validity.start();
-                $('#req').require('Error: A Name Is Required.');
+                $('#req').require('A Name Is Required.');
                 var result = $.validity.end();
-                // 'result.valid' now contains a boolean representing whether the input passed validation.
             </pre>
             <p>
                 Enter Your Name:<input type="text" id='req' name='req' />
-                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#req').require('Error: A Name Is Required.');$.validity.end();" />
+                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#req').require('A Name Is Required.');$.validity.end();" />
             </p>
             <h2>Format Validation:</h2>
             <p>
-                Fields can be validated to match a regular expression format using the Match method. The following input is 
+                Fields can be validated to match a regular expression format using the 'match' method. The following input is 
                 validated to only accept either an integer or nothing with the following code:
             </p>
             <pre>
                 $.validity.start();
-                $('#qty1').match('Error: Quantity Must Be Formatted as an Integer.', "integer");
+                $('#qty1').match('Quantity Must Be Formatted as an Integer.', "integer");
                 var result = $.validity.end();
             </pre>
             <p>
                 Optional: Enter Quantity:<input type="text" id='qty1' name='qty1' />
-                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#qty1').match('Error: Quantity Must Be Formatted as an Integer.', 'integer');$.validity.end();" />
+                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#qty1').match('Quantity Must Be Formatted as an Integer.', 'integer');$.validity.end();" />
             </p>
             <h2>Chaining:</h2>
             <p>
-                You can chain... blah blah blah...
+                You can chain your validator calls to build up a regimen of requirements the values must meet.
+                Each validator returns a jQuery object of less or equal count as it was called with. If an input
+                failes validation, it is excluded from the jQuery object that is returned. In this way, validators
+                only act on inputs that passed validation in every preceding link of the chain.
             </p>
             <pre>
                 $.validity.start();

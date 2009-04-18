@@ -7,10 +7,10 @@
  * http://docs.jquery.com/License
  *
  * Date: 2009-04-13 (Mon, 13 April 2009)
- * Revision: 13
+ * Revision: 21
  */
-(function(jQuery) {
-    //// Private Static Properties /////////////////
+(function($) {
+    //// Private Static /////////////////
     
     var outputModes = {
         modal:"MODAL",
@@ -37,7 +37,7 @@
     
     // A jQuery empty set. Used as return value by validators 
     // to terminate execution of a chain.
-    var $phi = jQuery([]);
+    var $phi = $([]);
         
     var selectors = {
         summaryContainer:"#validity-summary-container",
@@ -57,39 +57,39 @@
     var prefixes = {
         modalErrorId:"validity-modal-msg-"
     };
-    
-    var patterns = {
-        integer:/^\d+/,
-        date:/^(0[1-9]|1[012])[- \/.](0[1-9]|[12][0-9]|3[01])[- \/.](19|20)\d\d$/,
-        email:/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i,
-        usd:/^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/,
-        url:/^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i,
-        float:/^[+-]?([0-9]*\.?[0-9]+|[0-9]+\.?[0-9]*)([eE][+-]?[0-9]+)?$/,
-        zip:/^\d{5}(-\d{4})?$/,
-        phone:/^([\(]{1}[0-9]{3}[\)]{1}[\.| |\-]{0,1}|^[0-9]{3}[\.|\-| ]?)?[0-9]{3}(\.|\-| )?[0-9]{4}$/
-    };
-    
-    //// Public Static Functions and Properties /////////////////
-    jQuery.validity = {
+       
+    //// Public Static /////////////////
+    $.validity = {
         // Settings location
-        settings:jQuery.extend(defaults, { }),
+        settings:$.extend(defaults, { }),
+        
+        patterns: {
+            integer:/^\d+/,
+            date:/^(0[1-9]|1[012])[- \/.](0[1-9]|[12][0-9]|3[01])[- \/.](19|20)\d\d$/,
+            email:/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i,
+            usd:/^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/,
+            url:/^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i,
+            number:/^[+-]?(\d*\.?\d*)([eE][+-]?\d+)?$/,
+            zip:/^\d{5}(-\d{4})?$/,
+            phone:/^([\(]{1}[0-9]{3}[\)]{1}[\.| |\-]{0,1}|^[0-9]{3}[\.|\-| ]?)?[0-9]{3}(\.|\-| )?[0-9]{4}$/
+        },
         
         // Remove all errors on the page.
         clear:function() {
-            if(jQuery.validity.settings.outputMode == outputModes.modal)
-                jQuery(selectors.modalErrors).remove();
+            if($.validity.settings.outputMode == outputModes.modal)
+                $(selectors.modalErrors).remove();
                 
-            else if(jQuery.validity.settings.outputMode == outputModes.summary) {
-                jQuery(selectors.summaryContainer).hide();
-                jQuery(selectors.summaryOutput).html('');
-                jQuery(selectors.erroneousInputs).removeClass(classes.erroneousInput);
+            else if($.validity.settings.outputMode == outputModes.summary) {
+                $(selectors.summaryContainer).hide();
+                $(selectors.summaryOutput).html('');
+                $(selectors.erroneousInputs).removeClass(classes.erroneousInput);
             }
             
-            else if(jQuery.validity.settings.outputMode == outputModes.label)
-                jQuery(selectors.errorLabels).remove();
+            else if($.validity.settings.outputMode == outputModes.label)
+                $(selectors.errorLabels).remove();
             
-            else if(jQuery.validity.settings.outputMode == outputModes.custom)
-                jQuery.validity.settings.customOutputModeClear();
+            else if($.validity.settings.outputMode == outputModes.custom)
+                $.validity.settings.customOutputModeClear();
         },
         
         // Output an general validation error (withut associated controls)
@@ -98,10 +98,10 @@
         
         // Initialize validity with custom settings.
         setup:function(options) {
-            jQuery.validity.settings = jQuery.extend(defaults, options);
+            $.validity.settings = $.extend(defaults, options);
             
             // The actual output mode should always be upper cased.
-            jQuery.validity.settings.outputMode = jQuery.validity.settings.outputMode.toUpperCase();
+            $.validity.settings.outputMode = $.validity.settings.outputMode.toUpperCase();
         },
         
         // If the expression is false, raise the specified general error.
@@ -112,62 +112,66 @@
         
         report:null,
         
-        isTransactionOpen:function() { return jQuery.validity.report != null; },
+        isTransactionOpen:function() { return $.validity.report != null; },
         
         start:function() { 
-            jQuery.validity.clear();
-            jQuery.validity.report = { errors:0, valid:true }; 
+            $.validity.clear();
+            $.validity.report = { errors:0, valid:true }; 
         },
         
         end:function() { 
-            var report = jQuery.validity.report; 
-            jQuery.validity.report = null; 
+            var report = $.validity.report; 
+            $.validity.report = null; 
             
-            if (jQuery.validity.settings.scrollTo)
+            if ($.validity.settings.scrollTo)
                 location.hash = firstErrorId();
             
             return report;
         }
     };
     
-    //// Public Methods /////////////////
+    //// Public /////////////////
     
     // Validate whether the field has a value.
-    jQuery.fn.require = function(msg) {
-        return validate(this, function(elem) { return elem.value.length > 0; }, msg);
+    $.fn.require = function(msg) {
+        return validate(this, function(obj) { return obj.value.length > 0; }, msg);
     };
     
     // Validate whether the field matches a regex.
-    jQuery.fn.match = function(msg, regex) {
+    $.fn.match = function(msg, regex) {
         if(typeof(regex) == "string") 
-            regex = patterns[regex.toLowerCase()];
+            regex = $.validity.patterns[regex.toLowerCase()];
         
-        return validate(this, function(elem) { return elem.value.length == 0 || regex.test(elem.value); }, msg);
+        return validate(this, function(obj) { return obj.value.length == 0 || regex.test(obj.value); }, msg);
     };
     
-    jQuery.fn.range = function(msg, min, max) {
-        return validate(this, function(elem) { var f = parseFloat(elem.value); return f >= min && f <= max; }, msg);
+    $.fn.range = function(msg, min, max) {
+        return validate(this, function(obj) { var f = parseFloat(obj.value); return f >= min && f <= max; }, msg);
     };
     
-    jQuery.fn.greaterThan = function(msg, min) {
-        return validate(this, function(elem) { return parseFloat(elem.value) > min; }, msg);
+    $.fn.greaterThan = function(msg, min) {
+        return validate(this, function(obj) { return parseFloat(obj.value) > min; }, msg);
     };
     
-    jQuery.fn.greaterThanOrEqualTo = function(msg, min) {
-        return validate(this, function(elem) { return parseFloat(elem.value) >= min; }, msg);
+    $.fn.greaterThanOrEqualTo = function(msg, min) {
+        return validate(this, function(obj) { return parseFloat(obj.value) >= min; }, msg);
     };
     
-    jQuery.fn.lessThan = function(msg, max) {
-        return validate(this, function(elem) { return parseFloat(elem.value) < max; }, msg);
+    $.fn.lessThan = function(msg, max) {
+        return validate(this, function(obj) { return parseFloat(obj.value) < max; }, msg);
     };
     
-    jQuery.fn.lessThanOrEqualTo = function(msg, min) {
-        return validate(this, function(elem) { return parseFloat(elem.value) <= min; }, msg);
+    $.fn.lessThanOrEqualTo = function(msg, min) {
+        return validate(this, function(obj) { return parseFloat(obj.value) <= min; }, msg);
+    };
+    
+    $.fn.maxLength =  function(msg, max) {
+        return validate(this, function(obj) { return obj.value.length <= max; }, msg);
     };
     
     // Validate that all matched elements bear the same values.
     // Accepts a function to transform the values for testing.
-    jQuery.fn.equal = function(msg, transform) {
+    $.fn.equal = function(msg, transform) {
         if(transform == null)
             transform = function(val) { return val; };
         
@@ -192,7 +196,7 @@
     
     // Validate that all matched elements bear distinct values.
     // Accepts an optional function to transform the values for testing.
-    jQuery.fn.distinct = function(msg, transform) {
+    $.fn.distinct = function(msg, transform) {
         if(transform == null)
             transform = function(val) { return val; };
 
@@ -220,7 +224,7 @@
     };
     
     // Validate that the numeric sum of all values is equal to a given value.
-    jQuery.fn.sum = function(msg, sum){
+    $.fn.sum = function(msg, sum){
         if(this.length > 0){            
             if(sum == numericSum(this))
                 return this;
@@ -231,7 +235,7 @@
     };
     
     // Validates an inclusive upper-bound on the numeric sum of the values of all matched elements.
-    jQuery.fn.sumMax = function(msg, max){
+    $.fn.sumMax = function(msg, max){
         if(this.length > 0){            
             if(max >= numericSum(this))
                 return this;
@@ -244,13 +248,13 @@
     // If the expression is false, raise the specified error.
     // This is not a debug assertion. It's a validator
     // that is called like a debug assertion.
-    jQuery.fn.assert = function(expression, msg) { if(!expression) raiseError(this, msg); };
+    $.fn.assert = function(expression, msg) { if(!expression) raiseError(this, msg); };
     
-    //// Private Functions /////////////////
+    //// Private /////////////////
     
-    function validate($elem, regimen, message) {
+    function validate($obj, regimen, message) {
         var elements = new Array();
-        $elem.each(
+        $obj.each(
             function() {
                 if(regimen(this))
                     elements.push(this);
@@ -262,50 +266,50 @@
     }
     
     function addToReport(){
-        if(jQuery.validity.isTransactionOpen()){
-            jQuery.validity.report.errors++;
-            jQuery.validity.report.valid = false;
+        if($.validity.isTransactionOpen()){
+            $.validity.report.errors++;
+            $.validity.report.valid = false;
         }
     }
     
     // Raise an error appropriately for the element with the message.
-    function raiseError(elem, msg){
+    function raiseError(obj, msg){
         addToReport();
         
-        if(jQuery.validity.settings.outputMode == outputModes.modal)
-            raiseModalError(elem, msg);
+        if($.validity.settings.outputMode == outputModes.modal)
+            raiseModalError(obj, msg);
             
-        else if(jQuery.validity.settings.outputMode == outputModes.summary)
-            raiseSummaryError(elem, msg);
+        else if($.validity.settings.outputMode == outputModes.summary)
+            raiseSummaryError(obj, msg);
             
-        else if(jQuery.validity.settings.outputMode == outputModes.label)
-            raiseLabelError(elem, msg);
+        else if($.validity.settings.outputMode == outputModes.label)
+            raiseLabelError(obj, msg);
             
-        else if(jQuery.validity.settings.outputMode == outputModes.custom)
-            jQuery.validity.settings.raiseCustomOutputModeError(elem, msg);
+        else if($.validity.settings.outputMode == outputModes.custom)
+            $.validity.settings.raiseCustomOutputModeError(obj, msg);
     }
     
     function raiseLabelError(obj, msg){
-        var $obj = jQuery(obj);
+        var $obj = $(obj);
         
         var errorId = $obj.attr("id");
         var errorSelector = "#" + errorId;
         var labelSelector = "label[for='" + errorId + "']";
         
-        if(jQuery(labelSelector).length == 0)
-            jQuery("<label/>")
+        if($(labelSelector).length == 0)
+            $("<label/>")
                 .attr("for", errorId)
                 .addClass("error")
                 .text(msg)
                 .insertAfter(errorSelector);
         else
-            jQuery(labelSelector)
+            $(labelSelector)
                 .text(msg);
     }
     
     // Raise an error with a modal message.
     function raiseModalError(obj, msg){
-        var $obj = jQuery(obj);
+        var $obj = $(obj);
         
         var off = $obj.offset();        
         var errorStyle = { 
@@ -316,18 +320,18 @@
         var errorId = prefixes.modalErrorId + $obj.attr("id");
         var errorSelector = "#" + errorId;
         
-        if (jQuery(errorSelector).length == 0)
-            jQuery("<div/>")
+        if ($(errorSelector).length == 0)
+            $("<div/>")
                 .attr("id", errorId)
                 .addClass(classes.modalError)
                 .css(errorStyle)
                 .text(msg)
-                .click(jQuery.validity.settings.modalErrorsClickable ?
-                    function() { jQuery(this).remove(); } : null 
+                .click($.validity.settings.modalErrorsClickable ?
+                    function() { $(this).remove(); } : null 
                 )
                 .appendTo(selectors.modalOutput);
         else
-            jQuery(errorSelector)
+            $(errorSelector)
                 .css(errorStyle)
                 .text(msg);
     }
@@ -336,15 +340,15 @@
     function raiseSummaryError(obj, msg){
         pumpToSummary(msg);
         
-        jQuery(obj).addClass(classes.erroneousInput);
+        $(obj).addClass(classes.erroneousInput);
     }
     
     // Merely outputs text to the summary.
     function pumpToSummary(msg) {
-        jQuery(jQuery.validity.settings.summaryOutputWrapper)
+        $($.validity.settings.summaryOutputWrapper)
             .text(msg)
             .appendTo(selectors.summaryOutput);
-        jQuery(selectors.summaryContainer)
+        $(selectors.summaryContainer)
             .show();
     }
     
@@ -352,28 +356,28 @@
     function raiseAggregateError(obj, msg){
         addToReport();
         
-        if(jQuery.validity.settings.outputMode == outputModes.modal)
+        if($.validity.settings.outputMode == outputModes.modal)
             raiseAggregateModalError(obj, msg);
             
-        else if(jQuery.validity.settings.outputMode == outputModes.summary)
+        else if($.validity.settings.outputMode == outputModes.summary)
             raiseSummaryError(obj, msg);
             
-        else if(jQuery.validity.settings.outputMode == outputModes.label)
+        else if($.validity.settings.outputMode == outputModes.label)
             raiseAggregateLabelError(obj, msg);
             
-        else if(jQuery.validity.settings.outputMode == outputModes.custom)
-            jQuery.validity.settings.raiseCustomOutputModeAggregateError(obj, msg);
+        else if($.validity.settings.outputMode == outputModes.custom)
+            $.validity.settings.raiseCustomOutputModeAggregateError(obj, msg);
     }
     
     // Raise a modal error on the first matched element.
     function raiseAggregateModalError(obj, msg){
         if(obj.length > 0)
-            raiseModalError(jQuery(obj.get(0)), msg);
+            raiseModalError($(obj.get(0)), msg);
     }
     
     function raiseAggregateLabelError(obj, msg){
         if(obj.length > 0)
-            raiseLabelError(jQuery(obj.get(obj.length - 1)), msg);
+            raiseLabelError($(obj.get(obj.length - 1)), msg);
     }
     
     // Yield the sum of the values of all fields matched in obj that can be parsed.
@@ -390,17 +394,17 @@
     }
     
     function firstErrorId() {
-        if(jQuery.validity.settings.outputMode == outputModes.modal)
-            return jQuery(selectors.modalErrors + ":first").attr("id");
+        if($.validity.settings.outputMode == outputModes.modal)
+            return $(selectors.modalErrors + ":first").attr("id");
                
-        else if(jQuery.validity.settings.outputMode == outputModes.summary)
-            return jQuery(selectors.erroneousInputs + ":first").attr("id");
+        else if($.validity.settings.outputMode == outputModes.summary)
+            return $(selectors.erroneousInputs + ":first").attr("id");
             
-        else if(jQuery.validity.settings.outputMode == outputModes.label)
-            return jQuery(selectors.errorLabels + ":first").attr("id");
+        else if($.validity.settings.outputMode == outputModes.label)
+            return $(selectors.errorLabels + ":first").attr("id");
             
-        else if(jQuery.validity.settings.outputMode == outputModes.custom)
-            return jQuery.validity.settings.firstCustomOutputErrorId();
+        else if($.validity.settings.outputMode == outputModes.custom)
+            return $.validity.settings.firstCustomOutputErrorId();
             
         else
             return "_";
