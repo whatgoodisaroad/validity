@@ -1,5 +1,0 @@
-C:\Users\Wyatt\Documents\Visual Studio 2008\Projects\jQuery.validity\jQuery.validity\bin\jQuery.validity.dll
-C:\Users\Wyatt\Documents\Visual Studio 2008\Projects\jQuery.validity\jQuery.validity\bin\jQuery.validity.pdb
-C:\Users\Wyatt\Documents\Visual Studio 2008\Projects\jQuery.validity\jQuery.validity\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Wyatt\Documents\Visual Studio 2008\Projects\jQuery.validity\jQuery.validity\obj\Debug\jQuery.validity.dll
-C:\Users\Wyatt\Documents\Visual Studio 2008\Projects\jQuery.validity\jQuery.validity\obj\Debug\jQuery.validity.pdb
