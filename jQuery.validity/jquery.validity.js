@@ -1,13 +1,13 @@
 ﻿/*
- * jQuery.validity beta v0.9.4
+ * jQuery.validity beta v0.9.4.1
  * http://code.google.com/p/validity/
  * 
  * Copyright (c) 2009 Wyatt Allen
  * Dual licensed under the MIT and GPL licenses.
  * http://docs.jquery.com/License
  *
- * Date: 2009-04-19 (Sun, 19 April 2009)
- * Revision: 22
+ * Date: 2009-04-20 (Mon, 20 April 2009)
+ * Revision: 23
  */
 (function($) {
     //// Private Static /////////////////
@@ -49,6 +49,7 @@
         tooSmallMsg:"Valus is too small.",
         tooLongMsg:"Value is too long.",
         equalMsg:"Values didn't match.",
+        distinctMsg:"A value was repeated",
         sumMsg:"Values don't add up right.",
         genericMsg:"Invalid."
     };
@@ -323,7 +324,7 @@
     $.fn.distinct = function(arg0, arg1) {
         if(this.length > 0){
             var transform = function(val) { return val; };
-            var msg = $.validity.settings.equalMsg;
+            var msg = $.validity.settings.distinctMsg;
             
             if (typeof(arg0) == "function") {
                 transform = arg0;

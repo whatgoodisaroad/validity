@@ -6,7 +6,7 @@
         <script type="text/javascript">
             function validatePassword(){
                 $.validity.start();
-                $("input[type='password']").equal('Error: Passwords do not match.');
+                $("input[type='password']").equal();
                 $.validity.end();
             }
         </script>
@@ -98,12 +98,12 @@
             </p>
             <pre>
                 $.validity.start();
-                $('#qty1').match('Quantity Must Be Formatted as an Integer.', "integer");
+                $('#qty1').match("integer", 'Quantity Must Be Formatted as an Integer.');
                 var result = $.validity.end();
             </pre>
             <p>
                 Optional: Enter Quantity:<input type="text" id='qty1' name='qty1' />
-                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#qty1').match('Quantity Must Be Formatted as an Integer.', 'integer');$.validity.end();" />
+                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#qty1').match('integer', 'Quantity Must Be Formatted as an Integer.');$.validity.end();" />
             </p>
             <h2>Chaining:</h2>
             <p>
@@ -116,12 +116,12 @@
                 $.validity.start();
                 $('#qty2')
                     .require('Error: A Name Is Required.')
-                    .match('Error: Quantity Must Be Formatted as an Integer.', "integer");
+                    .match("integer");
                 var result = $.validity.end();
             </pre>
             <p>
                 Required: Enter Quantity: <input type="text" id="qty2" name="qty2" />
-                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#qty2').require('Error: A Name Is Required.').match('Error: Quantity Must Be Formatted as an Integer.', 'integer');$.validity.end();" />
+                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#qty2').require('Error: A Name Is Required.').match('integer');$.validity.end();" />
             </p>
             <h2>Equality:</h2>
             <p>
@@ -150,7 +150,7 @@
             </p>
             <pre>
                 $.validity.start();
-                $('input.Name').distinct('Error: A name was repeated.');
+                $('input.Name').distinct();
                 var result = $.validity.end();
             </pre>
             <p>
@@ -159,7 +159,7 @@
                 <input id="u2" type="text" class="Name" />&nbsp;
                 <input id="u3" type="text" class="Name" />&nbsp;
                 <input id="u4" type="text" class="Name" />&nbsp;
-                <input type="button" value="Validate These Fields!" onclick="$.validity.start();$('input.Name').distinct('Error: A name was repeated.');$.validity.end();" />
+                <input type="button" value="Validate These Fields!" onclick="$.validity.start();$('input.Name').distinct();$.validity.end();" />
             </p>
         </div>
     </body>
