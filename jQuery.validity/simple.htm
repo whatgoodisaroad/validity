@@ -6,15 +6,17 @@
         <script type="text/javascript" src="jquery.validity.js"></script>
         <script type="text/javascript">
             $(function() { 
-                $("form").bind("submit", function() {
-                    $.validity.start();
-                    
-                    $("#number")
-                        .require("Required")
-                        .match("It needs to be a number", "number");
-                    
-                    return $.validity.end().valid;
-                });
+                $("form").validity(
+                    function() {
+                        $("#number")
+                            .require()
+                            .match("number")
+                            .range(4, 12, "Value must be between four and twelve.");
+                        $("#date")
+                            .require()
+                            .match("date");
+                    }
+                );
             });
         </script>
     </head>
@@ -22,6 +24,10 @@
         <form method="get" action="simple.htm">
             Enter a number:
             <input type="text" id="number" name="number" />
+            <br /><br />
+            Also, a date:
+            <input type="text" id="date" name="date" />
+            <br /><br />
             <input type="submit" />
         </form>
     </body>
