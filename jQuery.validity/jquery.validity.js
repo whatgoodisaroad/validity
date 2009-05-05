@@ -1,4 +1,4 @@
-﻿/*
+/*
  * jQuery.validity beta v0.9.4.1
  * http://code.google.com/p/validity/
  * 
@@ -25,10 +25,10 @@
         outputMode:outputModes.label,
         
         // Methods for custom output modes.
-        raiseCustomOutputModeError:function($obj, msg) { },
-        raiseCustomOutputModeAggregateError:function($obj, msg) { },
-        customOutputModeClear:function() { },
-        firstCustomOutputErrorId:function() { },
+        raiseCustomError:function(obj, msg) { },
+        raiseCustomAggregateError:function(obj, msg) { },
+        customClear:function() { },
+        firstCustomErrorId:function() { },
         
         scrollTo:false,
         summaryOutputWrapper:"<li/>",
@@ -83,7 +83,7 @@
         settings:$.extend(defaults, { }),
         
         patterns: {
-            integer:/^\d+/,
+            integer:/^\d+$/,
             date:function(val) { return !isNaN(Date.parse(val)); },
             email:/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i,
             usd:/^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/,
@@ -112,7 +112,7 @@
                         break;
                     
                     case outputModes.custom:
-                        $.validity.settings.customOutputModeClear();
+                        $.validity.settings.customClear();
                         break;
                 }
             }
@@ -412,16 +412,14 @@
     
     //// Private /////////////////
     
-    function validate($obj, regimen, message) {
+    function validate ($obj, regimen, message) {
         var elements = new Array();
         $obj.each(
             function() {
-                if (regimen(this)) {
+                if (regimen(this))
                     elements.push(this);
-                }
-                else {
+                else
                     raiseError(this, message);
-                }
             }
         );
         return $(elements);
@@ -452,7 +450,7 @@
                 break;
             
             case outputModes.custom:
-                $.validity.settings.raiseCustomOutputModeError(obj, msg);
+                $.validity.settings.raiseCustomError(obj, msg);
                 break;
         }
     }
@@ -543,7 +541,7 @@
                 break;
             
             case outputModes.custom:
-                $.validity.settings.raiseCustomOutputModeAggregateError(obj, msg);
+                $.validity.settings.raiseCustomAggregateError(obj, msg);
                 break;
         }
     }
@@ -587,7 +585,7 @@
                 return $(selectors.errorLabels + ":first").attr("id");
             
             case outputModes.custom:
-                return $.validity.settings.firstCustomOutputErrorId();
+                return $.validity.settings.firstCustomErrorId();
                 
             default:
                 return "_";
