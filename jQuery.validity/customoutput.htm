@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <title>Custom Output</title>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="jquery.validity.js"></script>
+    <script type="text/javascript">
+      $(function() {
+        $.validity.setup({ outputMode:"custom" });
+
+        $.validity.setup({
+          raiseCustomError:function(obj, msg) {
+            $(obj)
+              .animate({ "background-color":"#f00" })
+              .addClass("customErrorClass");
+          },
+          customClear:function() {
+            $(".customErrorClass")
+              .animate({ "backhround-color":"#000" })
+              .removeClass("customErrorClass");
+          }
+        });
+
+        $("form").validity(function() { $("#text").require(); });
+      });
+    </script>
+  </head>
+  <body>
+    <form action="customoutput.htm" method="get">
+      <input type="text" id="text" name="text" style="background-color:#fff" />
+      <input type="submit" />
+    </form>
+  </body>
+</html>
