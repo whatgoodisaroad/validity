@@ -4,29 +4,43 @@
     <script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="jquery.validity.js"></script>
     <script type="text/javascript">
-      $(function() {
-        $.validity.setup({ outputMode:"custom" });
+      $.validity.setup({ outputMode:"custom" });
 
-        $.validity.setup({
-          raiseCustomError:function(obj, msg) {
-            $(obj)
-              .animate({ "background-color":"#f00" })
-              .addClass("customErrorClass");
-          },
-          customClear:function() {
-            $(".customErrorClass")
-              .animate({ "backhround-color":"#000" })
-              .removeClass("customErrorClass");
-          }
-        });
-
-        $("form").validity(function() { $("#text").require(); });
+      // The following statement installs a custom output mode.
+      // The function definitions can be merged into the above call to setup
+      // or even placed in their own .js file for reuse, making it easy to 
+      // share output modes.
+      $.validity.setup({
+        raiseCustomError:function(obj, msg) {
+          $(obj)
+            .css({ "border-color":"red" })
+            .addClass("customErrorClass")
+          alert(msg);
+        },
+        raiseCustomAggregateError:function(obj, msg) {
+          $(obj)
+            .css({ "border-color":"red" })
+            .addClass("customErrorClass")
+          alert(msg);
+        },
+        customClear:function() {
+          $(".customErrorClass")
+            .css({ "border-color":"green" })
+            .removeClass("customErrorClass");
+        },
+        firstCustomErrorId:function() { 
+          $(".customErrorClass:first").attr("id");
+        }
       });
+      
+      // Instruct validity to validate the page by requiring 
+      // the input matched by a jQuery selector.
+      $(function() { $("form").validity("#text"); });
     </script>
   </head>
   <body>
     <form action="customoutput.htm" method="get">
-      <input type="text" id="text" name="text" style="background-color:#fff" />
+      <input type="text" id="text" name="text" style="border:solid 3px green;" />
       <input type="submit" />
     </form>
   </body>

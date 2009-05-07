@@ -1,13 +1,12 @@
 /*
- * jQuery.validity beta v0.9.4.1
+ * jQuery.validity beta v0.9.4.2
  * http://code.google.com/p/validity/
  * 
  * Copyright (c) 2009 Wyatt Allen
  * Dual licensed under the MIT and GPL licenses.
- * http://docs.jquery.com/License
  *
- * Date: 2009-04-20 (Mon, 20 April 2009)
- * Revision: 23
+ * Date: 2009-5-7 (Thursday, 7 May 2009)
+ * Revision: 59
  */
 (function($) {
     //// Private Static /////////////////
@@ -150,9 +149,8 @@
             
             $.validity.report = null; 
             
-            if ($.validity.settings.scrollTo) {
+            if ($.validity.settings.scrollTo)
                 location.hash = firstErrorId();
-            }
             
             return report;
         }
@@ -195,9 +193,8 @@
     
     // Validate whether the field has a value.
     $.fn.require = function(msg) {
-        if(msg == null) { 
+        if (msg == null)
             msg = $.validity.settings.requireMsg; 
-        }
     
         return validate(this, function(obj) { return obj.value.length > 0; }, msg);
     };
@@ -207,9 +204,8 @@
         if (msg == null) {
             msg = $.validity.settings.matchMsg;
             
-            if (typeof(rule) == "string" && $.validity.settings[rule + "Msg"] != null) { 
+            if (typeof(rule) == "string" && $.validity.settings[rule + "Msg"] != null)
                 msg = $.validity.settings[rule + "Msg"];
-            }
         }
         
         if (typeof(rule) == "string") { 
@@ -230,51 +226,45 @@
     };
     
     $.fn.range = function(min, max, msg) {
-        if (msg == null) {
+        if (msg == null)
             return this
                 .greaterThanOrEqualTo(min)
                 .lessThanOrEqualTo(max);
-        }
     
         return validate(this, function(obj) { var f = parseFloat(obj.value); return f >= min && f <= max; }, msg);
     };
     
     $.fn.greaterThan = function(min, msg) {
-        if (msg == null) {
+        if (msg == null)
             msg = $.validity.settings.tooSmallMsg;
-        }
     
         return validate(this, function(obj) { return parseFloat(obj.value) > min; }, msg);
     };
     
     $.fn.greaterThanOrEqualTo = function(min, msg) {
-        if (msg == null) {
+        if (msg == null)
             msg = $.validity.settings.tooSmallMsg;
-        }
     
         return validate(this, function(obj) { return parseFloat(obj.value) >= min; }, msg);
     };
     
     $.fn.lessThan = function(max, msg) {
-        if (msg == null) {
+        if (msg == null)
             msg = $.validity.settings.tooBigMsg;
-        }
     
         return validate(this, function(obj) { return parseFloat(obj.value) < max; }, msg);
     };
     
     $.fn.lessThanOrEqualTo = function(min, msg) {
-        if (msg == null) {
+        if (msg == null)
             msg = $.validity.settings.tooBigMsg;
-        }
     
         return validate(this, function(obj) { return parseFloat(obj.value) <= min; }, msg);
     };
     
     $.fn.maxLength =  function(max, msg) {
-        if (msg == null) {
+        if (msg == null)
             msg = $.validity.settings.tooLongMsg;
-        }
     
         return validate(this, function(obj) { return obj.value.length <= max; }, msg);
     };
@@ -289,29 +279,25 @@
             if (typeof(arg0) == "function") {
                 transform = arg0;
                 
-                if (typeof(arg1) == "string") {
+                if (typeof(arg1) == "string")
                     msg = arg1;
-                }
             }
             
-            else if (typeof(arg0) == "string") {
+            else if (typeof(arg0) == "string")
                 msg = arg0;
-            }
         
             var temp = transform(this.get(0).value);
             var valid = true;
             
             this.each(
                 function() {
-                    if (transform(this.value) != temp) {
+                    if (transform(this.value) != temp)
                         valid = false;
-                    }
                 }
             );
             
-            if (valid) { 
-                return this; 
-            }
+            if (valid)
+                return this;
             
             raiseAggregateError(this, msg); 
         }
@@ -329,14 +315,12 @@
             if (typeof(arg0) == "function") {
                 transform = arg0;
                 
-                if (typeof(arg1) == "string") {
+                if (typeof(arg1) == "string")
                     msg = arg1;
-                }
             }
             
-            else if (typeof(arg0) == "string") {
+            else if (typeof(arg0) == "string")
                 msg = arg0;
-            }
         
             var values = new Array();
             var valid = true;
@@ -346,18 +330,16 @@
                     var transformedValue = transform(this.value);
                     
                     for (i in values) {
-                        if (transformedValue.length > 0 && values[i] == transformedValue) {
+                        if (transformedValue.length > 0 && values[i] == transformedValue)
                             valid = false;
-                        }
                     }
                     
                     values[idx] = transformedValue;
                 }
             );
             
-            if (valid) {
+            if (valid)
                 return this;
-            }
 
             raiseAggregateError(this, msg);
         }
@@ -367,29 +349,23 @@
     
     // Validate that the numeric sum of all values is equal to a given value.
     $.fn.sum = function(sum, msg) {
-        if (msg == null) {
+        if (msg == null)
             msg = $.validity.settings.sumMsg;
-        }
         
-        if (this.length > 0) { 
-            if (sum == numericSum(this)) {
-                return this;
-            }
-        }
+        if (this.length > 0 && sum == numericSum(this))
+            return this;
         
         return $phi;
     };
     
     // Validates an inclusive upper-bound on the numeric sum of the values of all matched elements.
     $.fn.sumMax = function(max, msg) {
-        if (msg == null) {
+        if (msg == null)
             msg = $.validity.settings.sumMsg;
-        }
     
         if (this.length > 0) {            
-            if (max >= numericSum(this)) {
+            if (max >= numericSum(this))
                 return this;
-            }
             
             raiseAggregateError(this, msg);
         }
@@ -401,13 +377,11 @@
     // This is not a debug assertion. It's a validator
     // that is called like a debug assertion.
     $.fn.assert = function(expression, msg) { 
-        if (msg == null) {
+        if (msg == null)
             msg = $.validity.settings.genericMsg;
-        }
     
-        if (!expression) { 
+        if (!expression)
             raiseError(this, msg); 
-        }
     };
     
     //// Private /////////////////
@@ -425,15 +399,15 @@
         return $(elements);
     }
     
-    function addToReport(){
-        if($.validity.isTransactionOpen()){
+    function addToReport() {
+        if($.validity.isTransactionOpen()) {
             $.validity.report.errors++;
             $.validity.report.valid = false;
         }
     }
     
     // Raise an error appropriately for the element with the message.
-    function raiseError(obj, msg){
+    function raiseError(obj, msg) {
         addToReport();
         
         switch ($.validity.settings.outputMode) {
@@ -455,28 +429,26 @@
         }
     }
     
-    function raiseLabelError(obj, msg){
+    function raiseLabelError(obj, msg) {
         var $obj = $(obj);
         
         var errorId = $obj.attr("id");
         var errorSelector = "#" + errorId;
         var labelSelector = "label[for='" + errorId + "']";
         
-        if ($(labelSelector).length == 0) {
+        if ($(labelSelector).length == 0)
             $("<label/>")
                 .attr("for", errorId)
                 .addClass("error")
                 .text(msg)
                 .insertAfter(errorSelector);
-        }
         
-        else {
+        else
             $(labelSelector).text(msg);
-        }
     }
     
     // Raise an error with a modal message.
-    function raiseModalError(obj, msg){
+    function raiseModalError(obj, msg) {
         var $obj = $(obj);
         
         var off = $obj.offset();        
@@ -488,7 +460,7 @@
         var errorId = prefixes.modalErrorId + $obj.attr("id");
         var errorSelector = "#" + errorId;
         
-        if ($(errorSelector).length == 0) {
+        if ($(errorSelector).length == 0)
             $("<div/>")
                 .attr("id", errorId)
                 .addClass(classes.modalError)
@@ -498,17 +470,15 @@
                     function() { $(this).remove(); } : null 
                 )
                 .appendTo(selectors.modalOutput);
-        }
         
-        else {
+        else
             $(errorSelector)
                 .css(errorStyle)
                 .text(msg);
-        }
     }
     
     // Display error in a summary output.
-    function raiseSummaryError(obj, msg){
+    function raiseSummaryError(obj, msg) {
         pumpToSummary(msg);
         
         $(obj).addClass(classes.erroneousInput);
@@ -524,7 +494,7 @@
     }
     
     // Raise a single error for several elements.
-    function raiseAggregateError(obj, msg){
+    function raiseAggregateError(obj, msg) {
         addToReport();
         
         switch ($.validity.settings.outputMode) {
@@ -547,27 +517,24 @@
     }
     
     // Raise a modal error on the first matched element.
-    function raiseAggregateModalError(obj, msg){
-        if (obj.length > 0) {
+    function raiseAggregateModalError(obj, msg) {
+        if (obj.length > 0)
             raiseModalError($(obj.get(0)), msg);
-        }
     }
     
-    function raiseAggregateLabelError(obj, msg){
-        if(obj.length > 0) {
+    function raiseAggregateLabelError(obj, msg) {
+        if(obj.length > 0)
             raiseLabelError($(obj.get(obj.length - 1)), msg);
-        }
     }
     
     // Yield the sum of the values of all fields matched in obj that can be parsed.
-    function numericSum(obj){
+    function numericSum(obj) {
         var accumulator = 0;
         obj.each(
             function() {
                 var n = parseFloat(this.value);
-                if(!isNaN(n)) {
+                if(!isNaN(n))
                     accumulator += n;
-                }
             }
         );
         return accumulator;
