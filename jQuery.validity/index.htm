@@ -32,7 +32,7 @@
             <h1>jQuery.validity Demo</h1>
             <h2>Output Mode:</h2>
             <p>
-                <i>validity</i> has four 'Output Modes': 'Modal', 'Summary', 'None' and 'Custom'. You will select the output
+                <i>validity</i> has five Output-Modes: 'Label', 'Modal', 'Summary', 'None' and 'Custom'. You will select the output
                 mode that is most appropriate for your application, or write your own with the custom output.
                 Below, the error summary will appear if an error is encountered and the outputMethod is set to 'Summary'.
                 <br />
@@ -46,36 +46,25 @@
             </div>
             <h2>Validation Functions:</h2>
             <p>
-                To use <i>validity</i> you will be writing validation functions. The basic template for a validation
-                function is as follows:
+                To use <i>validity</i> you will be attaching validation functions to form elements. 
+                A basic template for this process would be:
             </p>
             <pre>
-                function myValidationFunction(){
-                    $.validity.start();                         // First we tell validity that 
-                                                                // we're going to start validating.
-                    
-                    // Any of the validity functions called between the start and end functions
-                    // will be monitored and the results recorded.
-                    // This is where your custom code will go.
-                    
-                    var result = $.validity.end();              // Now we tell validity that we're
-                                                                // done validating and we'd like to
-                                                                // know what the results were.
-                    
-                    return result.valid;                        // The 'valid' property of the result
-                                                                // is a boolean representing whether 
-                                                                // no failures occurred.
-                }
+                $(function() {
+                  $("form").validity(function() { 
+                      // This is where you perform the validation.
+                      // You do this by finding elements with jQuery and then calling the validity methods on them.
+                      // For example:
+                      
+                      $("#number").require().match("number");
+
+                      $("#date").require().match("date");
+                  });
+                });
             </pre>
             <p>
-                This function is now good to be bound to the 'onsubmit' property of a form, or to be tested
-                before a custom Ajax submittal. Here's an example of binding the function to a form:
-            </p>
-            <pre>
-                $("form").bind("submit", myValidationFunction);
-            </pre>
-            <p>
-                Now, whenever that form tries to submit, it will ask the validation function whether it should.
+                Now, whenever that form tries to submit, it will perform this function which will both raise errors,
+                and ultimately determine whether the form actually submits.
             </p>
             <h2>Requiring Fields:</h2>
             <p>
@@ -83,9 +72,7 @@
                 accepts a string of the error to display when an input fails. We validate with the code:
             </p>
             <pre>
-                $.validity.start();
                 $('#req').require('A Name Is Required.');
-                var result = $.validity.end();
             </pre>
             <p>
                 Enter Your Name:<input type="text" id='req' name='req' />
@@ -97,9 +84,7 @@
                 validated to only accept either an integer or nothing with the following code:
             </p>
             <pre>
-                $.validity.start();
                 $('#qty1').match("integer", 'Quantity Must Be Formatted as an Integer.');
-                var result = $.validity.end();
             </pre>
             <p>
                 Optional: Enter Quantity:<input type="text" id='qty1' name='qty1' />
@@ -113,11 +98,9 @@
                 only act on inputs that passed validation in every preceding link of the chain.
             </p>
             <pre>
-                $.validity.start();
                 $('#qty2')
                     .require('Error: A Name Is Required.')
                     .match("integer");
-                var result = $.validity.end();
             </pre>
             <p>
                 Required: Enter Quantity: <input type="text" id="qty2" name="qty2" />
@@ -130,9 +113,7 @@
                 (in this case only two) and call the AreEqual method. Observe:
             </p>
             <pre>
-                $.validity.start();
                 $("input[type='password']").equal('Error: Passwords do not match.');
-                var result = $.validity.end();
             </pre>
             <p>
                 Password:
@@ -149,9 +130,7 @@
                 AreEqual:
             </p>
             <pre>
-                $.validity.start();
-                $('input.Name').distinct();
-                var result = $.validity.end();
+                $('input.Name').distinct("A name was repeated.");
             </pre>
             <p>
                 Enter Names: 
@@ -159,7 +138,12 @@
                 <input id="u2" type="text" class="Name" />&nbsp;
                 <input id="u3" type="text" class="Name" />&nbsp;
                 <input id="u4" type="text" class="Name" />&nbsp;
-                <input type="button" value="Validate These Fields!" onclick="$.validity.start();$('input.Name').distinct();$.validity.end();" />
+                <input type="button" value="Validate These Fields!" onclick="$.validity.start();$('input.Name').distinct('A name was repeated.');$.validity.end();" />
+            </p>
+            <br /><br /><br />
+            <p>
+                Have a look at the documentation at <a href="http://code.google.com/p/validity/w/list">the wiki</a> for
+                a more complete look at the validation functions.
             </p>
         </div>
     </body>

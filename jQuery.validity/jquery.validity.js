@@ -1,12 +1,12 @@
 /*
- * jQuery.validity beta v0.9.4.2
+ * jQuery.validity beta v0.9.4.3
  * http://code.google.com/p/validity/
  * 
  * Copyright (c) 2009 Wyatt Allen
  * Dual licensed under the MIT and GPL licenses.
  *
- * Date: 2009-5-7 (Thursday, 7 May 2009)
- * Revision: 59
+ * Date: 2009-5-14 (Thursday, 14 May 2009)
+ * Revision: 60
  */
 (function($) {
     //// Private Static /////////////////
@@ -196,30 +196,34 @@
         if (msg == null)
             msg = $.validity.settings.requireMsg; 
     
-        return validate(this, function(obj) { return obj.value.length > 0; }, msg);
+        return validate(this, function(obj) { return obj.value.length; }, msg);
     };
     
     // Validate whether the field matches a regex.
     $.fn.match = function(rule, msg) {
+        // If a default message is to be used:
         if (msg == null) {
+            // First grab the generic one:
             msg = $.validity.settings.matchMsg;
             
-            if (typeof(rule) == "string" && $.validity.settings[rule + "Msg"] != null)
+            // If there's a more specific one, use that.
+            if (typeof(rule) == "string" && $.validity.settings[rule + "Msg"])
                 msg = $.validity.settings[rule + "Msg"];
         }
         
+        // If the rule is named, rather than specified:
         if (typeof(rule) == "string") { 
             rule = $.validity.patterns[rule.toLowerCase()]; 
             
-            switch (rule.constructor.name.toLowerCase()) {
-                case "function":
-                    return validate(this, function(obj) { return obj.value.length == 0 || rule(obj.value); }, msg);
-                    break;
-                    
-                case "regexp":
-                    return validate(this, function(obj) { return obj.value.length == 0 || rule.test(obj.value); }, msg);
-                    break;
-            }
+            // Some of the named rules can be functions, such as 'date'.
+            // If the discovered rule is a function use it as such.
+            if (typeof(rule) == "function")
+                return validate(this, function(obj) { return obj.value.length == 0 || rule(obj.value); }, msg);
+            
+            // Workaround for IE regarding issue2: 
+            // If the rule is not a function assume it is a RegExp.
+            else 
+                return validate(this, function(obj) { return obj.value.length == 0 || rule.test(obj.value); }, msg);
         }
         
         return this;
@@ -272,7 +276,7 @@
     // Validate that all matched elements bear the same values.
     // Accepts a function to transform the values for testing.
     $.fn.equal = function(arg0, arg1) {
-        if (this.length > 0) {
+        if (this.length) {
             var transform = function(val) { return val; };
             var msg = $.validity.settings.equalMsg;
             
@@ -308,7 +312,7 @@
     // Validate that all matched elements bear distinct values.
     // Accepts an optional function to transform the values for testing.
     $.fn.distinct = function(arg0, arg1) {
-        if(this.length > 0){
+        if (this.length){
             var transform = function(val) { return val; };
             var msg = $.validity.settings.distinctMsg;
             
@@ -326,11 +330,11 @@
             var valid = true;
             
             this.each(
-                function(idx){
+                function(idx) {
                     var transformedValue = transform(this.value);
                     
                     for (i in values) {
-                        if (transformedValue.length > 0 && values[i] == transformedValue)
+                        if (transformedValue.length && values[i] == transformedValue)
                             valid = false;
                     }
                     
@@ -352,7 +356,7 @@
         if (msg == null)
             msg = $.validity.settings.sumMsg;
         
-        if (this.length > 0 && sum == numericSum(this))
+        if (this.length && sum == numericSum(this))
             return this;
         
         return $phi;
@@ -360,10 +364,10 @@
     
     // Validates an inclusive upper-bound on the numeric sum of the values of all matched elements.
     $.fn.sumMax = function(max, msg) {
-        if (msg == null)
-            msg = $.validity.settings.sumMsg;
-    
-        if (this.length > 0) {            
+        if (this.length) {
+            if (msg == null)
+                msg = $.validity.settings.sumMsg;
+            
             if (max >= numericSum(this))
                 return this;
             
@@ -436,15 +440,15 @@
         var errorSelector = "#" + errorId;
         var labelSelector = "label[for='" + errorId + "']";
         
-        if ($(labelSelector).length == 0)
+        if ($(labelSelector).length)
+            $(labelSelector).text(msg);
+        
+        else
             $("<label/>")
                 .attr("for", errorId)
                 .addClass("error")
                 .text(msg)
                 .insertAfter(errorSelector);
-        
-        else
-            $(labelSelector).text(msg);
     }
     
     // Raise an error with a modal message.
@@ -460,7 +464,12 @@
         var errorId = prefixes.modalErrorId + $obj.attr("id");
         var errorSelector = "#" + errorId;
         
-        if ($(errorSelector).length == 0)
+        if ($(errorSelector).length)
+            $(errorSelector)
+                .css(errorStyle)
+                .text(msg);
+        
+        else
             $("<div/>")
                 .attr("id", errorId)
                 .addClass(classes.modalError)
@@ -470,11 +479,6 @@
                     function() { $(this).remove(); } : null 
                 )
                 .appendTo(selectors.modalOutput);
-        
-        else
-            $(errorSelector)
-                .css(errorStyle)
-                .text(msg);
     }
     
     // Display error in a summary output.
@@ -518,12 +522,12 @@
     
     // Raise a modal error on the first matched element.
     function raiseAggregateModalError(obj, msg) {
-        if (obj.length > 0)
+        if (obj.length)
             raiseModalError($(obj.get(0)), msg);
     }
     
     function raiseAggregateLabelError(obj, msg) {
-        if(obj.length > 0)
+        if (obj.length)
             raiseLabelError($(obj.get(obj.length - 1)), msg);
     }
     
