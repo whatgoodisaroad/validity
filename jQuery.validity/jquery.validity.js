@@ -1,12 +1,12 @@
 /*
- * jQuery.validity beta v0.9.4.4
+ * jQuery.validity beta v0.9.4.5
  * http://code.google.com/p/validity/
  * 
  * Copyright (c) 2009 Wyatt Allen
  * Dual licensed under the MIT and GPL licenses.
  *
- * Date: 2009-6-7 (Sunday, 7 June 2009)
- * Revision: 68
+ * Date: 2009-6-8 (Monday, 8 June 2009)
+ * Revision: 69
  */
 ;(function($) {
     // Default settings.
@@ -112,7 +112,13 @@
                 this.outputs[this.settings.outputMode]["scrollToFirstError"]();
             
             return results;
-        }
+        },
+		
+		// Remove validiatione errors:
+		clear:function(){
+			this.start();
+			this.end();
+		}
     };
     
     // Add functionality to jQuery objects:
