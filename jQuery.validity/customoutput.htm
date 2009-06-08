@@ -4,43 +4,46 @@
     <script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="jquery.validity.js"></script>
     <script type="text/javascript">
-      $.validity.setup({ outputMode:"custom" });
-
-      // The following statement installs a custom output mode.
-      // The function definitions can be merged into the above call to setup
-      // or even placed in their own .js file for reuse, making it easy to 
-      // share output modes.
-      $.validity.setup({
-        raiseCustomError:function(obj, msg) {
-          $(obj)
-            .css({ "border-color":"red" })
-            .addClass("customErrorClass")
-          alert(msg);
-        },
-        raiseCustomAggregateError:function(obj, msg) {
-          $(obj)
-            .css({ "border-color":"red" })
-            .addClass("customErrorClass")
-          alert(msg);
-        },
-        customClear:function() {
-          $(".customErrorClass")
-            .css({ "border-color":"green" })
-            .removeClass("customErrorClass");
-        },
-        firstCustomErrorId:function() { 
-          $(".customErrorClass:first").attr("id");
+    (function(){
+        $.validity.outputs.custom = {
+            start:function(){ 
+                $("input:text")
+                    .css({border:'1px solid green'})
+                    .removeClass('fail');
+            },
+            
+            end:function() { },
+            
+            raise:function($obj, msg){
+                alert(msg);
+                $obj
+                    .animate({ borderWidth: "10px" }, 1000)
+                    .css({borderColor:'red'})
+                    .addClass('fail');
+            },
+            
+            // Just raise the error on the last input.
+            raiseAggregate:function($obj, msg){ 
+                this.raise($($obj.get($obj.length - 1)), msg); 
+            },
+            
+            scrollToFirstError:function(){
+                location.hash = $('.fail:eq(0)').attr('id');
+            }
         }
-      });
+        
+        $.validity.setup({outputMode:'custom'});
+    })();
       
-      // Instruct validity to validate the page by requiring 
-      // the input matched by a jQuery selector.
-      $(function() { $("form").validity("#text"); });
+    // Instruct validity to validate the page by requiring 
+    // the input matched by a jQuery selector.
+    $(function() { $("form").validity("#text"); });
     </script>
   </head>
   <body>
     <form action="customoutput.htm" method="get">
-      <input type="text" id="text" name="text" style="border:solid 3px green;" />
+      This field is required:
+      <input type="text" id="text" name="text" style="border:solid 1px green" />
       <input type="submit" />
     </form>
   </body>

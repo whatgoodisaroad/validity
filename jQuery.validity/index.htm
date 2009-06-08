@@ -4,11 +4,43 @@
         <script type="text/javascript" src="jquery.js"></script>
         <script type="text/javascript" src="jquery.validity.js"></script>
         <script type="text/javascript">
+			function hotSwitchMode(mode){
+				$.validity.start();
+				$.validity.end();
+				$.validity.setup({outputMode:mode});
+			}
+			
+			function validateRequire(){
+				$.validity.start();
+				$('#req').require('A Name Is Required.');
+				$.validity.end();
+			}
+			
+			function validateMatch(){
+				$.validity.start();
+				$('#qty1').match('integer', 'Quantity Must Be Formatted as an Integer.');
+				$.validity.end();
+			}
+			
+			function validateChain(){
+				$.validity.start();
+				$('#qty2')
+					.require('Error: A Name Is Required.')
+					.match('integer');
+				$.validity.end();
+			}
+		
             function validatePassword(){
                 $.validity.start();
                 $("input[type='password']").equal();
                 $.validity.end();
             }
+			
+			function validateNames() {
+				$.validity.start();
+				$('input.Name').distinct('A name was repeated.');
+				$.validity.end();
+			}
         </script>
         
         <link rel="Stylesheet" type="text/css" href="jquery.validity.css" />
@@ -32,13 +64,13 @@
             <h1>jQuery.validity Demo</h1>
             <h2>Output Mode:</h2>
             <p>
-                <i>validity</i> has five Output-Modes: 'Label', 'Modal', 'Summary', 'None' and 'Custom'. You will select the output
-                mode that is most appropriate for your application, or write your own with the custom output.
-                Below, the error summary will appear if an error is encountered and the outputMethod is set to 'Summary'.
+                <i>validity</i> has three built-in Output-Modes: 'label', 'modal', and 'summary'. You will select the output
+                mode that is most appropriate for your application, or you may write your own custom output.
+                Below, the error summary will appear if an error is encountered and the outputMethod is set to 'summary'.
                 <br />
-                [<a href="#_" onclick="$.validity.clear();$.validity.setup({outputMode:'label'});">Set to Label</a>] 
-                [<a href="#_" onclick="$.validity.clear();$.validity.setup({outputMode:'modal'});">Set to Modal</a>] 
-                [<a href="#_" onclick="$.validity.clear();$.validity.setup({outputMode:'summary'});">Set to Summary</a>]
+                [<a href="#_" onclick="hotSwitchMode('label');">Set to Label</a>] 
+                [<a href="#_" onclick="hotSwitchMode('modal');">Set to Modal</a>] 
+                [<a href="#_" onclick="hotSwitchMode('summary');">Set to Summary</a>]
             </p>
             <div id="validity-summary-container">
                 Here's a summary of the validation failures:
@@ -76,7 +108,7 @@
             </pre>
             <p>
                 Enter Your Name:<input type="text" id='req' name='req' />
-                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#req').require('A Name Is Required.');$.validity.end();" />
+                <input type="button" value='Validate This Field!' onclick="validateRequire();" />
             </p>
             <h2>Format Validation:</h2>
             <p>
@@ -88,7 +120,7 @@
             </pre>
             <p>
                 Optional: Enter Quantity:<input type="text" id='qty1' name='qty1' />
-                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#qty1').match('integer', 'Quantity Must Be Formatted as an Integer.');$.validity.end();" />
+                <input type="button" value='Validate This Field!' onclick="validateMatch();" />
             </p>
             <h2>Chaining:</h2>
             <p>
@@ -104,7 +136,7 @@
             </pre>
             <p>
                 Required: Enter Quantity: <input type="text" id="qty2" name="qty2" />
-                <input type="button" value='Validate This Field!' onclick="$.validity.start();$('#qty2').require('Error: A Name Is Required.').match('integer');$.validity.end();" />
+                <input type="button" value='Validate This Field!' onclick="validateChain();" />
             </p>
             <h2>Equality:</h2>
             <p>
@@ -138,7 +170,7 @@
                 <input id="u2" type="text" class="Name" />&nbsp;
                 <input id="u3" type="text" class="Name" />&nbsp;
                 <input id="u4" type="text" class="Name" />&nbsp;
-                <input type="button" value="Validate These Fields!" onclick="$.validity.start();$('input.Name').distinct('A name was repeated.');$.validity.end();" />
+                <input type="button" value="Validate These Fields!" onclick="validateNames();" />
             </p>
             <br /><br /><br />
             <p>
