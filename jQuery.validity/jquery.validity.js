@@ -6,7 +6,7 @@
  * Dual licensed under the MIT and GPL licenses.
  *
  * Date: 2009-6-7 (Sunday, 7 June 2009)
- * Revision: 61
+ * Revision: 68
  */
 ;(function($) {
     // Default settings.
