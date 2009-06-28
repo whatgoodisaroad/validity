@@ -1,12 +1,12 @@
 /*
- * jQuery.validity beta v0.9.4.5
+ * jQuery.validity beta v0.9.4.6
  * http://code.google.com/p/validity/
  * 
  * Copyright (c) 2009 Wyatt Allen
  * Dual licensed under the MIT and GPL licenses.
  *
- * Date: 2009-6-8 (Monday, 8 June 2009)
- * Revision: 69
+ * Date: 2009-6-27 (Saturday, 27 June 2009)
+ * Revision: 70
  */
 ;(function($) {
     // Default settings.
@@ -55,7 +55,7 @@
             tooSmall:"Valus is too small.",
             tooLong:"Value is too long.",
             equal:"Values didn't match.",
-            distinct:"A value was repeated",
+            distinct:"A value was repeated.",
             sum:"Values don't add up right.",
             generic:"Invalid."
         },
@@ -65,9 +65,7 @@
         outputs:{},
         
         // Override the default settings with user-specified ones.
-        setup:function(options) {
-            this.settings = $.extend(this.settings, options);
-        },
+        setup:function(options) { this.settings = $.extend(this.settings, options); },
         
         // Object to store information about ongoing validation.
         // When validation starts, this will be set to a report object.
@@ -77,7 +75,7 @@
         report:null,
         
         // Determine whether validity is in the middle of validation.
-        isValidating:function() { return this.report != null; },
+        isValidating:function() { return this.report !== null; },
         
         // Function to prepare validity to start validating.
         start:function() { 
@@ -85,8 +83,8 @@
             // This usually means that the output mode will erase errors from the 
             // document in whatever way the mode needs to.
             if (this.outputs[this.settings.outputMode] && 
-                this.outputs[this.settings.outputMode]["start"])
-                this.outputs[this.settings.outputMode]["start"]();
+                this.outputs[this.settings.outputMode].start)
+                this.outputs[this.settings.outputMode].start();
             
             // Initialize the report object.
             this.report = { errors:0, valid:true }; 
@@ -96,10 +94,10 @@
         end:function() { 
             // Notify the current output mode that validation is over.
             if (this.outputs[this.settings.outputMode] && 
-                this.outputs[this.settings.outputMode]["end"])
-                this.outputs[this.settings.outputMode]["end"]();
+                this.outputs[this.settings.outputMode].end)
+                this.outputs[this.settings.outputMode].end();
             
-            var results = this.report;
+            var results = this.report || { errors:0, valid:true };
             
             this.report = null; 
             
@@ -108,17 +106,17 @@
             if (!results.valid && 
                 this.settings.scrollTo && 
                 this.outputs[this.settings.outputMode] &&
-                this.outputs[this.settings.outputMode]["scrollToFirstError"])
-                this.outputs[this.settings.outputMode]["scrollToFirstError"]();
+                this.outputs[this.settings.outputMode].scrollToFirstError)
+                this.outputs[this.settings.outputMode].scrollToFirstError();
             
             return results;
         },
-		
-		// Remove validiatione errors:
-		clear:function(){
-			this.start();
-			this.end();
-		}
+        
+        // Remove validiatione errors:
+        clear:function(){
+            this.start();
+            this.end();
+        }
     };
     
     // Add functionality to jQuery objects:
@@ -173,10 +171,7 @@
         // Validate whether the field has a value.
         // http://code.google.com/p/validity/wiki/Validators#Require
         require:function(msg) {
-            if (!msg)
-                msg = $.validity.messages.require; 
-        
-            return validate(this, function(obj) { return obj.value.length; }, msg);
+            return validate(this, function(obj) { return obj.value.length; }, msg || $.validity.messages.require);
         },
         
         // Validate whether the field matches a regex.
@@ -199,10 +194,10 @@
             // Some of the named rules can be functions, such as 'date'.
             // If the discovered rule is a function use it as such.
             if (typeof(rule) == "function")
-                return validate(this, function(obj) { return obj.value.length == 0 || rule(obj.value); }, msg);
+                return validate(this, function(obj) { return !obj.value.length || rule(obj.value); }, msg);
             
             // Otherwise, assume it's a RegExp.
-            return validate(this, function(obj) { return obj.value.length == 0 || rule.test(obj.value); }, msg);
+            return validate(this, function(obj) { return !obj.value.length || rule.test(obj.value); }, msg);
         },
         
         // http://code.google.com/p/validity/wiki/Validators#Range
@@ -220,51 +215,37 @@
         
         // http://code.google.com/p/validity/wiki/Validators#GreaterThan
         greaterThan:function(min, msg) {
-            if (!msg)
-                msg = $.validity.messages.tooSmall;
-        
-            return validate(this, function(obj) { return parseFloat(obj.value) > min; }, msg);
+            return validate(this, function(obj) { return parseFloat(obj.value) > min; }, msg || $.validity.messages.tooSmall);
         },
         
         // http://code.google.com/p/validity/wiki/Validators#GreaterThanOrEqualTo
         greaterThanOrEqualTo:function(min, msg) {
-            if (!msg)
-                msg = $.validity.messages.tooSmall;
-
-            return validate(this, function(obj) { return parseFloat(obj.value) >= min; }, msg);
+            return validate(this, function(obj) { return parseFloat(obj.value) >= min; }, msg || $.validity.messages.tooSmall);
         },
         
         // http://code.google.com/p/validity/wiki/Validators#LessThan
         lessThan:function(max, msg) {
-            if (!msg)
-                msg = $.validity.messages.tooBig;
-        
-            return validate(this, function(obj) { return parseFloat(obj.value) < max; }, msg);
+            return validate(this, function(obj) { return parseFloat(obj.value) < max; }, msg || $.validity.messages.tooBig);
         },
         
         // http://code.google.com/p/validity/wiki/Validators#LessThanOrEqualTo
         lessThanOrEqualTo:function(min, msg) {
-            if (!msg)
-                msg = $.validity.messages.tooBig;
-        
-            return validate(this, function(obj) { return parseFloat(obj.value) <= min; }, msg);
+            return validate(this, function(obj) { return parseFloat(obj.value) <= min; }, msg || $.validity.messages.tooBig);
         },
         
         // http://code.google.com/p/validity/wiki/Validators#MaxLength
         maxLength:function(max, msg) {
-            if (!msg)
-                msg = $.validity.messages.tooLong;
-        
-            return validate(this, function(obj) { return obj.value.length <= max; }, msg);
+            return validate(this, function(obj) { return obj.value.length <= max; }, msg || $.validity.messages.tooLong);
         },
         
         // Validate that all matched elements bear the same values.
         // Accepts a function to transform the values for testing.
         // http://code.google.com/p/validity/wiki/Validators#Equal
         equal:function(arg0, arg1) {
-            // This is an aggregate validator. 
-            // Fast-fail if there are zero elements:
-            if (this.length) {
+            // If a reduced set is attached, use it.
+            var $reduction = this.reduction || this;
+            
+            if ($reduction.length) {
                 // Figure out what arguments were specified.
                 var transform = function(val) { return val; };
                 var msg = $.validity.messages.equal;
@@ -278,9 +259,8 @@
                 
                 else if (typeof(arg0) == "string")
                     msg = arg0;
-                    
-                // Map all the matched values into an array.    
-                var map = jQuery.map(this, function(obj){ return transform(obj.value); });
+                
+                var map = $.map($reduction, function(obj) { return transform(obj.value); });
             
                 // Get the first value.
                 var first = map[0];
@@ -288,29 +268,29 @@
                 
                 // If any value is not equal to the first value,
                 // then they aren't all equal, and it's not valid.
-                for(var i in map)
+                for (var i in map)
                     if (map[i] != first)
                         valid = false;
                 
-                // If it is valid, return all elements so that a chain can continue.
-                if (valid)
-                    return this;
-                
-                raiseAggregateError(this, msg); 
+                if (!valid) {
+                    raiseAggregateError($reduction, msg); 
+                    
+                    // The set reduces to zero valid elements.
+                    this.reduction = $([]);
+                }
             }
-              
-            // Since this is aggregate all of the selected inputs were invalid,
-            // return an empty set.
-            return $([]);
+            
+            return this;
         },
         
         // Validate that all matched elements bear distinct values.
         // Accepts an optional function to transform the values for testing.
         // http://code.google.com/p/validity/wiki/Validators#Distinct
         distinct:function(arg0, arg1) {
-            // This is an aggregate validator. 
-            // Fast-fail if there are zero elements:
-            if (this.length){
+            // If a reduced set is attached, use it.
+            var $reduction = this.reduction || this;
+        
+            if ($reduction.length) {
                 // Figure out what arguments were specified.
                 var transform = function(val) { return val; };
                 var msg = $.validity.messages.distinct;
@@ -326,7 +306,7 @@
                     msg = arg0;
             
                 // Map all the matched values into an array.    
-                var map = jQuery.map(this, function(obj){ return transform(obj.value); });
+                var map = $.map($reduction, function(obj) { return transform(obj.value); });
                 
                 // An empty array to store already examined values
                 var subMap = [];
@@ -348,51 +328,48 @@
                         subMap.push(map[i1]);
                     }
                 }
-
-                // If it is valid, return all elements so that a chain can continue.
-                if (valid)
-                    return this;
-
-                raiseAggregateError(this, msg);
+                
+                if (!valid) {
+                    raiseAggregateError($reduction, msg);
+                
+                    // The set reduces to zero valid elements.
+                    this.reduction = $([]);
+                }
             }
             
-            // Since this is aggregate all of the selected inputs were invalid,
-            // return an empty set.
-            return $([]);
+            return this;
         },
         
         // Validate that the numeric sum of all values is equal to a given value.
         // http://code.google.com/p/validity/wiki/Validators#Sum
         sum:function(sum, msg) {
-            if (msg == null)
-                msg = $.validity.messages.sum;
+            // If a reduced set is attached, use it.
+            var $reduction = this.reduction || this;
             
-            if (this.length && sum == numericSum(this))
-                return this;
+            if ($reduction.length && sum != numericSum(this)) {
+                raiseAggregateError($reduction, msg || $.validity.messages.sum); 
+                
+                // The set reduces to zero valid elements.
+                this.reduction = $([]);
+            }
             
-            raiseAggregateError(this, msg);
-            
-            // Since this is aggregate all of the selected inputs were invalid,
-            // return an empty set.
-            return $([]);
+            return this;
         },
         
         // Validates an inclusive upper-bound on the numeric sum of the values of all matched elements.
         // http://code.google.com/p/validity/wiki/Validators#SumMax
         sumMax:function(max, msg) {
-            if (this.length) {
-                if (msg == null)
-                    msg = $.validity.messages.sum;
+            // If a reduced set is attached, use it.
+            var $reduction = this.reduction || this;
+            
+            if ($reduction.length && max < numericSum(this)) {
+                raiseAggregateError($reduction, msg || $.validity.messages.sum); 
                 
-                if (max >= numericSum(this))
-                    return this;
-                
-                raiseAggregateError(this, msg);
+                // The set reduces to zero valid elements.
+                this.reduction = $([]);
             }
             
-            // Since this is aggregate all of the selected inputs were invalid,
-            // return an empty set.
-            return $([]);
+            return this;
         },
         
         // If the expression is false, raise the specified error.
@@ -400,11 +377,17 @@
         // it's a validator that is called sort of like a debug assertion.
         // http://code.google.com/p/validity/wiki/Validators#Assert
         assert:function(expression, msg) { 
-            if (msg == null)
-                msg = $.validity.messages.generic;
-        
-            if (!expression)
-                raiseAggregateError(this, msg); 
+            // If a reduced set is attached, use it.
+            var $reduction = this.reduction || this;
+            
+            if ($reduction.length && !expression) {
+                raiseAggregateError($reduction, msg || $.validity.messages.generic); 
+                
+                // The set reduces to zero valid elements.
+                this.reduction = $([]);
+            }
+            
+            return this;
         }
         
         // End defining validators //
@@ -419,7 +402,7 @@
     // Raise the specified error on failures.
     // This function is the heart of validity.
     function validate ($obj, regimen, message) {
-		// If a reduced set is attached, use it.
+        // If a reduced set is attached, use it.
         var $reduction = $obj.reduction || $obj;
         
         // Array to store only elements that pass the regimen.
@@ -460,8 +443,8 @@
             addToReport();
             
             if (outputs[settings.outputMode] && 
-                outputs[settings.outputMode]["raise"])
-                outputs[settings.outputMode]["raise"]($(obj), msg);
+                outputs[settings.outputMode].raise)
+                outputs[settings.outputMode].raise($(obj), msg);
         }
     }
     
@@ -472,8 +455,8 @@
             addToReport();
             
             if (outputs[settings.outputMode] && 
-                outputs[settings.outputMode]["raiseAggregate"])
-                outputs[settings.outputMode]["raiseAggregate"]($obj, msg);
+                outputs[settings.outputMode].raiseAggregate)
+                outputs[settings.outputMode].raiseAggregate($obj, msg);
         }
     }
     
@@ -490,16 +473,77 @@
         return accumulator;
     }
     
+    function formatError(text, argument, name) {
+        if (arguments.length < 2)
+            return text;
+            
+        return text
+            .replace(/{argument}/gi, argument)
+            .replace(/{name}/gi, name);
+    }
+    
     // End defining internal utilities //
     /////////////////////////////////////
     
     // Start installing output modes //
     ///////////////////////////////////
     
+    // Output modes can be authored with the following template.
+    // Each function is optional.
+    /*
+    
+    // By convention, an output mode is placed in a closure.
+    (function(){
+        // Since this is a closure, local variables can be created here and they will not conflict with the rest of the code.
+        // For instance, a buffer can be safely created here.
+    
+        // The output mode is installed by assigning an object to a sub-property of $.validity.outputs.
+        // In this case the 'example' output mode is created by assigning the 'example' property.
+        // After this assignment, the mode can be activated with the code: $.validity.setup({ outputMode:'example' });
+        $.validity.outputs.example = {
+    
+    
+            // The start function is called whenever validation begins.
+            // Usually, it should clear out any error messages that are on the page.
+            start:function(){ 
+    
+            },
+              
+            // The end function is called when validation concludes.
+            // This may be used to flush any buffers that were built up during validation.
+            end:function(){ 
+    
+            },
+            
+            // The raise function is called for raising an error message on a single input.
+            // '$obj' is a jQuery object representing the input for which the error should be raised.
+            // 'msg' is a string of the message to raise.
+            raise:function($obj, msg){
+                
+            },
+            
+            // The raise function is called for raising an error message on a multiple inputs.
+            // '$obj' is a jQuery array representing the inputs for which the error should be raised.
+            // 'msg' is a string of the message to raise.
+            raiseAggregate:function($obj, msg){ 
+                
+            },
+            
+            // The scrollToFirstError function is called to cause the page to move to the first error message.
+            // This function is only called at the end of validation and only if the 'scrollTo' option is set to true.
+            scrollToFirstError:function(){ 
+    
+            }
+       };
+    })();
+    */
+    
     // Install the label output.
     (function(){
         $.validity.outputs.label = {
+            
             start:function(){ 
+                // Remove all the existing error labels.
                 $("label.error").remove(); 
             },
             
@@ -521,9 +565,10 @@
                         .insertAfter(errorSelector);
             },
             
-            // Just raise the error on the last input.
             raiseAggregate:function($obj, msg){ 
-                this.raise($($obj.get($obj.length - 1)), msg);
+                // Just raise the error on the last input.
+                if ($obj.length)
+                    this.raise($($obj.get($obj.length - 1)), msg);
             },
             
             scrollToFirstError:function(){ 
@@ -542,10 +587,12 @@
     
         $.validity.outputs.modal = { 
             start:function(){ 
+                // Remove all the existing errors.
                 $(allErrors).remove(); 
             },
             
             raise:function($obj, msg){                
+                // Design a style object based off of the input's location.
                 var off = $obj.offset();
                 var errorStyle = { 
                     left:parseInt(off.left + $obj.width() + 4) + "px", 
@@ -555,12 +602,14 @@
                 var errorId = idPrefix + $obj.attr("id");
                 var errorSelector = "#" + errorId;
                 
+                // If one already exists, update the text.
                 if ($(errorSelector).length)
                     $(errorSelector)
                         .css(errorStyle)
                         .text(msg);
                 
                 else
+                    // Create one and position it next to the input.
                     $("<div/>")
                         .attr("id", errorId)
                         .addClass(errorClass)
@@ -573,7 +622,9 @@
             },
             
             raiseAggregate:function($obj, msg){ 
-                this.raise($($obj.get($obj.length - 1)), msg); 
+                // Just raise the error on the last input.
+                if ($obj.length)
+                    this.raise($($obj.get($obj.length - 1)), msg);
             },
             
             scrollToFirstError:function(){ 
@@ -591,6 +642,9 @@
         var errors = ".validity-erroneous";
         var wrapper = "<li/>";
         
+        // Buffer to contain all the error messages that build up during validation.
+        // When validation ends, it'll be flushed into the summary.
+        // This way, the summary doesn't flicker empty then full.
         var buffer = [];
         
         $.validity.outputs.summary = {
