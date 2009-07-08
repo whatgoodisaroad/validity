@@ -6,27 +6,21 @@
         <script type="text/javascript" src="jquery.validity.js"></script>
         <script type="text/javascript">
             $(function() { 
-                $("form").validity(
-                    function() {
-                        $("#number")
-                            .require()
-                            .match("number")
-                            .range(4, 12, "Value must be between four and twelve.");
-                        $("#date")
-                            .require()
-                            .match("date");
-                    }
-                );
+                $("form").validity(function() {
+                    $("#vehicles").require().match("number").range(4, 12);
+                    
+                    $("#dob").require().match("date");
+                });
             });
         </script>
     </head>
     <body>
         <form method="get" action="simple.htm">
-            Enter a number:
-            <input type="text" id="number" name="number" />
+            Number of Vehicles:
+            <input type="text" id="vehicles" name="vehicles" title="Vehicle Count" />
             <br /><br />
-            Also, a date:
-            <input type="text" id="date" name="date" />
+            Date of birth:
+            <input type="text" id="dob" name="dob" title="Birthday" />
             <br /><br />
             <input type="submit" />
         </form>
