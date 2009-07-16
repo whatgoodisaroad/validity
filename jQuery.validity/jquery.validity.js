@@ -14,14 +14,15 @@
         // The default output mode is label because it requires no dependencies.
         outputMode:"label",
         
-        // The if this property is set to true, validity will scroll the browser viewport
+        // The this property is set to true, validity will scroll the browser viewport
         // so that the first error is visible when validation fails.
         scrollTo:false,
         
         // If this setting is true, modal errors will disappear when they are clicked on.
         modalErrorsClickable:true,
         
-        defaultFieldName:"this field"
+        // If a field name cannot be otherwise inferred, this will be used.
+        defaultFieldName:"This field"
     };
 
     // Setup 'static' functions and properties for the validity plugin.
@@ -43,28 +44,29 @@
         
         // Built-in set of default error messages (for use when message isn't specified).
         messages:{
-            require:"{field} is required.",
+            require:"#{field} is required.",
             
-            match:"{field} is in an invalid format.",
-            integer:"{field} must be a positive, whole number.",
-            date:"{field} must be formatted as a date.",
-            email:"{field} must be formatted as an email.",
-            usd:"{field} must be formatted as a US Dollar amount.",
-            url:"{field} must be formatted as a URL.",
-            number:"{field} must be formatted as a number.",
-            zip:"{field} must be formatted as a zipcode.",
-            phone:"{field} must be formatted as a phone number.",
+            match:"#{field} is in an invalid format.",
+            integer:"#{field} must be a positive, whole number.",
+            date:"#{field} must be formatted as a date.",
+            email:"#{field} must be formatted as an email.",
+            usd:"#{field} must be formatted as a US Dollar amount.",
+            url:"#{field} must be formatted as a URL.",
+            number:"#{field} must be formatted as a number.",
+            zip:"#{field} must be formatted as a zipcode.",
+            phone:"#{field} must be formatted as a phone number.",
             
-            lessThan:"{field} must be less than {max}.",
-            lessThanOrEqualTo:"{field} must be less than or equal to {max}.",
-            greaterThan:"{field} must be greater than {min}.",
-            greaterThanOrEqualTo:"{field} must be greater than or equal to {min}.",
+            lessThan:"#{field} must be less than #{max}.",
+            lessThanOrEqualTo:"#{field} must be less than or equal to #{max}.",
+            greaterThan:"#{field} must be greater than #{min}.",
+            greaterThanOrEqualTo:"#{field} must be greater than or equal to #{min}.",
             
-            tooLong:"{field} cannot be longer than {max} characters.",
+            tooLong:"#{field} cannot be longer than #{max} characters.",
             
             equal:"Values don't match.",
             distinct:"A value was repeated.",
-            sum:"Values don't add up right.",
+            sum:"Values don't add to #{sum}.",
+            sumMax:"The sum of the values must be less than #{max}.",
             
             generic:"Invalid."
         },
@@ -84,7 +86,7 @@
         report:null,
         
         // Determine whether validity is in the middle of validation.
-        isValidating:function() { return this.report != null; },
+        isValidating:function() { return !!this.report; },
         
         // Function to prepare validity to start validating.
         start:function() { 
@@ -92,8 +94,9 @@
             // This usually means that the output mode will erase errors from the 
             // document in whatever way the mode needs to.
             if (this.outputs[this.settings.outputMode] && 
-                this.outputs[this.settings.outputMode].start)
+                this.outputs[this.settings.outputMode].start) {
                 this.outputs[this.settings.outputMode].start();
+            }
             
             // Initialize the report object.
             this.report = { errors:0, valid:true }; 
@@ -103,9 +106,11 @@
         end:function() { 
             // Notify the current output mode that validation is over.
             if (this.outputs[this.settings.outputMode] && 
-                this.outputs[this.settings.outputMode].end)
+                this.outputs[this.settings.outputMode].end) {
                 this.outputs[this.settings.outputMode].end();
+            }
             
+            // Null coalescence: fix for Issue 5
             var results = this.report || { errors:0, valid:true };
             
             this.report = null; 
@@ -115,13 +120,14 @@
             if (!results.valid && 
                 this.settings.scrollTo && 
                 this.outputs[this.settings.outputMode] &&
-                this.outputs[this.settings.outputMode].scrollToFirstError)
+                this.outputs[this.settings.outputMode].scrollToFirstError) {
                 this.outputs[this.settings.outputMode].scrollToFirstError();
+            }
             
             return results;
         },
         
-        // Remove validiatione errors:
+        // Remove validiation errors:
         clear:function(){
             this.start();
             this.end();
@@ -139,33 +145,31 @@
                 function() {
                     // Only operate on forms:
                     if (this.tagName.toLowerCase() == "form") {
-                        switch (typeof(arg)) {
+                        
+                        // If the user entered a string of the inputs to require,
+                        // then make the validation logic ad hoc right here.
+                        if (typeof(arg) == "string") {
+                            $(this).bind(
+                                "submit",
+                                function() {
+                                    $.validity.start();
+                                    $(arg).require();
+                                    return $.validity.end().valid;
+                                }
+                            );
+                        }
                             
-                            // If the user entered a string of the inputs to require,
-                            // then make the validation logic ad hoc right here.
-                            case "string":
-                                $(this).bind(
-                                    "submit",
-                                    function() {
-                                        $.validity.start();
-                                        $(arg).require();
-                                        return $.validity.end().valid;
-                                    }
-                                );
-                                break;
-                                
-                            // If the user entered a validation function then just call
-                            // that at the appropriate time.
-                            case "function":
-                                $(this).bind(
-                                    "submit",
-                                    function() {
-                                        $.validity.start();
-                                        arg();
-                                        return $.validity.end().valid;
-                                    }
-                                );
-                                break;
+                        // If the user entered a validation function then just call
+                        // that at the appropriate time.
+                        else if ($.isFunction(arg)) {
+                            $(this).bind(
+                                "submit",
+                                function() {
+                                    $.validity.start();
+                                    arg();
+                                    return $.validity.end().valid;
+                                }
+                            );
                         }
                     }
                 }
@@ -181,7 +185,7 @@
             return validate(
                 this, 
                 function(obj) { 
-                    return !!obj.value.length; 
+                    return obj.value.length; 
                 }, 
                 msg || $.validity.messages.require
             );
@@ -196,31 +200,26 @@
                 msg = $.validity.messages.match;
                 
                 // If there's a more specific one, use that.
-                if (typeof(rule) === "string" && $.validity.messages[rule])
+                if (typeof(rule) === "string" && $.validity.messages[rule]) {
                     msg = $.validity.messages[rule];
+                }
             }
         
             // If the rule is named, rather than specified:
-            if (typeof(rule) == "string") 
-                rule = $.validity.patterns[rule]; 
+            if (typeof(rule) == "string") {
+                rule = $.validity.patterns[rule];
+            }
             
-            // Some of the named rules can be functions, such as 'date'.
-            // If the discovered rule is a function use it as such.
-            if (typeof(rule) == "function")
-                return validate(
-                    this, 
-                    function(obj) { 
-                        return !obj.value.length || rule(obj.value); 
-                    }, 
-                    msg
-                );
-            
-            // Otherwise, assume it's a RegExp.
             return validate(
                 this, 
-                function(obj) { 
-                    return !obj.value.length || rule.test(obj.value); 
-                }, 
+                
+                // Some of the named rules can be functions, such as 'date'.
+                // If the discovered rule is a function use it as such.
+                // Otherwise, assume it's a RegExp.
+                $.isFunction(rule) ?
+                    function(obj) { return !obj.value.length || rule(obj.value); } :
+                    function(obj) { return !obj.value.length || rule.test(obj.value); },
+                
                 msg
             );
         },
@@ -249,10 +248,10 @@
         greaterThan:function(min, msg) {
             return validate(
                 this, 
-                function(obj) { 
-                    return parseFloat(obj.value) > min; 
-                }, 
-                msg || format($.validity.messages.greaterThan, { min:min })
+                min.getTime ?
+                    function(obj) { return new Date(obj.value) > min; } :
+                    function(obj) { return parseFloat(obj.value) > min; },
+                msg || format($.validity.messages.greaterThan, { min:argToString(min) })
             );
         },
         
@@ -260,10 +259,10 @@
         greaterThanOrEqualTo:function(min, msg) {
             return validate(
                 this, 
-                function(obj) { 
-                    return parseFloat(obj.value) >= min; 
-                }, 
-                msg || format($.validity.messages.greaterThanOrEqualTo, { min:min })
+                min.getTime ?
+                    function(obj) { return new Date(obj.value) >= min; } :
+                    function(obj) { return parseFloat(obj.value) >= min; },
+                msg || format($.validity.messages.greaterThanOrEqualTo, { min:argToString(min) })
             );
         },
         
@@ -271,10 +270,10 @@
         lessThan:function(max, msg) {
             return validate(
                 this, 
-                function(obj) { 
-                    return parseFloat(obj.value) < max; 
-                }, 
-                msg || format($.validity.messages.lessThan, { max:max })
+                max.getTime ?
+                    function(obj) { return new Date(obj.value) < max; } :
+                    function(obj) { return parseFloat(obj.value) < max; },
+                msg || format($.validity.messages.lessThan, { max:argToString(max) })
             );
         },
         
@@ -282,10 +281,10 @@
         lessThanOrEqualTo:function(max, msg) {
             return validate(
                 this, 
-                function(obj) { 
-                    return parseFloat(obj.value) <= max; 
-                }, 
-                msg || format($.validity.messages.lessThanOrEqualTo, { max:max })
+                max.getTime ?
+                    function(obj) { return new Date(obj.value) <= max; } :
+                    function(obj) { return parseFloat(obj.value) <= max; },
+                msg || format($.validity.messages.lessThanOrEqualTo, { max:argToString(max) })
             );
         },
         
@@ -312,15 +311,17 @@
             
             if ($reduction.length) {
                 // Figure out what arguments were specified.
-                if (typeof(arg0) == "function") {
+                if ($.isFunction(arg0)) {
                     transform = arg0;
                     
-                    if (typeof(arg1) == "string")
+                    if (typeof(arg1) == "string") {
                         msg = arg1;
+                    }
                 }
                 
-                else if (typeof(arg0) == "string")
+                else if (typeof(arg0) == "string") {
                     msg = arg0;
+                }
                 
                 var map = $.map(
                     $reduction, 
@@ -335,9 +336,11 @@
                 
                 // If any value is not equal to the first value,
                 // then they aren't all equal, and it's not valid.
-                for (var i in map)
-                    if (map[i] != first)
+                for (var i in map) {
+                    if (map[i] != first) {
                         valid = false;
+                    }
+                }
                 
                 if (!valid) {
                     raiseAggregateError($reduction, msg); 
@@ -356,26 +359,29 @@
         distinct:function(arg0, arg1) {
             // If a reduced set is attached, use it.
             var $reduction = this.reduction || this,
-            
+                
                 transform = function(val) { return val; },
                 msg = $.validity.messages.equal,
+                
+                // An empty array to store already-examined values
                 subMap = [],
                 
-                // An empty array to store already examined values
                 valid = true;
         
             if ($reduction.length) {
 
                 // Figure out what arguments were specified.
-                if (typeof(arg0) == "function") {
+                if ($.isFunction(arg0)) {
                     transform = arg0;
                     
-                    if (typeof(arg1) == "string")
+                    if (typeof(arg1) == "string") {
                         msg = arg1;
+                    }
                 }
                 
-                else if (typeof(arg0) == "string")
+                else if (typeof(arg0) == "string") {
                     msg = arg0;
+                }
             
                 // Map all the matched values into an array.    
                 var map = $.map(
@@ -392,8 +398,9 @@
                         // For each value we've already looked at:
                         for (var i2 = 0; i2 < subMap.length; i2++) {
                             // If we've already seen the transformed value:
-                            if (subMap[i2] == map[i1])
+                            if (subMap[i2] == map[i1]) {
                                 valid = false;
+                            }
                         }
                         
                         // We looked at the value.
@@ -418,8 +425,14 @@
             // If a reduced set is attached, use it.
             var $reduction = this.reduction || this;
             
-            if ($reduction.length && sum != numericSum(this)) {
-                raiseAggregateError($reduction, msg || $.validity.messages.sum); 
+            if ($reduction.length && sum != numericSum($reduction)) {
+                raiseAggregateError(
+                    $reduction, 
+                    msg || format(
+                        $.validity.messages.sum, 
+                        { sum:sum }
+                    )
+                ); 
                 
                 // The set reduces to zero valid elements.
                 this.reduction = $([]);
@@ -434,8 +447,14 @@
             // If a reduced set is attached, use it.
             var $reduction = this.reduction || this;
             
-            if ($reduction.length && max < numericSum(this)) {
-                raiseAggregateError($reduction, msg || $.validity.messages.sum); 
+            if ($reduction.length && max < numericSum($reduction)) {
+                raiseAggregateError(
+                    $reduction, 
+                    msg || format(
+                        $.validity.messages.sumMax, 
+                        { max:max }
+                    )
+                ); 
                 
                 // The set reduces to zero valid elements.
                 this.reduction = $([]);
@@ -453,7 +472,10 @@
             var $reduction = this.reduction || this;
             
             if ($reduction.length && !expression) {
-                raiseAggregateError($reduction, msg || $.validity.messages.generic); 
+                raiseAggregateError(
+                    $reduction, 
+                    msg || $.validity.messages.generic
+                );
                 
                 // The set reduces to zero valid elements.
                 this.reduction = $([]);
@@ -477,7 +499,7 @@
         // If a reduced set is attached, use it.
         var $reduction = $obj.reduction || $obj,
         
-        // Array to store only elements that pass the regimen.
+            // Array to store only elements that pass the regimen.
             elements = [];
         
         // For each in the reduction.
@@ -521,8 +543,9 @@
         addToReport();
         
         if ($.validity.outputs[$.validity.settings.outputMode] && 
-            $.validity.outputs[$.validity.settings.outputMode].raise)
+            $.validity.outputs[$.validity.settings.outputMode].raise) {
             $.validity.outputs[$.validity.settings.outputMode].raise($(obj), msg);
+        }
     }
     
     // Inform the report of a failure and display an aggregate error according to the 
@@ -531,8 +554,9 @@
         addToReport();
         
         if ($.validity.outputs[$.validity.settings.outputMode] && 
-            $.validity.outputs[$.validity.settings.outputMode].raiseAggregate)
+            $.validity.outputs[$.validity.settings.outputMode].raiseAggregate) {
             $.validity.outputs[$.validity.settings.outputMode].raiseAggregate($obj, msg);
+        }
     }
     
     // Yield the sum of the values of all fields matched in obj that can be parsed.
@@ -541,40 +565,61 @@
         obj.each(
             function() {
                 var n = parseFloat(this.value);
-                if(!isNaN(n))
-                    accumulator += n;
+                
+                accumulator += isNaN(n) ? 0 : n;
             }
         );
         return accumulator;
     }
     
+    // Using the associative array supplied as the 'obj' argument,
+    // replace tokens of the format #{<key>} in the 'str' argument with
+    // that key's value.
     function format(str, obj) {
         for (var p in obj) {
-            str = str.replace("{" + p + "}", obj[p]);
+            str = str.replace("#{" + p + "}", obj[p]);
         }
         return str;
     }
     
+    // Infer the field name of the passed DOM element.
+    // If a title is specified, its value is returned.
+    // Otherwise, attempt to parse a field name out of the id attribute.
+    // If that doesn't work, return the default field name in the configuration.
     function infer(field) {
         var $f = $(field);
         
+        // Check for title.
         if ($f.attr("title").length) {
             return $f.attr("title");
         } 
+        
+        // Check for UpperCamelCase.
         else if (/^[A-Z0-9][a-z]*$/.test(field.id)) {
             return field.id.replace(/([A-Z0-9])[a-z]*/g, " $&");
         }
+        
+        // Check for lowercase_separated_by_underscores
         else if (/^[a-z0-9_]*$/.test(field.id)) {
             var arr = field.id.split("_");
             
-            for(var i in arr) 
+            for (var i in arr) {
                 arr[i] = arr[i].substring(0, 1).toUpperCase() + arr[i].substring(1, arr[i].length);
+            }
             
             return arr.join(" ");
         }
+        
+        // No match, return default field name.
         else {
             return $.validity.settings.defaultFieldName;
         }
+    }
+    
+    function argToString(val){
+        return val.getDate ?
+            val.getMonth() + "/" + val.getDate() + "/" + val.getFullYear() :
+            val;
     }
     
     // End defining internal utilities //
@@ -637,38 +682,42 @@
     (function(){
         $.validity.outputs.label = {
             
-            start:function(){ 
+            start:function() {
                 // Remove all the existing error labels.
                 $("label.error").remove(); 
             },
             
-            raise:function($obj, msg){
+            raise:function($obj, msg) {
                 var errorId = $obj.attr('id'),
                     errorSelector = "#" + errorId,
                     labelSelector = "label.error[for='" + errorId + "']";
                 
                 // If an error label already exists for the bad input just update its text:
-                if ($(labelSelector).length)
+                if ($(labelSelector).length) {
                     $(labelSelector).text(msg);
+                }
                 
                 // Otherwize create a new one and stick it after the input:
-                else
+                else {
                     $("<label/>")
                         .attr("for", errorId)
                         .addClass("error")
                         .text(msg)
                         .insertAfter(errorSelector);
+                }
             },
             
-            raiseAggregate:function($obj, msg){ 
+            raiseAggregate:function($obj, msg) {
                 // Just raise the error on the last input.
-                if ($obj.length)
+                if ($obj.length) {
                     this.raise($($obj.get($obj.length - 1)), msg);
+                }
             },
             
-            scrollToFirstError:function(){ 
-                if ($("label.error").length)
+            scrollToFirstError:function() {
+                if ($("label.error").length) {
                     location.hash = $("label.error:eq(0)").attr('for');
+                }
             }
         };
     })();
@@ -686,9 +735,10 @@
                 $(allErrors).remove(); 
             },
             
-            raise:function($obj, msg){                
-                // Design a style object based off of the input's location.
+            raise:function($obj, msg) {
                 var off = $obj.offset(),
+                    
+                    // Design a style object based off of the input's location.
                     errorStyle = { 
                         left:parseInt(off.left + $obj.width() + 4) + "px", 
                         top:parseInt(off.top - 10) + "px" 
@@ -698,12 +748,13 @@
                     errorSelector = "#" + errorId;
                 
                 // If one already exists, update the text.
-                if ($(errorSelector).length)
+                if ($(errorSelector).length) {
                     $(errorSelector)
                         .css(errorStyle)
                         .text(msg);
+                }
                 
-                else
+                else {
                     // Create one and position it next to the input.
                     $("<div/>")
                         .attr("id", errorId)
@@ -714,17 +765,20 @@
                             function() { $(this).remove(); } : null 
                         )
                         .appendTo(container);
+                }
             },
             
-            raiseAggregate:function($obj, msg){ 
+            raiseAggregate:function($obj, msg) {
                 // Just raise the error on the last input.
-                if ($obj.length)
+                if ($obj.length) {
                     this.raise($($obj.get($obj.length - 1)), msg);
+                }
             },
             
-            scrollToFirstError:function(){ 
-                if ($(allErrors).length)
+            scrollToFirstError:function() {
+                if ($(allErrors).length) {
                     location.hash = $(allErrors + ":eq(0)").attr('id')
+                }
             }
         };
     })();
@@ -749,13 +803,18 @@
             },
             
             end:function() {
-                $(container).hide().find(summary).html('');
+                $(container)
+                    .hide()
+                    .find(summary)
+                        .html('');
                 
+                // If there are any errors at all (otherwise the container shouldn't be shown):
                 if (buffer.length) {
-                    for (var i in buffer)
+                    for (var i in buffer) {
                         $(wrapper)
                             .text(buffer[i])
                             .appendTo(summary);
+                    }
                             
                     $(container).show();
                 }
@@ -770,7 +829,7 @@
                 this.raise($obj, msg); 
             },
             
-            scrollToFirstError:function(){ 
+            scrollToFirstError:function() {
                 location.hash = $(errors + ":eq(0)").attr("id"); 
             }
         };

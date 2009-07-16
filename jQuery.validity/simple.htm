@@ -7,9 +7,15 @@
         <script type="text/javascript">
             $(function() { 
                 $("form").validity(function() {
-                    $("#vehicles").require().match("number").range(4, 12);
+                    $("#vehicles")
+						.require()
+						.match("number")
+						.range(4, 12);
                     
-                    $("#dob").require().match("date");
+                    $("#dob")
+						.require()
+						.match("date")
+						.lessThanOrEqualTo(new Date());
                 });
             });
         </script>
