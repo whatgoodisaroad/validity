@@ -62,6 +62,9 @@
             number:"#{field} must be formatted as a number.",
             zip:"#{field} must be formatted as a zipcode.",
             phone:"#{field} must be formatted as a phone number.",
+            guid:"#{field} must be formatted as a guid like {3F2504E0-4F89-11D3-9A0C-0305E82C3301}.",
+            time24:"#{field} must be formatted as a 24 hour time: 23:00.",
+            time12:"#{field} must be formatted as a 12 hour time: 12:00 AM/PM",
             
             // Value range messages:
             lessThan:"#{field} must be less than #{max}.",
