@@ -19,7 +19,7 @@
     <body>
         <div id="content">
             <img id="logo" src="../validity.logo.png" alt="jQuery.validity" />
-            <h1>jQuery.validity Demos and Documentation</h1>
+            <h1>jQuery.validity Guide & Documentation</h1>
             
             <hr />
             
@@ -190,8 +190,8 @@ $("form").validity(function() {
     &lt;head&gt;
         &lt;title&gt;Simple&lt;/title&gt;
         &lt;link type="text/css" rel="Stylesheet" href="../../jquery.validity.css" /&gt;
-        &lt;script type="text/javascript" src="../../jquery.js"&gt;&lt;/script&gt;
-        &lt;script type="text/javascript" src="../../jquery.validity.js"&gt;&lt;/script&gt;
+        &lt;script type="text/javascript" src="../../jquery.js"&gt; &lt;/script&gt;
+        &lt;script type="text/javascript" src="../../jquery.validity.js"&gt; &lt;/script&gt;
         &lt;script type="text/javascript"&gt;
             $(function() { 
                 $("form").validity(function() {
@@ -737,7 +737,147 @@ $("#DayDuringClintonAdministration")
             
             <hr />
             
+            <h4 id="GreaterThan">Greater Than/Greater Than or Equal To:</h4>
             
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").greaterThan( min, ['message'] )</pre>
+            <pre>jQuery("selector").greaterThanOrEqualTo( min, ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>min</code>: 
+                    The lower-bound for valid values.
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Restricts the value to be larger than the specified minimum.
+            </p>
+            
+            <p>
+                Since the range validator expects either numbers or dates you should use range
+                after a match validator so that you may be sure that the values which are 
+                range-checked will be in a valid format.
+            </p>
+            
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Validates a cost input, that it must be more than zero.
+$("#cost")
+    .match("usd")
+    .greaterThan(0, "Cost cannot be zero.");
+            </pre>
+                        
+            <hr />
+            
+            <h4 id="LessThan">Less Than/Less Than or Equal To:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").lessThan( max, ['message'] )</pre>
+            <pre>jQuery("selector").lessThanOrEqualTo( max, ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>max</code>: 
+                    The upper-bound for valid values.
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Restricts the value to be smaller than the specified minimum.
+            </p>
+            
+            <p>
+                Since the range validator expects either numbers or dates you should use range
+                after a match validator so that you may be sure that the values which are 
+                range-checked will be in a valid format.
+            </p>
+            
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+$("#angle").lessThan(180, "Angle cannot be greater than 180 degrees.");
+            </pre>
+                        
+            <hr />
+            
+            <h4 id="Length">Max Length/Min Length:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").maxLength( max, ['message'] )</pre>
+            <pre>jQuery("selector").minLength( min, ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>max</code>: 
+                    The upper-bound for valid values.
+                </li>
+                <li>
+                    <code>min</code>: 
+                    The lower-bound for valid values.
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Restricts the length of the value to the specified maximum or minimum. 
+                This validator is useful to restrict input values to the max-length 
+                allowed by a database schema. 
+            </p>
+
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+$("textarea#description").maxLength(255);
+            </pre>
+                        
+            <hr />
+            
+            <h4 id="NonHtml">Non HTML:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").nonHtml( ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Disallows the angle brackets necessary for XSS attacks.
+            </p>
+
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+$("#myBiography").nonHtml();
+            </pre>
+            
+            <hr />
+            
+            <h3 id="AggregateValidators">Aggregate Validators</h3>
+            
+            <p>
+                Aggregate validators validate` multiple inputs.
+            </p>
         </div>
     </body>
 </html>
