@@ -585,7 +585,7 @@ $("input:text").require();
             
             <pre class="prettyprint lang-js">
 // A specific error message is attached to a specific input.
-$("#ssn").require("Your Social Sequrity Number is required to proceed.");
+$("#ssn").require("Your Social Security Number is required to proceed.");
             </pre>
             
             <hr />
@@ -773,6 +773,13 @@ $("#cost")
     .match("usd")
     .greaterThan(0, "Cost cannot be zero.");
             </pre>
+
+            <pre class="prettyprint lang-js">
+// Validates a velocity input, that it must be greater than or equal zero.
+$("#velocity")
+    .match("number")
+    .greaterThanOrEqualTo(0, "You cannot have negative velocity.");
+            </pre>
                         
             <hr />
             
@@ -807,9 +814,17 @@ $("#cost")
             
             <h5>Examples:</h5>
             <pre class="prettyprint lang-js">
-$("#angle").lessThan(180, "Angle cannot be greater than 180 degrees.");
+$("#angle")
+    .match("number")
+    .lessThan(180, "Angle cannot be greater than 180 degrees.");
             </pre>
-                        
+            
+            <pre class="prettyprint lang-js">
+$("#hoursPerDay")
+    .match("integer")
+    .lessThanOrEqualTo(24, "Cannot be more than twenty-four.");
+            </pre>
+
             <hr />
             
             <h4 id="Length">Max Length/Min Length:</h4>
@@ -845,6 +860,11 @@ $("#angle").lessThan(180, "Angle cannot be greater than 180 degrees.");
             <pre class="prettyprint lang-js">
 $("textarea#description").maxLength(255);
             </pre>
+            
+            <pre class="prettyprint lang-js">
+$("#detailedExplaination")
+    .minLength(1000, "You need to give more detail.");
+            </pre>
                         
             <hr />
             
@@ -876,8 +896,181 @@ $("#myBiography").nonHtml();
             <h3 id="AggregateValidators">Aggregate Validators</h3>
             
             <p>
-                Aggregate validators validate` multiple inputs.
+                Aggregate validators are able to do validation rules that involve 
+                more than one input. In a similar way to how aggregate functions in 
+                SQL take several records and gather them into one result, aggregate
+                validators can take several HTML elements and determine whether they
+                are valid with regard to eachother.
             </p>
+            
+            <p>
+                This feature of validity is where the advantage of building a validation
+                framework on top of jQuery is clear.
+            </p>
+            
+            <hr />
+            
+            <h4 id="Equal">Equal:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").equal( [transform], ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>transform</code>:  
+                    Optional transform to apply to each value before testing. 
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Ensure that the values of all matched elements are equal to each other. 
+                This is an aggregate validator, meaning that it should be applied to 
+                groups of inputs. A common use for the equal validator is in 
+                password-confirmation scenarios, where a form should not be submitted if 
+                a user fails to reenter his or her password correctly. 
+            </p>
+
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Write a jQuery selector that results in both the password and its confirmation,
+// then validate it with 'equal'.
+$("text[type='password']")
+    .match(mySpecialPasswordRegex, myPasswordFormatMessage)
+    .equal("Passwords do not match.");
+            </pre>
+            
+            <pre class="prettyprint lang-js">
+// We can also extract the important part of a value, and test the equality only on that.
+// For instance, we might want phone numbers to be equal disregarding whether they
+// use '.' or '-' to separate groups, or have the area code in parentheses.
+$("input.phone")
+    .match("phone")
+    .equal(
+        function(val) { 
+            return val.replace(/[-.()]/, '');
+        },
+        "All phone numbers must be the same."
+    );
+            </pre>
+            
+            <hr />
+            
+            <h4 id="Distinct">Distinct:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").distinct( [transform], ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>transform</code>:  
+                    Optional transform to apply to each value before testing. 
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Ensure that the values of all matched elements are distinct from 
+                each other. In other words, validate that no value is repeated among 
+                the matched elements.
+            </p>
+            
+            <p>
+                If any of the matched elements do not have a value that element will not be tested. 
+            </p>
+
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Find all the inputs meant to hold Vehicle Identification Numbers.
+// Since every VIN should be different, a repeat should be treated as invaid.
+$("input.vin").distinct("A VIN Number was repeated.");
+            </pre>
+            
+            <pre class="prettyprint lang-js">
+// We can also use a transform to normalize values.
+// For instance, if we wish to ignore case 
+// (i.e. if "abc" and "ABC" should be treated as a repeat)
+// we can pass in a transform that makes all values upper-case.
+// An example of this might be network interface hardware addresses.
+
+// We'll allow the values to be in upper or lower case, 
+// but treat those as the same value.
+$("input.macAddress")
+    .match(/([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}/, "Must be a valid MAC address.")
+    .distinct(
+        function(val) { 
+            return val.toUpperCase();
+        },
+        "A hardware address was repeated."
+    );
+            </pre>
+            
+            <hr />
+            
+            <h4 id="Sum">Sum/Sum Max/Sum Min:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").sum( sum, ['message'] )</pre>
+            <pre>jQuery("selector").sumMax( max, ['message'] )</pre>
+            <pre>jQuery("selector").sumMin( min, ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>sum</code>:  
+                    The value that the sum of matched elements should be equal to. 
+                </li>
+                <li>
+                    <code>max</code>:  
+                    The <em>inclusive</em> upper-bound for the sum of matched elements 
+                </li>
+                <li>
+                    <code>min</code>:  
+                    The <em>inclusive</em> lower-bound for the sum of matched elements 
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                 Validate that the numeric sum of the value of all matched elements is 
+                 equal to a given value or bounded by a specified max or min. If any 
+                 value is not parseable as a number it will be ignored.
+            </p>
+
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Find inputs representing the three interior angles of a triangle.
+$("input.triangleAngle")
+  .require()
+  .match("number")
+  .sum(180, "A triangle's angles should add up to 180 degrees.");
+            </pre>
+
+
+            <pre class="prettyprint lang-js">
+// Find inputs representing the how you intend to distribute 100,000 dollars among
+// several people without having to distribute all of it.
+$("input.distribution")
+  .match("usd")
+  .sumMax(100000, "You can't distribute more than you have on hand.");
+            </pre>
+            
+            <hr />
+            
         </div>
     </body>
 </html>
