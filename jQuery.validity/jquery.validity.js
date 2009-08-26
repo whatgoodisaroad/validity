@@ -795,14 +795,14 @@
     (function() {
         function getSelector($obj) {
             return $obj.attr('id').length ?
-				("#" + $obj.attr('id')) :
-				("[name='" + $obj.attr('name') + "']");
+                ("#" + $obj.attr('id')) :
+                ("[name='" + $obj.attr('name') + "']");
         }
 
         function getIdentifier($obj) {
             return $obj.attr('id').length ?
-				$obj.attr('id') :
-				$obj.attr('name');
+                $obj.attr('id') :
+                $obj.attr('name');
         }
 
         $.validity.outputs.label = {
@@ -833,11 +833,11 @@
                         // then the for attribute in the label will not cause
                         // clicking the label to focus the element. This line 
                         // will make that happen.
-						.click(function() {
-						    if ($obj.length) {
-						        $obj[0].select();
-						    }
-						})
+                        .click(function() {
+                            if ($obj.length) {
+                                $obj[0].select();
+                            }
+                        })
 
                         .insertAfter($obj);
                 }
