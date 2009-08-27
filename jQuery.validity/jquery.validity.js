@@ -10,21 +10,24 @@
  */
 (function($) {
     // Default settings.
-    var defaults = {
-        // The default output mode is label because it requires no dependencies.
-        outputMode: "label",
+    var 
+        defaults = {
+            // The default output mode is label because it requires no dependencies.
+            outputMode: "label",
 
-        // The this property is set to true, validity will scroll the browser viewport
-        // so that the first error is visible when validation fails.
-        scrollTo: false,
+            // The this property is set to true, validity will scroll the browser viewport
+            // so that the first error is visible when validation fails.
+            scrollTo: false,
 
-        // If this setting is true, modal errors will disappear when they are clicked on.
-        modalErrorsClickable: true,
+            // If this setting is true, modal errors will disappear when they are clicked on.
+            modalErrorsClickable: true,
 
-        // If a field name cannot be otherwise inferred, this will be used.
-        defaultFieldName: "This field"
-    };
-
+            // If a field name cannot be otherwise inferred, this will be used.
+            defaultFieldName: "This field"
+        },
+        
+        elementSupport = ":text, :password, textarea, select, :radio, :checkbox";
+    
     // Setup 'static' functions and properties for the validity plugin.
     $.validity = {
         // Clone the defaults. They can be overridden with the setup function.
@@ -42,7 +45,7 @@
             zip: /^\d{5}(-\d{4})?$/,
             phone: /^[2-9]\d{2}-\d{3}-\d{4}$/,
             guid: /^(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$/,
-            time12: /^[01]?[0-9]:[0-6][0-9]?\s?[aApP]\.?[mM]\.?$/,
+            time12: /^[01]?[0-9]:[0-5][0-9]?\s?[aApP]\.?[mM]\.?$/,
             time24: /^(20|21|22|23|[01]\d|\d)(([:][0-5]\d){1,2})$/,
 
             nonHtml: /[^<>]/g
@@ -403,8 +406,9 @@
         // http://code.google.com/p/validity/wiki/Validators#Equal
         equal: function(arg0, arg1) {
             var 
-            // If a reduced set is attached, use it.
-                $reduction = this.reduction || this,
+                // If a reduced set is attached, use it.
+                // Also, remove unsupported elements.
+                $reduction =  (this.reduction || this).filter(elementSupport),
 
                 transform = function(val) {
                     return val;
@@ -462,8 +466,9 @@
         // http://code.google.com/p/validity/wiki/Validators#Distinct
         distinct: function(arg0, arg1) {
             var 
-            // If a reduced set is attached, use it.
-                $reduction = this.reduction || this,
+                // If a reduced set is attached, use it.
+                // Also, remove unsupported elements.
+                $reduction =  (this.reduction || this).filter(elementSupport),
 
                 transform = function(val) {
                     return val;
@@ -531,7 +536,8 @@
         // http://code.google.com/p/validity/wiki/Validators#Sum
         sum: function(sum, msg) {
             // If a reduced set is attached, use it.
-            var $reduction = this.reduction || this;
+            // Also, remove unsupported elements.
+            var $reduction =  (this.reduction || this).filter(elementSupport);
 
             if ($reduction.length && sum != numericSum($reduction)) {
                 raiseAggregateError(
@@ -553,7 +559,8 @@
         // http://code.google.com/p/validity/wiki/Validators#SumMax
         sumMax: function(max, msg) {
             // If a reduced set is attached, use it.
-            var $reduction = this.reduction || this;
+            // Also, remove unsupported elements.
+            var $reduction =  (this.reduction || this).filter(elementSupport);
 
             if ($reduction.length && max < numericSum($reduction)) {
                 raiseAggregateError(
@@ -575,7 +582,8 @@
         // http://code.google.com/p/validity/wiki/Validators#SumMin
         sumMin: function(min, msg) {
             // If a reduced set is attached, use it.
-            var $reduction = this.reduction || this;
+            // Also, remove unsupported elements.
+            var $reduction =  (this.reduction || this).filter(elementSupport);
 
             if ($reduction.length && min < numericSum($reduction)) {
                 raiseAggregateError(
@@ -612,7 +620,8 @@
         // http://code.google.com/p/validity/wiki/Validators#Assert
         assert: function(expression, msg) {
             // If a reduced set is attached, use it.
-            var $reduction = this.reduction || this;
+            // Also, remove unsupported elements.
+            var $reduction =  (this.reduction || this).filter(elementSupport);
 
             if ($reduction.length) {
 
@@ -655,10 +664,11 @@
     // This function is the heart of validity.
     function validate($obj, regimen, message) {
         var 
-        // If a reduced set is attached, use it.
-            $reduction = $obj.reduction || $obj,
+            // If a reduced set is attached, use it
+            // Also, remove any unsupported elements.
+            $reduction = ($obj.reduction || $obj).filter(elementSupport),
 
-        // Array to store only elements that pass the regimen.
+            // Array to store only elements that pass the regimen.
             elements = [];
 
         // For each in the reduction.
@@ -946,7 +956,7 @@
 
                 // If there are any errors at all (otherwise the container shouldn't be shown):
                 if (buffer.length) {
-                    for (var i in buffer) {
+                    for (var i = 0; i < buffer.length; i++) {
                         $(wrapper)
                             .text(buffer[i])
                             .appendTo(summary);
