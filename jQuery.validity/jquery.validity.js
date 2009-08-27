@@ -621,7 +621,7 @@
                 if ($.isFunction(expression)) {
                     return validate(
                         this,
-                        expressiom,
+                        expression,
                         msg || $.validity.messages.generic
                     );
                 }
