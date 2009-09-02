@@ -26,16 +26,17 @@
             defaultFieldName: "This field"
         },
         
+        // jQuery selector to filter down to validation supported elements.
         elementSupport = ":text, :password, textarea, select, :radio, :checkbox";
     
     // Setup 'static' functions and properties for the validity plugin.
     $.validity = {
         // Clone the defaults. They can be overridden with the setup function.
-        settings: $.extend(defaults, {}),
+        settings:$.extend(defaults, {}),
 
         // Built-in library of format-checking tools for use with the 
         // match validator (as well as the nonHtml validator).
-        patterns: {
+        patterns:{
             integer: /^\d+$/,
             date: function(val) { return !isNaN(Date.parse(val)); },
             email: /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i,
@@ -52,52 +53,52 @@
         },
 
         // Built-in set of default error messages (for use when message isn't specified).
-        messages: {
-            require: "#{field} is required.",
+        messages:{
+            require:"#{field} is required.",
 
             // Format validators:
-            match: "#{field} is in an invalid format.",
-            integer: "#{field} must be a positive, whole number.",
-            date: "#{field} must be formatted as a date.",
-            email: "#{field} must be formatted as an email.",
-            usd: "#{field} must be formatted as a US Dollar amount.",
-            url: "#{field} must be formatted as a URL.",
-            number: "#{field} must be formatted as a number.",
-            zip: "#{field} must be formatted as a zipcode ##### or #####-####.",
-            phone: "#{field} must be formatted as a phone number ###-###-####.",
-            guid: "#{field} must be formatted as a guid like {3F2504E0-4F89-11D3-9A0C-0305E82C3301}.",
-            time24: "#{field} must be formatted as a 24 hour time: 23:00.",
-            time12: "#{field} must be formatted as a 12 hour time: 12:00 AM/PM",
+            match:"#{field} is in an invalid format.",
+            integer:"#{field} must be a positive, whole number.",
+            date:"#{field} must be formatted as a date.",
+            email:"#{field} must be formatted as an email.",
+            usd:"#{field} must be formatted as a US Dollar amount.",
+            url:"#{field} must be formatted as a URL.",
+            number:"#{field} must be formatted as a number.",
+            zip:"#{field} must be formatted as a zipcode ##### or #####-####.",
+            phone:"#{field} must be formatted as a phone number ###-###-####.",
+            guid:"#{field} must be formatted as a guid like {3F2504E0-4F89-11D3-9A0C-0305E82C3301}.",
+            time24:"#{field} must be formatted as a 24 hour time: 23:00.",
+            time12:"#{field} must be formatted as a 12 hour time: 12:00 AM/PM",
 
             // Value range messages:
-            lessThan: "#{field} must be less than #{max}.",
-            lessThanOrEqualTo: "#{field} must be less than or equal to #{max}.",
-            greaterThan: "#{field} must be greater than #{min}.",
-            greaterThanOrEqualTo: "#{field} must be greater than or equal to #{min}.",
-            range: "#{field} must be between #{min} and #{max}.",
+            lessThan:"#{field} must be less than #{max}.",
+            lessThanOrEqualTo:"#{field} must be less than or equal to #{max}.",
+            greaterThan:"#{field} must be greater than #{min}.",
+            greaterThanOrEqualTo:"#{field} must be greater than or equal to #{min}.",
+            range:"#{field} must be between #{min} and #{max}.",
 
             // Value length messages:
-            tooLong: "#{field} cannot be longer than #{max} characters.",
-            tooShort: "#{field cannot be shorter than #{min} characters.}",
+            tooLong:"#{field} cannot be longer than #{max} characters.",
+            tooShort:"#{field cannot be shorter than #{min} characters.}",
 
             // Aggregate validator messages:
-            equal: "Values don't match.",
-            distinct: "A value was repeated.",
-            sum: "Values don't add to #{sum}.",
-            sumMax: "The sum of the values must be less than #{max}.",
-            sumMin: "The sum of the values must be greater than #{min}.",
+            equal:"Values don't match.",
+            distinct:"A value was repeated.",
+            sum:"Values don't add to #{sum}.",
+            sumMax:"The sum of the values must be less than #{max}.",
+            sumMin:"The sum of the values must be greater than #{min}.",
 
-            nonHtml: "#{field} cannot contain Html characters.",
+            nonHtml:"#{field} cannot contain Html characters.",
 
-            generic: "Invalid."
+            generic:"Invalid."
         },
 
         // Object to contain the output modes. The three built-in output modes are installed
         // later on in this script.
-        outputs: {},
+        outputs:{},
 
         // Override the default settings with user-specified ones.
-        setup: function(options) {
+        setup:function(options) {
             this.settings = $.extend(this.settings, options);
         },
 
@@ -106,15 +107,15 @@
         // When validators fail, they will inform this object.
         // When validation is completed, this object will contain the 
         // information of whether it succeeded.
-        report: null,
+        report:null,
 
         // Determine whether validity is in the middle of validation.
-        isValidating: function() {
+        isValidating:function() {
             return !!this.report;
         },
 
         // Function to prepare validity to start validating.
-        start: function() {
+        start:function() {
             // The output mode should be notified that validation is starting.
             // This usually means that the output mode will erase errors from the 
             // document in whatever way the mode needs to.
@@ -124,11 +125,11 @@
             }
 
             // Initialize the report object.
-            this.report = { errors: 0, valid: true };
+            this.report = { errors:0, valid:true };
         },
 
         // Function called when validation is over to examine the results and clean-up.
-        end: function() {
+        end:function() {
             // Notify the current output mode that validation is over.
             if (this.outputs[this.settings.outputMode] &&
                 this.outputs[this.settings.outputMode].end) {
@@ -153,7 +154,7 @@
         },
 
         // Remove validiation errors:
-        clear: function() {
+        clear:function() {
             this.start();
             this.end();
         }
@@ -165,7 +166,7 @@
         // The user may pass in a validation function as described in the docs,
         // or, as a shortcut, pass in a string of a CSS selector that grabs all 
         // the inputs to require.
-        validity: function(arg) {
+        validity:function(arg) {
             return this.each(
                 function() {
                     // Only operate on forms:
@@ -206,7 +207,7 @@
 
         // Validate whether the field has a value.
         // http://code.google.com/p/validity/wiki/Validators#Require
-        require: function(msg) {
+        require:function(msg) {
             return validate(
                 this,
                 function(obj) {
@@ -218,7 +219,7 @@
 
         // Validate whether the field matches a regex.
         // http://code.google.com/p/validity/wiki/Validators#Match
-        match: function(rule, msg) {
+        match:function(rule, msg) {
             // If a default message is to be used:
             if (!msg) {
                 // First grab the generic one:
@@ -238,9 +239,9 @@
             return validate(
                 this,
 
-            // Some of the named rules can be functions, such as 'date'.
-            // If the discovered rule is a function use it as such.
-            // Otherwise, assume it's a RegExp.
+                // Some of the named rules can be functions, such as 'date'.
+                // If the discovered rule is a function use it as such.
+                // Otherwise, assume it's a RegExp.
                 $.isFunction(rule) ?
 
                     function(obj) {
@@ -256,19 +257,19 @@
         },
 
         // http://code.google.com/p/validity/wiki/Validators#Range
-        range: function(min, max, msg) {
+        range:function(min, max, msg) {
             return validate(
                 this,
 
                 min.getTime && max.getTime ?
 
-            // If both arguments are dates then use them that way.
+                    // If both arguments are dates then use them that way.
                     function(obj) {
                         var d = new Date(obj.value);
                         return d >= new Date(min) && d <= new Date(max);
                     } :
 
-            // Otherwise treat them like floats.
+                    // Otherwise treat them like floats.
                     function(obj) {
                         var f = parseFloat(obj.value);
                         return f >= min && f <= max;
@@ -276,15 +277,15 @@
 
                 msg || format(
                     $.validity.messages.range, {
-                        min: argToString(min),
-                        max: argToString(max)
+                        min:argToString(min),
+                        max:argToString(max)
                     }
                 )
             );
         },
 
         // http://code.google.com/p/validity/wiki/Validators#GreaterThan
-        greaterThan: function(min, msg) {
+        greaterThan:function(min, msg) {
             return validate(
                 this,
 
@@ -299,14 +300,14 @@
 
                 msg || format(
                     $.validity.messages.greaterThan, {
-                        min: argToString(min)
+                        min:argToString(min)
                     }
                 )
             );
         },
 
         // http://code.google.com/p/validity/wiki/Validators#GreaterThanOrEqualTo
-        greaterThanOrEqualTo: function(min, msg) {
+        greaterThanOrEqualTo:function(min, msg) {
             return validate(
                 this,
 
@@ -321,14 +322,14 @@
 
                 msg || format(
                     $.validity.messages.greaterThanOrEqualTo, {
-                        min: argToString(min)
+                        min:argToString(min)
                     }
                 )
             );
         },
 
         // http://code.google.com/p/validity/wiki/Validators#LessThan
-        lessThan: function(max, msg) {
+        lessThan:function(max, msg) {
             return validate(
                 this,
 
@@ -343,14 +344,14 @@
 
                 msg || format(
                     $.validity.messages.lessThan, {
-                        max: argToString(max)
+                        max:argToString(max)
                     }
                 )
             );
         },
 
         // http://code.google.com/p/validity/wiki/Validators#LessThanOrEqualTo
-        lessThanOrEqualTo: function(max, msg) {
+        lessThanOrEqualTo:function(max, msg) {
             return validate(
                 this,
 
@@ -365,14 +366,14 @@
 
                 msg || format(
                     $.validity.messages.lessThanOrEqualTo, {
-                        max: argToString(max)
+                        max:argToString(max)
                     }
                 )
             );
         },
 
         // http://code.google.com/p/validity/wiki/Validators#MaxLength
-        maxLength: function(max, msg) {
+        maxLength:function(max, msg) {
             return validate(
                 this,
                 function(obj) {
@@ -380,14 +381,14 @@
                 },
                 msg || format(
                     $.validity.messages.tooLong, {
-                        max: max
+                        max:max
                     }
                 )
             );
         },
 
         // http://code.google.com/p/validity/wiki/Validators#MinLength
-        minLength: function(min, msg) {
+        minLength:function(min, msg) {
             return validate(
                 this,
                 function(obj) {
@@ -395,7 +396,7 @@
                 },
                 msg || format(
                     $.validity.messages.tooShort, {
-                        min: min
+                        min:min
                     }
                 )
             );
@@ -404,7 +405,7 @@
         // Validate that all matched elements bear the same values.
         // Accepts a function to transform the values for testing.
         // http://code.google.com/p/validity/wiki/Validators#Equal
-        equal: function(arg0, arg1) {
+        equal:function(arg0, arg1) {
             var 
                 // If a reduced set is attached, use it.
                 // Also, remove unsupported elements.
@@ -438,7 +439,7 @@
                         }
                     ),
 
-                // Get the first value.
+                    // Get the first value.
                     first = map[0],
                     valid = true;
 
@@ -464,7 +465,7 @@
         // Validate that all matched elements bear distinct values.
         // Accepts an optional function to transform the values for testing.
         // http://code.google.com/p/validity/wiki/Validators#Distinct
-        distinct: function(arg0, arg1) {
+        distinct:function(arg0, arg1) {
             var 
                 // If a reduced set is attached, use it.
                 // Also, remove unsupported elements.
@@ -476,7 +477,7 @@
 
                 msg = $.validity.messages.distinct,
 
-            // An empty array to store already-examined values
+                // An empty array to store already-examined values
                 subMap = [],
 
                 valid = true;
@@ -534,7 +535,7 @@
 
         // Validate that the numeric sum of all values is equal to a given value.
         // http://code.google.com/p/validity/wiki/Validators#Sum
-        sum: function(sum, msg) {
+        sum:function(sum, msg) {
             // If a reduced set is attached, use it.
             // Also, remove unsupported elements.
             var $reduction =  (this.reduction || this).filter(elementSupport);
@@ -544,7 +545,7 @@
                     $reduction,
                     msg || format(
                         $.validity.messages.sum,
-                        { sum: sum }
+                        { sum:sum }
                     )
                 );
 
@@ -557,7 +558,7 @@
 
         // Validates an inclusive upper-bound on the numeric sum of the values of all matched elements.
         // http://code.google.com/p/validity/wiki/Validators#SumMax
-        sumMax: function(max, msg) {
+        sumMax:function(max, msg) {
             // If a reduced set is attached, use it.
             // Also, remove unsupported elements.
             var $reduction =  (this.reduction || this).filter(elementSupport);
@@ -567,7 +568,7 @@
                     $reduction,
                     msg || format(
                         $.validity.messages.sumMax,
-                        { max: max }
+                        { max:max }
                     )
                 );
 
@@ -580,7 +581,7 @@
 
         // Validates an inclusive lower-bound on the numeric sum of the values of all matched elements.
         // http://code.google.com/p/validity/wiki/Validators#SumMin
-        sumMin: function(min, msg) {
+        sumMin:function(min, msg) {
             // If a reduced set is attached, use it.
             // Also, remove unsupported elements.
             var $reduction =  (this.reduction || this).filter(elementSupport);
@@ -590,7 +591,7 @@
                     $reduction,
                     msg || format(
                         $.validity.messages.sumMin,
-                        { min: min }
+                        { min:min }
                     )
                 );
 
@@ -602,7 +603,7 @@
         },
 
         // Validate that the input does not contain potentially dangerous strings.
-        nonHtml: function(msg) {
+        nonHtml:function(msg) {
             return validate(
                 this,
 
@@ -618,7 +619,7 @@
         // Otherwise, it is treated as a boolean, and the determines the validity 
         // of elements in an aggregate fashion.
         // http://code.google.com/p/validity/wiki/Validators#Assert
-        assert: function(expression, msg) {
+        assert:function(expression, msg) {
             // If a reduced set is attached, use it.
             // Also, remove unsupported elements.
             var $reduction =  (this.reduction || this).filter(elementSupport);
@@ -684,7 +685,7 @@
                     raiseError(
                         this,
                         format(message, {
-                            field: infer(this)
+                            field:infer(this)
                         })
                     );
                 }
@@ -786,13 +787,15 @@
 
     function argToString(val) {
         return val.getDate ?
-            val.getMonth() + "/" + val.getDate() + "/" + val.getFullYear() :
+            (val.getMonth() + 1) + "/" + val.getDate() + "/" + val.getFullYear() :
             val;
     }
 
     // Capitolize the first character of the string argument.
     function capitolize(sz) {
-        return sz.substring(0, 1).toUpperCase() + sz.substring(1, sz.length);
+        return sz.substring ?
+            sz.substring(0, 1).toUpperCase() + sz.substring(1, sz.length) :
+            sz;
     }
 
     // End defining internal utilities //
@@ -816,14 +819,14 @@
         }
 
         $.validity.outputs.label = {
-            start: function() {
+            start:function() {
                 // Remove all the existing error labels.
                 $("label.error").remove();
             },
 
-            raise: function($obj, msg) {
+            raise:function($obj, msg) {
                 var 
-                //errorId = $obj.attr('id'),
+                    //errorId = $obj.attr('id'),
                     errorSelector = getSelector($obj),
                     labelSelector = "label.error[for='" + getIdentifier($obj) + "']";
 
@@ -853,14 +856,14 @@
                 }
             },
 
-            raiseAggregate: function($obj, msg) {
+            raiseAggregate:function($obj, msg) {
                 // Just raise the error on the last input.
                 if ($obj.length) {
                     this.raise($($obj.get($obj.length - 1)), msg);
                 }
             },
 
-            scrollToFirstError: function() {
+            scrollToFirstError:function() {
                 if ($("label.error").length) {
                     location.hash = $("label.error:eq(0)").attr('for');
                 }
@@ -870,40 +873,33 @@
 
     // Install the modal output.
     (function() {
-        var errorClass = "validity-modal-msg",
-            allErrors = "." + errorClass,
-            container = "body",
-            idPrefix = "validity-modal-msg-";
-
+        var 
+            // Class to apply to modal errors.
+            errorClass = "validity-modal-msg",
+            
+            // The selector for the element where modal errors will me injected semantically.
+            container = "body";
+            
         $.validity.outputs.modal = {
-            start: function() {
+            start:function() {
                 // Remove all the existing errors.
-                $(allErrors).remove();
+                $("." + errorClass).remove();
             },
 
-            raise: function($obj, msg) {
-                var off = $obj.offset(),
+            raise:function($obj, msg) {
+                if ($obj.length) {
+                    var 
+                        off = $obj.offset(),
+                        obj = $obj.get(0),
 
-                // Design a style object based off of the input's location.
-                    errorStyle = {
-                        left: parseInt(off.left + $obj.width() + 4) + "px",
-                        top: parseInt(off.top - 10) + "px"
-                    },
-
-                    errorId = idPrefix + $obj.attr("id"),
-                    errorSelector = "#" + errorId;
-
-                // If one already exists, update the text.
-                if ($(errorSelector).length) {
-                    $(errorSelector)
-                        .css(errorStyle)
-                        .text(msg);
-                }
-
-                else {
+                        // Design a style object based off of the input's location.
+                        errorStyle = {
+                            left:parseInt(off.left + $obj.width() + 4) + "px",
+                            top:parseInt(off.top - 10) + "px"
+                        };
+                        
                     // Create one and position it next to the input.
                     $("<div/>")
-                        .attr("id", errorId)
                         .addClass(errorClass)
                         .css(errorStyle)
                         .text(msg)
@@ -914,48 +910,61 @@
                 }
             },
 
-            raiseAggregate: function($obj, msg) {
+            raiseAggregate:function($obj, msg) {
                 // Just raise the error on the last input.
                 if ($obj.length) {
                     this.raise($($obj.get($obj.length - 1)), msg);
                 }
             },
 
-            scrollToFirstError: function() {
-                if ($(allErrors).length) {
-                    location.hash = $(allErrors + ":eq(0)").attr('id')
-                }
+            scrollToFirstError:function() {
+                location.hash = $("." + errorClass + ":eq(0)").attr('id')
             }
         };
     })();
 
     // Install the summary output
     (function() {
-        var container = "#validity-summary-container",
+        var 
+            // Container contains the summary. This is the element that is shown or hidden.
+            container = "#validity-summary-container",
+            
+            // Summary is the element that contains the messages.
+            // This should be an UL element.
             summary = "#validity-summary-output",
+            
+            // Erroneous refers to an input with an invalid value,
+            // not the error message itself.
             erroneous = "validity-erroneous",
-            errors = ".validity-erroneous",
+            
+            // Selector for erroneous inputs.
+            errors = "." + erroneous,
+            
+            // The wrapper for entries in the summary.
             wrapper = "<li/>",
 
-        // Buffer to contain all the error messages that build up during validation.
-        // When validation ends, it'll be flushed into the summary.
-        // This way, the summary doesn't flicker empty then full.
+            // Buffer to contain all the error messages that build up during validation.
+            // When validation ends, it'll be flushed into the summary.
+            // This way, the summary doesn't flicker empty then fill up.
             buffer = [];
 
         $.validity.outputs.summary = {
-            start: function() {
+            start:function() {
                 $(errors).removeClass(erroneous);
                 buffer = [];
             },
 
-            end: function() {
+            end:function() {
+                // Hide the container and empty its summary.
                 $(container)
                     .hide()
                     .find(summary)
                         .html('');
 
-                // If there are any errors at all (otherwise the container shouldn't be shown):
+                // If there are any errors at all:
+                // (Otherwise the container shouldn't be shown):
                 if (buffer.length) {
+                    // Use integer based iteration for solution to Issue 7.
                     for (var i = 0; i < buffer.length; i++) {
                         $(wrapper)
                             .text(buffer[i])
@@ -966,16 +975,16 @@
                 }
             },
 
-            raise: function($obj, msg) {
+            raise:function($obj, msg) {
                 buffer.push(msg);
                 $obj.addClass(erroneous);
             },
 
-            raiseAggregate: function($obj, msg) {
+            raiseAggregate:function($obj, msg) {
                 this.raise($obj, msg);
             },
 
-            scrollToFirstError: function() {
+            scrollToFirstError:function() {
                 location.hash = $(errors + ":eq(0)").attr("id");
             }
         };

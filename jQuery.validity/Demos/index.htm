@@ -64,6 +64,24 @@
                         <li><a href="#Assert">Assert</a></li>
                     </ul>
                 </ul>
+                <li><a href="#TokenizedMessages">Tokenized Messages</a></li>
+                <ul>
+                    <li><a href="#UnderstandingTokens">Understanding</a></li>
+                    <li><a href="#TokenPractices">Best Practices</a></li>
+                </ul>
+                <li><a href="#OutputModes">Output Modes</a></li>
+                <ul>
+                    <li><a href="#Label">Label</a></li>
+                    <li><a href="#Modal">Modal</a></li>
+                    <li><a href="#Summary">Summary</a></li>
+                </ul>
+                <li><a href="#CustomizingValidity">Customizing Validity Itself</a></li>
+                <ul>
+                    <li><a href="#EditingMessages">Customizing Messages</a></li>
+                    <li><a href="#LanguagePackages">Language Packages/Internationalization</a></li>
+                    <li><a href="#ExtendingMatchSupport">Customizing/Extending Match Validator Support</a></li>
+                    <li><a href="#CustomOutputMode">Writing a Custom Output Mode</a></li>
+                </ul>
             </ul>
             
             <hr />
@@ -1071,6 +1089,218 @@ $("input.distribution")
             
             <hr />
             
+            <h3 id="SpecializedValidation">Specialized Validation:</h3>
+            
+            <p>
+                Validity supplies validator methods that cover the most common scenarios, but it
+                also offers a tool to write your own custom validator with 'assert'.
+            </p>
+            
+            <p>
+                Assert is at once the most complicated and most capable validator in the validity suite.
+                It's use is thoroughly outlined below.
+            </p>
+            
+            <hr />
+            
+            <h4 id="Assert">Assert:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").assert( expression|function, ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>expression</code>:  
+                    Any expression that will result in a boolean. When expression evaluates
+                    to true the validator succeeds. Keep in mind, when passing an expression
+                    rather than a function, assert will act like an aggregate validator. That 
+                    is to say, the truth or falsehood of expression will determine the 
+                    validity of ALL matched elements.
+                </li>
+                <li>
+                    <code>function</code>:  
+                    A javascript function object which will accept a DOM Element and return
+                    true or false representing whether that DOM element was valid. Keep in 
+                    mind that when passing a function rather than an expression assert will
+                    act like a common (non-aggregate) validator. That is to say that the 
+                    function will be applied to each and every matched element and their 
+                    validity is determined individually.
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails. While this argument is
+                    optional, it is strongly encouraged for use with the assert validator.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Assert allows you to validate inputs using your own customized logic, but still 
+                let validity display the error messages. If what you need is not provided among 
+                validity's built-in validator methods, you can write it yourself with assert. 
+                (In fact, any of the built in functions could be replicated with assert. It's that
+                powerful.)
+            </p>
+            
+            <p>
+                There are two general ways to use assert: you can pass in an expression argument 
+                (which evaluates into a boolean), or you can pass in a JavaScript function object. 
+                It is important to understand that assert will act like an aggregate validator when
+                an expression is passed, but will act like a common (non-aggregate) validator 
+                when a function object is passed.
+            </p>
+            
+            <h5>Examples:</h5>
+            
+            <p>
+                To illustrate these techniques, we can write a validator to determine whether a
+                set of inputs are all evens or all odds:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$(function() {
+    $("form").validity(function() {
+        // Store the information in local variables:
+        // These are booleans:
+        var allEvens = (
+            parseFloat($("#box1").val()) % 2 == 0 &&
+            parseFloat($("#box2").val()) % 2 == 0 &&
+            parseFloat($("#box3").val()) % 2 == 0 &&
+            parseFloat($("#box4").val()) % 2 == 0
+        );
+        var allOdds = (
+            parseFloat($("#box1").val()) % 2 == 1 &&
+            parseFloat($("#box2").val()) % 2 == 1 &&
+            parseFloat($("#box3").val()) % 2 == 1 &&
+            parseFloat($("#box4").val()) % 2 == 1
+        );
+        
+        // Pass the OR of those two booleans as the expression argument into assert.
+        // This will cause the inputs to be considered all valid or all invalid.
+        $("#box1, #box2, #box3, #box4")
+            .match("integer")
+            .assert(
+                (allEvens || allOdds), 
+                "The inputs can either have all even numbers or all odd numbers. Not mixed."
+            );
+    });
+});
+            </pre>
+            
+            <p>
+                As another example, we can pass a function object to perform common, 
+                non-aggregate validation. In the below example we can individually
+                determine whether any of the selected inputs is a palindrome:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+// First create the functions that will be used in validation.
+        
+// Helper to reverse a string:
+function reverse(s){
+    var  r = "";
+    var  l = s.length;
+    for (var i = l; i > 0; i--){
+        r += s.charAt(i-1)
+    };
+    return r ;
+}
+
+// Returns whether the value of the passed element is a palindrome:
+// Notice that this function is meant to accept the DOM element, 
+// not the value of the DOM element.
+function isPalindrome(element){
+    return element.value == reverse(element.value);
+}
+            
+$(function() {
+    $("form").validity(function() {
+        // Instruct assert to use this function to test each input.
+        // Notice that we're passing the function itself 
+        // rather than the result of the function.
+        // (i.e. "isPalindrome" not "isPalindrome()" )
+        $(":text").assert(
+            isPalindrome, 
+            "#{field} must be a palindrome."
+        );
+    });
+});
+        </pre>
+
+        <hr />
+        
+        <h2 id="TokenizedMessages">Tokenized Messages</h2>
+        
+        <p>
+            Validity will attempt to generate helpful error messages based on how
+            you validate what inputs. This feature is intended to minimize the number
+            of error messages you'll be required to write yourself and to keep 
+            validation messages consistent.
+        </p>
+        
+        <hr />
+        
+        <h3 id="UnderstandingTokens">Understanding Tokenized Messages</h3>
+        
+        <p>
+            The mechanism validity uses to generate these messages uses a library of 
+            default message strings that contain tokens. For example, validity contains
+            the following string as a default message for required field errors:
+        </p>
+        
+        <pre class="prettyprint lang-js">
+"#{field} is required."
+        </pre>
+        
+        <p>
+            The #{field} part at the beginning of the string is a token to be replaced with
+            the title of the input for which the error is being created. In this way, a
+            required field error being generated for an input titled "your name" will generate
+            the message "Your name is required."
+        </p>
+        
+        <p>
+            Similary, the tokenized message for range validators is:
+        </p>
+        
+        <pre class="prettyprint lang-js">
+"#{field} must be between #{min} and #{max}."
+        </pre>
+        
+        <p>
+            As you can see, there are tokens for the min and the max so that those values can
+            be inserted into the error message. An example result message might be: "Age of 
+            car must be between 10 and 60."
+        </p>
+        
+        <p>
+            Because every validator method allows you to pass in your own validation message to
+            override the default, you may use tokens when you do this. For instance, if you use
+            the match validator with your own regular expression to validate multiple inputs you
+            might use a tokenized message in the following way:
+        </p>
+        
+        <pre class="prettyprint lang-js">
+$("input.ssn").match(
+    /^\d{3}-\d{2}-\d{4}$/, 
+    "#{field} needs to be in the format of a Social Security Number."
+);
+        </pre>
+        
+        <p>
+            In this way you can have validity generate several messages for each input. The above
+            statement might generate the error messages: "Your SSN needs to be in the format of 
+            a Social Security Number.", "Cosigner A SSN needs to be in the format of a Social Security 
+            Number.", and "Cosigner B SSN needs to be in the format of a Social Security Number."
+        </p>
+        
+        
+        <hr />
+            
         </div>
+        <span id="scrollback">
+            [<a href="#">Scroll back to the top</a>]
+        </span>
     </body>
 </html>
