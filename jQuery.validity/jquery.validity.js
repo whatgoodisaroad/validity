@@ -26,7 +26,7 @@
             defaultFieldName: "This field"
         },
         
-        // jQuery selector to filter down to validation supported elements.
+        // jQuery selector to filter down to validation-supported elements.
         elementSupport = ":text, :password, textarea, select, :radio, :checkbox";
     
     // Setup 'static' functions and properties for the validity plugin.

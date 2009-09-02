@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Demos</title>
+        <title>jQuery.validity Guide & Documentation</title>
     </head>
     
     <link rel="stylesheet" type="text/css" href="lib/sty.css" />
@@ -77,6 +77,7 @@
                 </ul>
                 <li><a href="#CustomizingValidity">Customizing Validity Itself</a></li>
                 <ul>
+                    <li><a href="#AdaptingCSS">Adapting the CSS</a></li>
                     <li><a href="#EditingMessages">Customizing Messages</a></li>
                     <li><a href="#LanguagePackages">Language Packages/Internationalization</a></li>
                     <li><a href="#ExtendingMatchSupport">Customizing/Extending Match Validator Support</a></li>
@@ -520,7 +521,7 @@ function validateMyAjaxInputs() {
     // Validator methods go here:
     
     // For instance:
-    $("#my-textbox").require();
+    $("#my_textbox").require();
     
     // etc.
     
@@ -1226,78 +1227,240 @@ $(function() {
         );
     });
 });
-        </pre>
+            </pre>
 
-        <hr />
-        
-        <h2 id="TokenizedMessages">Tokenized Messages</h2>
-        
-        <p>
-            Validity will attempt to generate helpful error messages based on how
-            you validate what inputs. This feature is intended to minimize the number
-            of error messages you'll be required to write yourself and to keep 
-            validation messages consistent.
-        </p>
-        
-        <hr />
-        
-        <h3 id="UnderstandingTokens">Understanding Tokenized Messages</h3>
-        
-        <p>
-            The mechanism validity uses to generate these messages uses a library of 
-            default message strings that contain tokens. For example, validity contains
-            the following string as a default message for required field errors:
-        </p>
-        
-        <pre class="prettyprint lang-js">
+            <hr />
+            
+            <h2 id="TokenizedMessages">Tokenized Messages</h2>
+            
+            <p>
+                Validity will attempt to generate helpful error messages based on how
+                you validate what inputs. This feature is intended to minimize the number
+                of error messages you'll be required to write yourself and to keep 
+                validation messages consistent.
+            </p>
+            
+            <p>
+                Note: Validity will still grant you full control over the messages. You will
+                not be forced to use this feature, although it will simplify your code in 
+                most cases.
+            </p>
+            
+            <hr />
+            
+            <h3 id="UnderstandingTokens">Understanding Tokenized Messages</h3>
+            
+            <p>
+                The mechanism validity uses to generate these messages uses a library of 
+                default message strings that contain tokens. For example, validity contains
+                the following string as a default message for required field errors:
+            </p>
+            
+            <pre class="prettyprint lang-js">
 "#{field} is required."
-        </pre>
-        
-        <p>
-            The #{field} part at the beginning of the string is a token to be replaced with
-            the title of the input for which the error is being created. In this way, a
-            required field error being generated for an input titled "your name" will generate
-            the message "Your name is required."
-        </p>
-        
-        <p>
-            Similary, the tokenized message for range validators is:
-        </p>
-        
-        <pre class="prettyprint lang-js">
+            </pre>
+            
+            <p>
+                The #{field} part at the beginning of the string is a token to be replaced with
+                the title of the input for which the error is being created. In this way, a
+                required field error being generated for an input titled "your name" will generate
+                the message "Your name is required."
+            </p>
+            
+            <p>
+                Similary, the tokenized message for range validators is:
+            </p>
+            
+            <pre class="prettyprint lang-js">
 "#{field} must be between #{min} and #{max}."
-        </pre>
-        
-        <p>
-            As you can see, there are tokens for the min and the max so that those values can
-            be inserted into the error message. An example result message might be: "Age of 
-            car must be between 10 and 60."
-        </p>
-        
-        <p>
-            Because every validator method allows you to pass in your own validation message to
-            override the default, you may use tokens when you do this. For instance, if you use
-            the match validator with your own regular expression to validate multiple inputs you
-            might use a tokenized message in the following way:
-        </p>
-        
-        <pre class="prettyprint lang-js">
+            </pre>
+            
+            <p>
+                As you can see, there are tokens for the min and the max so that those values can
+                be inserted into the error message. An example result message might be: "Age of 
+                car must be between 10 and 60."
+            </p>
+            
+            <p>
+                Because every validator method allows you to pass in your own validation message to
+                override the default, you may use tokens when you do this. For instance, if you use
+                the match validator with your own regular expression to validate multiple inputs you
+                might use a tokenized message in the following way:
+            </p>
+            
+            <pre class="prettyprint lang-js">
 $("input.ssn").match(
     /^\d{3}-\d{2}-\d{4}$/, 
     "#{field} needs to be in the format of a Social Security Number."
 );
-        </pre>
-        
-        <p>
-            In this way you can have validity generate several messages for each input. The above
-            statement might generate the error messages: "Your SSN needs to be in the format of 
-            a Social Security Number.", "Cosigner A SSN needs to be in the format of a Social Security 
-            Number.", and "Cosigner B SSN needs to be in the format of a Social Security Number."
-        </p>
-        
-        
-        <hr />
+            </pre>
             
+            <p>
+                In this way you can have validity generate several messages for each input. The above
+                statement might generate the error messages: "Your SSN needs to be in the format of 
+                a Social Security Number.", "Cosigner A SSN needs to be in the format of a Social Security 
+                Number.", and "Cosigner B SSN needs to be in the format of a Social Security Number."
+            </p>
+            
+            <p>
+                Note: All default messages can be rewritten or modified to fit the parlance of your site.
+                For information on how to do this refer to the <a href="#EditingMessages">Customizing 
+                Messages</a> section later on in this document.
+            </p>
+            
+            <hr />
+            
+            <h3 id="TokenPractices">Best Practices</h3>
+            
+            <p>
+                A significant part of how Validity generates error messages involves figuring out what the 
+                name of the input should be. Validity needs to guess the name of an input in order to insert 
+                that into the #{field} token of a tokenized message. It is important to understand how Validity
+                makes this guess in order that you can help it to guess correctly.
+            </p>
+            
+            <ol>
+                <li>
+                    <p>
+                        Validity will first look at the "title" attribute of an input. If an input has a title 
+                        attribute Validity will assume that is its name. For example, if validity had to guess
+                        the name of the following input it will assume that it's "User Name" because that is 
+                        the value of the title attribute.
+                    </p>
+                    
+                    <pre class="prettyprint lang-js">
+&lt;input id="not_helpful" name="not_helpful" title="User Name" /&gt;
+                    </pre>
+                    
+                    <p>
+                        Using the title attribute in this way is the preferrable method. If you're able to
+                        set the title attribute of an input, you're advised to do so this way.
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        Validity will next look at the "id" attribute of the element. If the id attribute appears 
+                        to be in "Upper Camel Case" format (sometimes called Pascal Case)
+                        it will take that value and split it into words by inserting a space before each capital letter.
+                    </p>
+                    
+                    <p>
+                        For example, if Validity had to guess the name of the following input, it will assume that it's
+                        "User Name" because the value of the id attribute is in Upper Camel Case form and there is
+                        no "title" attribute.
+                    </p>
+                    
+                    <pre class="prettyprint lang-js">
+&lt;input id="UserName" name="UserName" /&gt;
+                    </pre>
+                </li>
+                
+                <li>
+                    <p>
+                        If the previous two checks have failed, Validity will check whether the id is in the form
+                        of lower-case words separated by underscores. If Validity finds this format, it will replace
+                        each underscore with a space and capitalize the first letter of each word.
+                    </p>
+                    
+                    <p>
+                        For example, Validity would assume the that name for the following input is "User Name".
+                    </p>
+                    
+                    <pre class="prettyprint lang-js">
+&lt;input id="user_name" name="user_name" /&gt;
+                    </pre>
+                </li>
+                
+                <li>
+                    <p>
+                        If Validity has failed the previous three tests, it will use a default field name which is 
+                        built-in. This default name is:
+                    </p>
+                    
+                    <pre class="prettyprint lang-js">
+defaultFieldName: "This field"
+                    </pre>
+                    
+                    <p>
+                        Often, if Validity ends up using the default field 
+                        name, the error messages will still be helpful and natural-looking because, with the label and 
+                        modal output modes at least, error messages are positioned right next to the input to which they
+                        refer.
+                    </p>
+                </li>
+                
+                <li>
+                    <p>
+                        Lastly, if you are not able to set the title attribute or do not have the ability to give your 
+                        inputs meaningful ids and you don't wish the default field name to be used, you can always pass 
+                        a specific non-tokenized string of your message into the validator call. Each and every validator 
+                        will accept a string as its last argument to be used as the message.
+                    </p>
+                </li>
+            </ol>
+        
+            <hr />
+            
+            <h2 id="OutputModes">Output Modes</h2>
+            
+            <p>
+                Although Validity is able to validate inputs, its other role is to display errors appropriately and 
+                consistently. The logic that Validity uses to display error is wrapped up into what's called an output
+                mode. There are three output modes included with validity, each of which are summarized here.
+            </p>
+            
+            <p>
+                You are also able to write your own output mode and get full control to how messages are displayed.
+                For a full explanation of how to do this see the <a href="#CustomOutputMode">Writing a Custom Output 
+                Mode</a> section later in this document.
+            </p>
+            
+            <p>
+                You may instruct Validity which output mode you would like to use with the setup function. For example,
+                to enable the "summary" output mode, the following code would be appropriate:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.setup({ outputMode:"summary" });
+            </pre>
+            
+            <hr  />
+            
+            <h3 id="Label">Label</h3>
+            
+            <p>
+                Label is the default output mode in Validity. If you do not specify another output mode using the setup
+                function, label will be what is used.
+            </p>
+            
+            <p>
+                When this output mode is to create an error message, it will create an HTML label element with the CSS 
+                class "error", the "for" attribute set to the id of the input it is being created for and the text of 
+                the error message. This label element is then positioned after the input it has been created for.
+            </p>
+            
+            <p>
+                The advantage of this output mode is that it will place error messages very helpfully next to the offending
+                inputs. Additionally, it does not require anything to be setup in advance aside from its CSS styles.
+            </p>
+            
+            <hr  />
+            
+            <h3 id="Modal">Modal</h3>
+            
+            <p>
+                blah
+            </p>
+            
+            <hr  />
+            
+            <h3 id="Summary">Summary</h3>
+            
+            <p>
+                blah blah
+            </p>
+            
+            <hr  />
         </div>
         <span id="scrollback">
             [<a href="#">Scroll back to the top</a>]
