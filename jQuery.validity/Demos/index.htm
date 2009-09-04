@@ -78,6 +78,11 @@
                 <li><a href="#CustomizingValidity">Customizing Validity Itself</a></li>
                 <ul>
                     <li><a href="#AdaptingCSS">Adapting the CSS</a></li>
+                    <ul>
+                        <li><a href="#LabelCSS">Label</a></li>
+                        <li><a href="#ModalCSS">Modal</a></li>
+                        <li><a href="#SummaryCSS">Summary</a></li>
+                    </ul>
                     <li><a href="#EditingMessages">Customizing Messages</a></li>
                     <li><a href="#LanguagePackages">Language Packages/Internationalization</a></li>
                     <li><a href="#ExtendingMatchSupport">Customizing/Extending Match Validator Support</a></li>
@@ -1495,7 +1500,84 @@ $.validity.setup({ modalErrorsClickable:false });
                 appear in the summary.
             </p>
             
-            <hr  />
+            <p>
+                This is very useful in web pages with long forms to fill out, where it's important to keep the look
+                clean and professional.
+            </p>
+            
+            <p>
+                Also unlike Label and Modal, the Summary output mode requires a small amount of markup in order to 
+                operate. You will need to insert the following code wherever you want the summary of messages to 
+                appear:
+            </p>
+            
+            <pre class="prettyprint">
+&lt;div id="validity-summary-container"&gt;
+    Here's a summary of the validation failures:
+    &lt;ul id="validity-summary-output"&gt;&lt;/ul&gt;
+&lt;/div&gt;
+            </pre>
+            
+            <p>
+                The text in this code snippet ("<code>Here's a summary of the validation failures:</code>") is a message
+                that is meant to explain that it's part of a summary of validation errors. This message will not be shown
+                if there are no errors. You are encouraged to edit this message as you see fit.
+            </p>
+            
+            <p>
+                Essentially, the element with id of <code>validity-summary-container</code> is shown or hidden depending whether
+                there are any errors. The actual messages will be insterted into their individual <code>&lt;li/&gt;</code> 
+                elements into the <code>&lt;ul/&gt;</code> element with id of <code>validity-summary-output</code>.
+            </p>
+            
+            <p>
+                You can enable the summary output mode with the code:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.setup({ outputMode:"summary" });
+            </pre>
+            
+            <hr />
+            
+            <h2 id="CustomizingValidity">Customizing Validity Itself</h2>
+            
+            <p>
+                Architectually, Validity is written along the programming principle of Separation of Concerns. In this way, 
+                Validity is able to allow developers to customize and replace components simply and safely. Here we summarize
+                and guide through the different ways Validity can be modified.
+            </p>
+            
+            <hr />
+            
+            <h3 id="AdaptingCSS">Adapting the CSS</h3>
+            
+            <p>
+                The simplest way to modify Validity is to adapt the CSS to the look of your site. As much as possible, Validity
+                lets CSS decide how things look so that it can be safely modified without forcing you to hack JavaScript.
+            </p>
+            
+            <p>
+                Validity comes with a boilerplate CSS file (jquery.validity.css). You may simply include this file on your site as
+                a stylesheet reference, but are encouraged to copy and paste the styles from it into your own CSS file where you 
+                can edit them freely.
+            </p>
+            
+            <p>
+                The CSS file contains three groups of styles. (One for each of the output modes. See <a href="#OutputModes">Output 
+                Modes</a>) The groups you should decide to copy over and modify depend on which Output Modes you are using.
+            </p>
+            
+            
+            <hr />
+            
+            <h4 id="LabelCSS">Label</h4>
+            
+            <p>
+                
+            </p>
+            
+            <hr />
         </div>
         <span id="scrollback">
             [<a href="#">Scroll back to the top</a>]
