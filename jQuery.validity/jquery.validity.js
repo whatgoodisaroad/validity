@@ -23,11 +23,19 @@
             modalErrorsClickable: true,
 
             // If a field name cannot be otherwise inferred, this will be used.
-            defaultFieldName: "This field"
-        },
-        
-        // jQuery selector to filter down to validation-supported elements.
-        elementSupport = ":text, :password, textarea, select, :radio, :checkbox";
+            defaultFieldName: "This field",
+            
+            // jQuery selector to filter down to validation-supported elements.
+            elementSupport = ":text, :password, textarea, select, :radio, :checkbox",
+            
+            // Function to stringify argments for use when generating error messages.
+            // (Primarily, it just generates pretty date strings.)
+            argToString:function(val) {
+                return val.getDate ?
+                    (val.getMonth() + 1) + "/" + val.getDate() + "/" + val.getFullYear() :
+                    val;
+            }
+        };
     
     // Setup 'static' functions and properties for the validity plugin.
     $.validity = {
@@ -52,8 +60,8 @@
             number:function(val) { return !isNaN(parseFloat(val)); },
             zip: /^\d{5}(-\d{4})?$/,
             phone: /^[2-9]\d{2}-\d{3}-\d{4}$/,
-            guid: /^(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$/,
-            time12: /^[01]?[0-9]:[0-5][0-9]?\s?[aApP]\.?[mM]\.?$/,
+            guid: /^(\{?([0-9a-fA-F]){8}-(([0-9a-fA-F]){4}-){3}([0-9a-fA-F]){12}\}?)$/,
+            time12: /^[01]?\d:[0-5]\d?\s?[aApP]\.?[mM]\.?$/,
             time24: /^(20|21|22|23|[01]\d|\d)(([:][0-5]\d){1,2})$/,
 
             nonHtml: /[^<>]/g
@@ -86,7 +94,7 @@
 
             // Value length messages:
             tooLong:"#{field} cannot be longer than #{max} characters.",
-            tooShort:"#{field cannot be shorter than #{min} characters.}",
+            tooShort:"#{field} cannot be shorter than #{min} characters.}",
 
             // Aggregate validator messages:
             equal:"Values don't match.",
@@ -284,8 +292,8 @@
 
                 msg || format(
                     $.validity.messages.range, {
-                        min:argToString(min),
-                        max:argToString(max)
+                        min:$.validity.settings.argToString(min),
+                        max:$.validity.settings.argToString(max)
                     }
                 )
             );
@@ -307,7 +315,7 @@
 
                 msg || format(
                     $.validity.messages.greaterThan, {
-                        min:argToString(min)
+                        min:$.validity.settings.argToString(min)
                     }
                 )
             );
@@ -329,7 +337,7 @@
 
                 msg || format(
                     $.validity.messages.greaterThanOrEqualTo, {
-                        min:argToString(min)
+                        min:$.validity.settings.argToString(min)
                     }
                 )
             );
@@ -351,7 +359,7 @@
 
                 msg || format(
                     $.validity.messages.lessThan, {
-                        max:argToString(max)
+                        max:$.validity.settings.argToString(max)
                     }
                 )
             );
@@ -373,7 +381,7 @@
 
                 msg || format(
                     $.validity.messages.lessThanOrEqualTo, {
-                        max:argToString(max)
+                        max:$.validity.settings.argToString(max)
                     }
                 )
             );
@@ -416,7 +424,7 @@
             var 
                 // If a reduced set is attached, use it.
                 // Also, remove unsupported elements.
-                $reduction =  (this.reduction || this).filter(elementSupport),
+                $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport),
 
                 transform = function(val) {
                     return val;
@@ -476,7 +484,7 @@
             var 
                 // If a reduced set is attached, use it.
                 // Also, remove unsupported elements.
-                $reduction =  (this.reduction || this).filter(elementSupport),
+                $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport),
 
                 transform = function(val) {
                     return val;
@@ -545,7 +553,7 @@
         sum:function(sum, msg) {
             // If a reduced set is attached, use it.
             // Also, remove unsupported elements.
-            var $reduction =  (this.reduction || this).filter(elementSupport);
+            var $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport);
 
             if ($reduction.length && sum != numericSum($reduction)) {
                 raiseAggregateError(
@@ -568,7 +576,7 @@
         sumMax:function(max, msg) {
             // If a reduced set is attached, use it.
             // Also, remove unsupported elements.
-            var $reduction =  (this.reduction || this).filter(elementSupport);
+            var $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport);
 
             if ($reduction.length && max < numericSum($reduction)) {
                 raiseAggregateError(
@@ -591,7 +599,7 @@
         sumMin:function(min, msg) {
             // If a reduced set is attached, use it.
             // Also, remove unsupported elements.
-            var $reduction =  (this.reduction || this).filter(elementSupport);
+            var $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport);
 
             if ($reduction.length && min < numericSum($reduction)) {
                 raiseAggregateError(
@@ -629,7 +637,7 @@
         assert:function(expression, msg) {
             // If a reduced set is attached, use it.
             // Also, remove unsupported elements.
-            var $reduction =  (this.reduction || this).filter(elementSupport);
+            var $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport);
 
             if ($reduction.length) {
 
@@ -674,7 +682,7 @@
         var 
             // If a reduced set is attached, use it
             // Also, remove any unsupported elements.
-            $reduction = ($obj.reduction || $obj).filter(elementSupport),
+            $reduction = ($obj.reduction || $obj).filter($.validity.settings.elementSupport),
 
             // Array to store only elements that pass the regimen.
             elements = [];
@@ -790,12 +798,6 @@
         }
 
         return ret;
-    }
-
-    function argToString(val) {
-        return val.getDate ?
-            (val.getMonth() + 1) + "/" + val.getDate() + "/" + val.getFullYear() :
-            val;
     }
 
     // Capitolize the first character of the string argument.

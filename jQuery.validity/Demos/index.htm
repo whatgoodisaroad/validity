@@ -651,8 +651,9 @@ $("#ssn").require("Your Social Security Number is required to proceed.");
                 </li>
                 <li>
                     <code>'date'</code>: 
-                    Will only match dates. (Supports all date formats that can be natively 
-                    parsed by the <code>Date.parse()</code> function.)
+                    Will only match dates in the American mm/dd/yyyy format. To support other
+                    date formats refer to the <a href="#LanguagePackages">Internationalization
+                    Section</a> later on in this document.
                 </li>
                 <li>
                     <code>'email'</code>: 
@@ -1328,7 +1329,7 @@ $("input.ssn").match(
                         the value of the title attribute.
                     </p>
                     
-                    <pre class="prettyprint lang-js">
+                    <pre class="prettyprint">
 &lt;input id="not_helpful" name="not_helpful" title="User Name" /&gt;
                     </pre>
                     
@@ -1350,7 +1351,7 @@ $("input.ssn").match(
                         no "title" attribute.
                     </p>
                     
-                    <pre class="prettyprint lang-js">
+                    <pre class="prettyprint">
 &lt;input id="UserName" name="UserName" /&gt;
                     </pre>
                 </li>
@@ -1366,7 +1367,7 @@ $("input.ssn").match(
                         For example, Validity would assume the that name for the following input is "User Name".
                     </p>
                     
-                    <pre class="prettyprint lang-js">
+                    <pre class="prettyprint">
 &lt;input id="user_name" name="user_name" /&gt;
                     </pre>
                 </li>
@@ -1444,20 +1445,54 @@ $.validity.setup({ outputMode:"summary" });
                 inputs. Additionally, it does not require anything to be setup in advance aside from its CSS styles.
             </p>
             
+            <p>
+                Although it's default, you would be able to enable the label output mode with the code:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.setup({ outputMode:"label" });
+            </pre>
+            
             <hr  />
             
             <h3 id="Modal">Modal</h3>
             
             <p>
-                blah
+                The Modal output mode acts similarly to Label - however, instead of inserting the error message into the
+                HTML next to the input, it will position the message so that it hovers near the input.
             </p>
+            
+            <p>
+                In this way, using the Modal output mode will not mess up the layout of your site. Modal is very useful 
+                in web-designs involving tightly-knit tables or small areas.
+            </p>
+            
+            <p>
+                You can enable the modal output mode with the code:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.setup({ outputMode:"modal" });
+            </pre>
+            
+            <p>
+                By default, modal error messages will disappear when they've been clicked. This behavior can be disabled with 
+                the following code:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.setup({ modalErrorsClickable:false });
+            </pre>
             
             <hr  />
             
             <h3 id="Summary">Summary</h3>
             
             <p>
-                blah blah
+                The Summary output mode behaves quite differently from Label or Modal. Summary will gather all of the 
+                validation messages and compile them into a summary to be displayed when validation has concluded.
+                Instead of placing the messages next to the inputs, it will highlight the input and the message will
+                appear in the summary.
             </p>
             
             <hr  />
