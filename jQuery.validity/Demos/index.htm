@@ -1,9 +1,10 @@
-<html>
+﻿<html>
     <head>
         <title>jQuery.validity Guide & Documentation</title>
     </head>
     
     <link rel="stylesheet" type="text/css" href="lib/sty.css" />
+    <link rel="stylesheet" type="text/css" href="../jquery.validity.css" />
     
     <script type="text/javascript" src="../jquery.js"></script>
 
@@ -84,9 +85,13 @@
                         <li><a href="#SummaryCSS">Summary</a></li>
                     </ul>
                     <li><a href="#EditingMessages">Customizing Messages</a></li>
-                    <li><a href="#LanguagePackages">Language Packages/Internationalization</a></li>
                     <li><a href="#ExtendingMatchSupport">Customizing/Extending Match Validator Support</a></li>
+                    <li><a href="#LanguagePackages">Language Packages/Internationalization</a></li>
                     <li><a href="#CustomOutputMode">Writing a Custom Output Mode</a></li>
+                </ul>
+                <li><a href="#Miscellaneous">Miscellaneous</a></li>
+                <ul>
+                    <li><a href="#SetupFunction">The Setup Function</a></li>
                 </ul>
             </ul>
             
@@ -1209,9 +1214,9 @@ function reverse(s){
     var  r = "";
     var  l = s.length;
     for (var i = l; i > 0; i--){
-        r += s.charAt(i-1)
-    };
-    return r ;
+        r += s.charAt(i-1);
+    }
+    return r;
 }
 
 // Returns whether the value of the passed element is a palindrome:
@@ -1512,9 +1517,9 @@ $.validity.setup({ modalErrorsClickable:false });
             </p>
             
             <pre class="prettyprint">
-&lt;div id="validity-summary-container"&gt;
+&lt;div class="validity-summary-container"&gt;
     Here's a summary of the validation failures:
-    &lt;ul id="validity-summary-output"&gt;&lt;/ul&gt;
+    &lt;ul&gt;&lt;/ul&gt;
 &lt;/div&gt;
             </pre>
             
@@ -1525,9 +1530,9 @@ $.validity.setup({ modalErrorsClickable:false });
             </p>
             
             <p>
-                Essentially, the element with id of <code>validity-summary-container</code> is shown or hidden depending whether
+                Essentially, the element with CSS class of <code>validity-summary-container</code> is shown or hidden depending whether
                 there are any errors. The actual messages will be insterted into their individual <code>&lt;li/&gt;</code> 
-                elements into the <code>&lt;ul/&gt;</code> element with id of <code>validity-summary-output</code>.
+                elements into the <code>&lt;ul/&gt;</code> element inside of the container element.
             </p>
             
             <p>
@@ -1565,7 +1570,7 @@ $.validity.setup({ outputMode:"summary" });
             
             <p>
                 The CSS file contains three groups of styles. (One for each of the output modes. See <a href="#OutputModes">Output 
-                Modes</a>) The groups you should decide to copy over and modify depend on which Output Modes you are using.
+                Modes</a>.) The groups you decide to copy over and modify should depend on which Output Modes you are using.
             </p>
             
             
@@ -1574,7 +1579,529 @@ $.validity.setup({ outputMode:"summary" });
             <h4 id="LabelCSS">Label</h4>
             
             <p>
-                
+                The Label output mode uses a single style. The selector for this style is <code>label.error</code>, therefore
+                it will be applied to all HTML label elements with the CSS class <code>error</code>.
+            </p>
+            
+            <p>
+                The boilerplate CSS for this style is nothing special. It specifies some colors and a background image that
+                grants the label an arrow-shaped corner on the left side. It also makes use of unstandardized properties
+                that give the labels rounded corners in non-Internet-Explorer browsers. Below is an example:
+            </p>
+            
+            <div class="example">
+                <input type="text" value="This is a bad input." /><label class="error">This is a validation message.</label>
+            </div>
+            
+            <p>
+                The complete CSS style for the Label output mode is below:
+            </p>
+            
+            <pre class="prettyprint lang-css scroll">
+label.error { 
+    color:#fff; 
+    margin-left:2px; 
+    background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAABkCAYAAABwx8J9AAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9kHCBQwHSkeQj4AAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAADTElEQVR42u3bPU5UURzG4f8dLjqVDZ0roJnQ0tNM4ixF1gB7GDpX4CJcgDuwcgfYAiHhWBhvYowf6Mww7+F5KgsFcil+vueeGaoDbXXyqqo+VtVxAcAzNIg5AAi6mAOAoIs5AGzCLDLmy8VptYf3Yg4AoQu9LRendVAXNcyWfn0AEBh0x+wAEB50MQeAX4t4h+6dOQCEL3TvzAEgPOhiDgDhQRdzAAgPugtwAPA4e3cpzgU4AAhf6I7ZASA86GIOAOFBF3MACA+6mANAeNDFHADCgy7mABAedJ8zB4DN2vnn0H3OHADCF7pjdgAID7pjdgDYnp0cuTtmB4Dwhe6YHQDCgy7mABAedDEHgPCguwAHAOFBF3MA2L2N3nJ3mx0Awhe6ZQ4A4UEXcwAID7qYA0B40MUcAPbDP1+KcwEOAMIXumUOAOFBF3MACA+6mANAeNDFHAD2119dinMBDgDCF7plDgDhQRdzAAgPupgDQHjQxRwAsvx0Kc4FOAAIX+htuTitg7qoYbb0aAAgMOiO2QEg12xa5o7ZASB3obfVycuq+lxVrz0OAEhd6F9uX1R7eFetXXscABC60L//oa1OLqvqwiMBgOCgT1Fv7W0Nw5FHAwA5fvwc+s3duqpdOX4HgOCFXlXVzo6Pan54XjVY6gCQGnRRB4BOgi7qANBJ0Kewu/0OAHtv/OPfuLlb1/ywLHUACF7oVY7fAaCLoIs6AHQS9Cns3qkDQH7QRR0AOgm6qANAJ0EXdQDYH+N//WsfaQOA/IVuqQNAR0EXdQDoJOiiDgCdBF3UAeBpjBv/ii7KAUD+QrfUAaCjoFdVtTeLS0sdALZvttWvfnu/rmG48pgBIHihT0vd8TsAbNW4k+/iohwA5C90Sx0AeljoljoA9LPQq6ra2fFRzQ/PRR0AgoM+hd3xOwBszPhk39nxOwDkL3RLHQB6WOiWOgD0s9CrXJQDgC6CPoXd8TsA5Add1AGgk6CLOgB0EnRRB4DHGff2J3P7HQDyF3qV2+8A0EXQp7A7fgeA/KCLOgD83hjzk3qnDgD5C73KO3UA6CLoog4AnQRd1AGgk6CLOgB0EnRRB4BOgi7qAPDNLP5/JB8+Xdft/bqqXfl1AvBcfQW3IyGQZuiNgAAAAABJRU5ErkJggg==");
+    background-position:left center;
+    background-repeat:no-repeat;
+    padding:2px;
+    padding-left:18px;
+    -moz-border-radius:4px;
+    -webkit-border-radius: 4px;
+}
+            </pre>
+            
+            <p>
+                To adapt the look of the label output mode, this style is all that must be changed.
+            </p>
+            
+            <hr />
+            
+            <h4 id="ModalCSS">Modal</h4>
+            
+            <p>
+                The Modal output mode uses two styles by default. These styles are built around the
+                <code>validity-modal-msg</code> CSS class. When Validity generates a Modal message, 
+                it will be placed under this class.
+            </p>
+            
+            <p>
+                For the most part these styles determine the appearence of the messages (i.e. Background
+                Color, Border, Padding, etc.), but it is important to note the <code>position:absolute;</code>
+                statement. This property is necessary for the Modal errors to be positioned near the inputs.
+                If you edit this style, do not change the position property.
+            </p>
+            
+            <p>
+                The other style used by Modal is an hover pseudoclass that highlights the error messages to 
+                indicate that they might be clicked. If you disable the <code>modalErrorsClickable</code> setting (see 
+                <a href="#Modal">Modal</a>) you may wish to remove this style.
+            </p>
+            
+            <p>
+                Below is an example:
+            </p>
+            
+            <div class="example">
+                <input type="text" value="This is a bad input." /><div class="validity-modal-msg" style="position:static;display:inline;">This is a validation message.</label>
+            </div>
+            
+            <p>
+                The complete CSS styles for the Modal output mode are below:
+            </p>
+            
+            <pre class="prettyprint lang-css">
+.validity-modal-msg { 
+    position:absolute; 
+    z-index:2; 
+    background-color:#999; 
+    border:solid 1px #000; 
+    padding:4px;
+    cursor:pointer; 
+}
+.validity-modal-msg:hover { 
+    background-color:#aaa; 
+}
+            </pre>
+            
+            <hr />
+            
+            <h4 id="SummaryCSS">Summary</h4>
+            
+            <p>
+                The Summary output mode uses three styles. The first two styles change the summary,
+                whereas the third is for highlighting inputs that have errors.
+            </p>
+            
+            <p>
+                The complete CSS styles for the Summary output mode are below:
+            </p>
+            
+            <pre class="prettyprint lang-css">
+.validity-summary-container { display:none; }
+.validity-summary-output ul { }
+.validity-erroneous { border:solid 2px #f56600 !important; }
+            </pre>
+            
+            <p>
+                When adapting these styles, the only property that should not be changed is the <code>display:none;</code>
+                which is applied to elements with the CSS class <code>validity-summary-container</code>. This will keep the 
+                summary hidden by default so that it will not be shown when the page loads.
+            </p>
+            
+            <p>
+                The <code>UL</code> element inside the container will house the errors. If you would like to modify the 
+                bullet-style or anything else to do with the list this second style will be where to do it.
+            </p>
+            
+            <p>
+                The complete CSS styles for the Summary output mode are below:
+            </p>
+            
+            <div class="example">
+                <input type="text" value="This is a bad input." class="validity-erroneous" />
+                <div class="validity-summary-container" style="display:block;">
+                    This is the summary:
+                    <ul>
+                        <li>Here's a validation message.</li>
+                        <li>Here's another validation message.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr />
+            
+            <h3 id="EditingMessages">Customizing Messages</h3>
+            
+            <p>
+                You can modify the default error messages that are built into Validity. If you dislike the wording of any 
+                of these default messages you may override them easily. Executing the following code will overrite all of 
+                the messages.
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.extend($.validity.messages, {
+    require:"#{field} is required.",
+
+    // Format validators:
+    match:"#{field} is in an invalid format.",
+    integer:"#{field} must be a positive, whole number.",
+    date:"#{field} must be formatted as a date.",
+    email:"#{field} must be formatted as an email.",
+    usd:"#{field} must be formatted as a US Dollar amount.",
+    url:"#{field} must be formatted as a URL.",
+    number:"#{field} must be formatted as a number.",
+    zip:"#{field} must be formatted as a zipcode ##### or #####-####.",
+    phone:"#{field} must be formatted as a phone number ###-###-####.",
+    guid:"#{field} must be formatted as a guid like {3F2504E0-4F89-11D3-9A0C-0305E82C3301}.",
+    time24:"#{field} must be formatted as a 24 hour time: 23:00.",
+    time12:"#{field} must be formatted as a 12 hour time: 12:00 AM/PM",
+
+    // Value range messages:
+    lessThan:"#{field} must be less than #{max}.",
+    lessThanOrEqualTo:"#{field} must be less than or equal to #{max}.",
+    greaterThan:"#{field} must be greater than #{min}.",
+    greaterThanOrEqualTo:"#{field} must be greater than or equal to #{min}.",
+    range:"#{field} must be between #{min} and #{max}.",
+
+    // Value length messages:
+    tooLong:"#{field} cannot be longer than #{max} characters.",
+    tooShort:"#{field} cannot be shorter than #{min} characters.}",
+
+    // Aggregate validator messages:
+    equal:"Values don't match.",
+    distinct:"A value was repeated.",
+    sum:"Values don't add to #{sum}.",
+    sumMax:"The sum of the values must be less than #{max}.",
+    sumMin:"The sum of the values must be greater than #{min}.",
+
+    nonHtml:"#{field} cannot contain Html characters.",
+
+    generic:"Invalid."
+});
+            </pre>
+            
+            <p>
+                With the above code snippet, you may edit any of the strings and Validity will subsequently
+                use that for the default message. As an alternative syntax you may simply edit the strings 
+                in the following way:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.messages.match = "The format of #{field} is totally wrong.";
+            </pre>
+            
+            <p>
+                Please note that the #{field} token is not used in aggregate validator messages because they
+                do not deal with any particular field. (See <a href="#TokenizedMessages">Tokenized Messages</a>.)
+            </p>
+            
+            <hr />
+            
+            <h3 id="ExtendingMatchSupport">Customizing/Extending Match Validator Support</h3>
+            
+            <p>
+                You can add more format checkers to the Validity match validator with the following syntax.
+            </p>
+            
+            <pre class="prettyprint lang-js scroll">
+// Adds match validator support to format-check against list of email addresses 
+// separated by semicolons.
+// Lovingly borrowed from http://regexlib.com/REDetails.aspx?regexp_id=1007
+
+// Add the pattern:
+$.validity.patterns.emailList = /^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$/;
+
+// Add the message under the same name:
+$.validity.messages.emailList = "#{field} must be formatted as a series of email-addresses separated by semicolons.";
+            </pre>
+            
+            <p>
+                As you can see, we add the pattern under the name <code>emailList</code> and also add a message
+                under the same name. Now that that's been executed, we can pass that name into the match validator.
+                For example:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+// You can simply use the name of your new format and pass it in as a string:
+$("#ListOfEmailAddresses")
+    .require()
+    .match("emailList");
+            </pre>
+            
+            <p>
+                Note that, when adding a format to the match validator, adding the message is optional, but 
+                recommended.
+            </p>
+            
+            <p>
+                Using the same syntax, you are also able to override the Regular Expressions used by the built-in
+                formats.
+            </p>
+            
+            <hr />
+            
+            <h3 id="LanguagePackages">Language Packages/Internationalization</h3>
+            
+            <p>
+                Because of the many ways that Validity can be customized, writing an Internationalization package
+                is relatively simple. As an example (as included with validity) the following code will install a
+                Russian-language package which will change the validation messages into Russian and change some of 
+                the match-validator expressions:
+            </p>
+            
+            <pre class="prettyprint lang-js scroll">
+$.extend($.validity.messages, {
+    require:"#{field} обязательное поле.",
+    match:"#{field} неправильный формат.",
+    integer:"#{field} должно быть положительным числом.",
+    date:"#{field} должно быть отформатирован как дата. (число.месяц.Год, 04.05.2006)",
+    email:"#{field} должно быть отформатированы как адреса электронной почты.",
+    usd:"#{field} должно быть отформатированы как деньги США.",
+    url:"#{field} должно быть отформатированы как URL.",
+    number:"#{field} должно быть отформатирован в виде числа.",
+    zip:"#{field} должно быть отформатированы как почтовый индекс. (###)",
+    phone:"#{field} должно быть отформатированы как телефонный номер.",
+    guid:"#{field} должно быть отформатированы как GUID (как {3F2504E0-4F89-11D3-9A0C-0305E82C3301}).",
+    time24:"#{field} должно быть отформатированы 24-часовой.",
+    time12:"#{field} должно быть отформатированы 12-часовой. (12:00 AM/PM)",
+
+    // Value range messages:
+    lessThan:"#{field} должно быть меньше #{max}.",
+    lessThanOrEqualTo:"#{field} должно быть меньше или равным #{max}.",
+    greaterThan:"#{field} должно быть больше #{min}.",
+    greaterThanOrEqualTo:"#{field} должно быть больше или равно #{min}.",
+    range:"#{field} должно быть между #{min} и #{max}.",
+
+    // Value length messages:
+    tooLong:"#{field} может быть не более #{max} букв.",
+    tooShort:"#{field} может быть не меньше #{min} букв.}",
+
+    // Aggregate validator messages:
+    equal:"Значения не равны.",
+    distinct:"Было повторено значения.",
+    sum:"Показатели не добавить до #{sum}.",
+    sumMax:"Сумма значений должно быть меньше #{max}.",
+    sumMin:"Сумма значений должно быть больше #{min}.",
+
+    nonHtml:"#{field} не может содержать символы HTML.",
+
+    generic:"Неверно."
+});
+
+$.validity.setup({ defaultFieldName:"поле" });
+
+$.extend($.validity.patterns, {
+    // Based off of http://en.wikipedia.org/wiki/Calendar_date
+    date:/^([012]\d|30|31)\.([01]\d)\.\d{1,4}$/, 
+    
+    // Russian postal codes, based off of http://en.wikipedia.org/wiki/List_of_postal_codes_in_Russia
+    zip: /^\d{3}$/,
+    
+    // Russian phone number pattern from http://regexlib.com/REDetails.aspx?regexp_id=1463
+    phone: /((8|\+7)-?)?\(?\d{3,5}\)?-?\d{1}-?\d{1}-?\d{1}-?\d{1}-?\d{1}((-?\d{1})?-?\d{1})?/
+});
+            </pre>
+            
+            <hr />
+            
+            <h3 id="CustomOutputMode">Writing a Custom Output Mode</h3>
+            
+            <p>
+                A major goal of Validity is to allow complete control over how validation messages
+                appear so that they can look like they belong in your site. If adapting the CSS 
+                of any of the existing output modes you can write your own output mode from the ground up.
+            </p>
+            
+            <p>
+                This may sound difficult, but thanks to Validity's philosophy of Separation of Interests
+                it's really rather trivial. It involves two steps: first you install your custom output 
+                mode, then you enable it.
+            </p>
+            
+            <p>
+                Here's a template for creating your own custom output mode:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+(function(){
+
+    // The output mode will be named whatever you assign it to.
+    // In this example, since we're assigning it to 'myOutputMode'
+    // it will be called 'myOutputMode'.
+    $.validity.outputs.myOutputMode = {
+        // The start function will be called when validation starts.
+        // This allows you to prepare the page for validation, for instance
+        // you might remove any validation messages that are already on the page.
+        start:function(){ 
+        
+        },
+        
+        // The end function is called when validation has concluded.
+        // This allows you to flush any buffers or do anything you need to
+        // after all of the validators have been called.
+        end:function() { 
+        
+        },
+        
+        // The raise function is called to raise an error for a specific input.
+        // The first argument is a jQuery object of the input to raise the error message for.
+        // The second argument is the string of the error message.
+        raise:function($obj, msg){
+        
+        },
+        
+        // The raiseAggregate function is similar to the raise function, except that
+        // the $obj argument will be a jQuery object of several inputs, 
+        // all of which are invalid aggregately.
+        raiseAggregate:function($obj, msg){ 
+        
+        },
+        
+        // The scrollToFirstError function is an optional feature of Validity,
+        // where, if it's enabled, Validity will scroll the page so that the first invalid
+        // input will be in view when validation has concluded.
+        scrollToFirstError:function(){
+        
+        }
+    }
+})();
+
+// Now enable the output mode we just installed.
+$.validity.setup({ outputMode:'myOutputMode' });
+            </pre>
+            
+            <p>
+                As an example, here is an output mode that will raise a JavaScript alert box, and then
+                animate the border of the bad input:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+// First install the new output mode:
+(function(){
+    
+    // We'll decide to install our custom output mode under the name 'custom':
+    $.validity.outputs.custom = {
+        
+        // In this case, the start function will just reset the inputs:
+        start:function(){ 
+            $("input:text")
+                .css({border:'1px solid green'})
+                .removeClass('fail');
+        },
+        
+        // This output mode does not need to take advantage of the end function.
+        // We'll just omit this function.
+        //end:function() { },
+        
+        // Our raise function will display the error and animate the text-box:
+        raise:function($obj, msg){
+            
+            // Make the JavaScript alert box with the message:
+            alert(msg);
+            
+            // Animate the border of the text box:
+            $obj
+                .animate({ borderWidth: "10px" }, 1000)
+                .css({borderColor:'red'})
+                .addClass('fail');
+        },
+        
+        // Our aggregate raise will just raise the error on the last input:
+        raiseAggregate:function($obj, msg){ 
+            this.raise($($obj.get($obj.length - 1)), msg); 
+        },
+        
+        // Cause the browser to scroll to the first bad input by setting the hashL
+        scrollToFirstError:function(){
+            location.hash = $('.fail:eq(0)').attr('id');
+        }
+    }
+})();
+
+// Now enable the output mode we just installed.
+$.validity.setup({ outputMode:'custom' });
+
+// Our custom output mode is installed and will be used whenever Validity is run.
+            </pre>
+            
+            <p>
+                Below is an example of this output mode in action. Try submitting it without 
+                entering anything in the text-box.
+            </p>
+            
+            <div class="ex_w_src">    
+                <div>[<a href="#_">View Source</a>]</div>
+                <iframe id="setup-iframe" src="lib/customoutput.htm"></iframe>
+                <pre id="setup-src" class="prettyprint lang-html">
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Custom Output&lt;/title&gt;
+    &lt;script type="text/javascript" src="../../jquery.js"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript" src="../../jquery.validity.js"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript"&gt;
+    (function(){
+        $.validity.outputs.custom = {
+            start:function(){ 
+                $("input:text")
+                    .css({border:'1px solid green'})
+                    .removeClass('fail');
+            },
+            
+            raise:function($obj, msg){
+                alert(msg);
+                $obj
+                    .animate({ borderWidth: "10px" }, 1000)
+                    .css({borderColor:'red'})
+                    .addClass('fail');
+            },
+            
+            // Just raise the error on the last input.
+            raiseAggregate:function($obj, msg){ 
+                this.raise($($obj.get($obj.length - 1)), msg); 
+            },
+            
+            scrollToFirstError:function(){
+                location.hash = $('.fail:eq(0)').attr('id');
+            }
+        }
+        
+        $.validity.setup({ outputMode:'custom' });
+    })();
+      
+    // Instruct validity to validate the page by requiring 
+    // the input matched by a jQuery selector.
+    $(function() { $("form").validity("#text"); });
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;form action="customoutput.htm" method="post"&gt;
+      This field is required:
+      &lt;input type="text" id="text" name="text" style="border:solid 1px green" /&gt;
+      &lt;input type="submit" /&gt;
+    &lt;/form&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+                </pre>
+            </div>
+            
+            <p>
+                Using the template above, you can easily make your own output mode and package it nicely
+                in its own, reuseable, easily shared JavaScript file.
+            </p>
+            
+            <hr />
+            
+            <h2 id="Miscellaneous">Miscellaneous</h2>
+            
+            <hr />
+            
+            <h3 id="SetupFunction">The Setup Function</h3>
+            
+            <p>
+                Validity supplies a setup function to let you modify global Validity settings. The syntax for this 
+                function, and all of the settings you have access to are below:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.setup({
+    // You may change the output mode with this property.
+    outputMode: "label",
+
+    // The this property is set to true, validity will scroll the browser viewport
+    // so that the first error is visible when validation fails.
+    scrollTo: false,
+
+    // If this setting is true, modal errors will disappear when they are clicked on.
+    modalErrorsClickable: true,
+
+    // If a field name cannot be otherwise inferred, this will be used.
+    defaultFieldName: "This field",
+});
+            </pre>
+            
+            <p>
+                You may edit any or all of these settings at once.
             </p>
             
             <hr />

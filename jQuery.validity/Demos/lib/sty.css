@@ -9,3 +9,4 @@ ul ul { padding-left:20px; }
 #content { max-width:768px; border-right:solid 1px #000; padding-right:20px; }
 #logo { /*width:420px;*/ }
 #scrollback { position:fixed; bottom:10px; right:10px; }
+.scroll { overflow:scroll; }

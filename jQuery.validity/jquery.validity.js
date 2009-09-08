@@ -936,11 +936,7 @@
     (function() {
         var 
             // Container contains the summary. This is the element that is shown or hidden.
-            container = "#validity-summary-container",
-            
-            // Summary is the element that contains the messages.
-            // This should be an UL element.
-            summary = "#validity-summary-output",
+            container = ".validity-summary-container",
             
             // Erroneous refers to an input with an invalid value,
             // not the error message itself.
@@ -967,7 +963,7 @@
                 // Hide the container and empty its summary.
                 $(container)
                     .hide()
-                    .find(summary)
+                    .find("ul")
                         .html('');
 
                 // If there are any errors at all:
@@ -977,7 +973,7 @@
                     for (var i = 0; i < buffer.length; i++) {
                         $(wrapper)
                             .text(buffer[i])
-                            .appendTo(summary);
+                            .appendTo(container + " ul");
                     }
 
                     $(container).show();
