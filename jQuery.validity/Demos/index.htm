@@ -1920,7 +1920,10 @@ $.extend($.validity.patterns, {
         // The end function is called when validation has concluded.
         // This allows you to flush any buffers or do anything you need to
         // after all of the validators have been called.
-        end:function() { 
+        // results will be the results object.
+        // results.valid is a boolean representing whether the form is valid.
+        // results.errors is an integer of how many errors there are.
+        end:function(results) { 
         
         },
         
@@ -1937,13 +1940,6 @@ $.extend($.validity.patterns, {
         raiseAggregate:function($obj, msg){ 
         
         },
-        
-        // The scrollToFirstError function is an optional feature of Validity,
-        // where, if it's enabled, Validity will scroll the page so that the first invalid
-        // input will be in view when validation has concluded.
-        scrollToFirstError:function(){
-        
-        }
     }
 })();
 
@@ -1970,9 +1966,12 @@ $.validity.setup({ outputMode:'myOutputMode' });
                 .removeClass('fail');
         },
         
-        // This output mode does not need to take advantage of the end function.
-        // We'll just omit this function.
-        //end:function() { },
+        end:function(results) { 
+            // If not valid and scrollTo is enabled, scroll the page to the first error.
+            if (!results.valid && $.validity.settings.scrollTo) {
+                location.hash = $(".fail:eq(0)").attr('id')
+            }
+        },
         
         // Our raise function will display the error and animate the text-box:
         raise:function($obj, msg){
@@ -1994,7 +1993,7 @@ $.validity.setup({ outputMode:'myOutputMode' });
         
         // Cause the browser to scroll to the first bad input by setting the hashL
         scrollToFirstError:function(){
-            location.hash = $('.fail:eq(0)').attr('id');
+            
         }
     }
 })();
@@ -2026,6 +2025,13 @@ $.validity.setup({ outputMode:'custom' });
                 $("input:text")
                     .css({border:'1px solid green'})
                     .removeClass('fail');
+            },
+            
+            end:function(results) {
+                // If not valid and scrollTo is enabled, scroll the page to the first error.
+                if (!results.valid && $.validity.settings.scrollTo) {
+                    location.hash = $(".fail:eq(0)").attr('id')
+                }
             },
             
             raise:function($obj, msg){
@@ -2062,6 +2068,7 @@ $.validity.setup({ outputMode:'custom' });
     &lt;/form&gt;
   &lt;/body&gt;
 &lt;/html&gt;
+
                 </pre>
             </div>
             
@@ -2096,7 +2103,7 @@ $.validity.setup({
     modalErrorsClickable: true,
 
     // If a field name cannot be otherwise inferred, this will be used.
-    defaultFieldName: "This field",
+    defaultFieldName: "This field"
 });
             </pre>
             

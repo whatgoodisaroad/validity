@@ -145,26 +145,17 @@
 
         // Function called when validation is over to examine the results and clean-up.
         end:function() {
-            // Notify the current output mode that validation is over.
-            if (this.outputs[this.settings.outputMode] &&
-                this.outputs[this.settings.outputMode].end) {
-                this.outputs[this.settings.outputMode].end();
-            }
-
             // Null coalescence: fix for Issue 5
             var results = this.report || { errors: 0, valid: true };
 
             this.report = null;
-
-            // If there was at least one error, scrollTo is enabled, an output mode is specified,
-            // and if that output mode has a scrollToFirstError method, then scroll to that error.
-            if (!results.valid &&
-                this.settings.scrollTo &&
-                this.outputs[this.settings.outputMode] &&
-                this.outputs[this.settings.outputMode].scrollToFirstError) {
-                this.outputs[this.settings.outputMode].scrollToFirstError();
+            
+            // Notify the current output mode that validation is over.
+            if (this.outputs[this.settings.outputMode] &&
+                this.outputs[this.settings.outputMode].end) {
+                this.outputs[this.settings.outputMode].end(results);
             }
-
+            
             return results;
         },
 
@@ -636,8 +627,8 @@
         // http://code.google.com/p/validity/wiki/Validators#Assert
         assert:function(expression, msg) {
             // If a reduced set is attached, use it.
-            // Also, remove unsupported elements.
-            var $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport);
+            // Do not reduce to supported elements.
+            var $reduction = this.reduction || this;
 
             if ($reduction.length) {
 
@@ -832,6 +823,13 @@
                 // Remove all the existing error labels.
                 $("label.error").remove();
             },
+            
+            end:function(results) {
+                // If not valid and scrollTo is enabled, scroll the page to the first error.
+                if (!results.valid && $.validity.settings.scrollTo) {
+                    location.hash = $("label.error:eq(0)").attr('for');
+                }
+            },
 
             raise:function($obj, msg) {
                 var 
@@ -870,12 +868,6 @@
                 if ($obj.length) {
                     this.raise($($obj.get($obj.length - 1)), msg);
                 }
-            },
-
-            scrollToFirstError:function() {
-                if ($("label.error").length) {
-                    location.hash = $("label.error:eq(0)").attr('for');
-                }
             }
         };
     })();
@@ -893,6 +885,13 @@
             start:function() {
                 // Remove all the existing errors.
                 $("." + errorClass).remove();
+            },
+            
+            end:function(results) {
+                // If not valid and scrollTo is enabled, scroll the page to the first error.
+                if (!results.valid && $.validity.settings.scrollTo) {
+                    location.hash = $("." + errorClass + ":eq(0)").attr('id')
+                }
             },
 
             raise:function($obj, msg) {
@@ -924,10 +923,6 @@
                 if ($obj.length) {
                     this.raise($($obj.get($obj.length - 1)), msg);
                 }
-            },
-
-            scrollToFirstError:function() {
-                location.hash = $("." + errorClass + ":eq(0)").attr('id')
             }
         };
     })();
@@ -959,7 +954,7 @@
                 buffer = [];
             },
 
-            end:function() {
+            end:function(results) {
                 // Hide the container and empty its summary.
                 $(container)
                     .hide()
@@ -977,6 +972,11 @@
                     }
 
                     $(container).show();
+                    
+                    // If scrollTo is enabled, scroll the page to the first error.
+                    if ($.validity.settings.scrollTo) {
+                        location.hash = $(errors + ":eq(0)").attr("id");
+                    }
                 }
             },
 
@@ -987,10 +987,6 @@
 
             raiseAggregate:function($obj, msg) {
                 this.raise($obj, msg);
-            },
-
-            scrollToFirstError:function() {
-                location.hash = $(errors + ":eq(0)").attr("id");
             }
         };
     })();
