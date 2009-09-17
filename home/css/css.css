@@ -1,0 +1,51 @@
+html, body { padding:0; margin:0; color:#2c2c2c; font-family:Calibri, Lucida Sans Unicode, Lucida Grande, sans-serif }
+iframe, pre { width:98%; border:1px solid #2c2c2c; padding:10px; margin:4px; }
+a, a:visited { color:#2c2c2c; }
+#main {
+    background-image:url('../img/back.png');
+    background-position:bottom center;
+    background-repeat:no-repeat;
+    width:800px;
+    padding:100px;
+    padding-top:0;
+}
+#logo { display:block; }
+#nav { top:-25px; position:relative; }
+#header h1, #header h2, #header h3 { margin:0; }
+p, ol { text-align:justify; text-justify:newspaper; }
+
+#carouselDownload, #downloadLink {
+    background-image:url('../images/dl.png');
+    width:251px;
+    height:139px;
+    color:#bbb;
+    display:block;
+    text-align:center;
+}
+
+#carouselDownload:hover, #downloadLink:hover {
+    color:#fff;
+}
+
+#carouselDownload h2, #downloadLink h2 {
+    padding-top:20px;
+    margin-bottom:0;
+    display:block;
+    position:relative;
+}
+
+#downloadLink h2 {
+    padding-top:0;
+    top:34px;
+}
+
+#carouselDownload h5, #downloadLink h5 { 
+    margin:0;
+    font-size:8pt;
+    display:block;
+    position:relative;
+}
+
+#downloadLink h5 {
+    top:36px;
+}

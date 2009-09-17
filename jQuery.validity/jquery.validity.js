@@ -1,29 +1,30 @@
 /*
  * jQuery.validity v1.0.0
+ * http://validity.thatscaptaintoyou.com/
  * http://code.google.com/p/validity/
  * 
  * Copyright (c) 2009 Wyatt Allen
  * Dual licensed under the MIT and GPL licenses.
  *
- * Date: 2009-6-27 (Saturday, 27 June 2009)
- * Revision: 70
+ * Date: 2009-8-13 (Sunday, 13 September 2009)
+ * Revision: 117
  */
 (function($) {
     // Default settings.
     var 
         defaults = {
             // The default output mode is label because it requires no dependencies.
-            outputMode: "label",
+            outputMode:"label",
 
             // The this property is set to true, validity will scroll the browser viewport
             // so that the first error is visible when validation fails.
-            scrollTo: false,
+            scrollTo:false,
 
             // If this setting is true, modal errors will disappear when they are clicked on.
-            modalErrorsClickable: true,
+            modalErrorsClickable:true,
 
             // If a field name cannot be otherwise inferred, this will be used.
-            defaultFieldName: "This field",
+            defaultFieldName:"This field",
             
             // jQuery selector to filter down to validation-supported elements.
             elementSupport:":text, :password, textarea, select, :radio, :checkbox",
@@ -45,26 +46,32 @@
         // Built-in library of format-checking tools for use with the 
         // match validator (as well as the nonHtml validator).
         patterns:{
-            integer: /^\d+$/,
+            integer:/^\d+$/,
             
             // Used to use Date.parse(), which was the cause of Issue 9, 
             // where the function would accept 09/80/2009 as parseable.
             // The fix is to use a RegExp that will only accept American Middle-Endian form.
             // See the Internationalization section in the documentation for how to
             // cause it to support other date formats.
-            date:/^([01]\d)\/([012]\d|30|31)\/\d{1,4}$/, 
+            date:/^([01]?\d)\/([012]?\d|30|31)\/\d{1,4}$/, 
             
-            email: /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i,
-            usd: /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/,
-            url: /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i,
-            number:function(val) { return !isNaN(parseFloat(val)); },
-            zip: /^\d{5}(-\d{4})?$/,
-            phone: /^[2-9]\d{2}-\d{3}-\d{4}$/,
-            guid: /^(\{?([0-9a-fA-F]){8}-(([0-9a-fA-F]){4}-){3}([0-9a-fA-F]){12}\}?)$/,
-            time12: /^[01]?\d:[0-5]\d?\s?[aApP]\.?[mM]\.?$/,
-            time24: /^(20|21|22|23|[01]\d|\d)(([:][0-5]\d){1,2})$/,
+            email:/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i,
+            usd:/^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/,
+            url:/^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i,
+            
+            // Number should accept floats or integers, be they positive or negative.
+            // It should also support scientific-notation, written as a lower or capital 'E' followed by the radix.
+            // Number assumes base 10. 
+            // Unlike the native parseFloat or parseInt functions, this should not accept trailing Latin characters.
+            number:/^[+-]?(\d+(\.\d*)?|\.\d+)([Ee]\d+)?$/,
+            
+            zip:/^\d{5}(-\d{4})?$/,
+            phone:/^[2-9]\d{2}-\d{3}-\d{4}$/,
+            guid:/^(\{?([0-9a-fA-F]){8}-(([0-9a-fA-F]){4}-){3}([0-9a-fA-F]){12}\}?)$/,
+            time12:/^[01]?\d:[0-5]\d?\s?[aApP]\.?[mM]\.?$/,
+            time24:/^(20|21|22|23|[01]\d|\d)(([:][0-5]\d){1,2})$/,
 
-            nonHtml: /[^<>]/g
+            nonHtml:/[^<>]/g
         },
 
         // Built-in set of default error messages (for use when message isn't specified).
@@ -755,7 +762,7 @@
         for (var p in obj) {
             str = str.replace("#{" + p + "}", obj[p]);
         }
-        return capitolize(str);
+        return capitalize(str);
     }
 
     // Infer the field name of the passed DOM element.
@@ -781,8 +788,8 @@
         else if (/^[a-z0-9_]*$/.test(field.id)) {
             var arr = field.id.split("_");
 
-            for (var i in arr) {
-                arr[i] = capitolize(arr[i]);
+            for (var i = 0; i < arr.length; i++) {
+                arr[i] = capitalize(arr[i]);
             }
 
             ret = arr.join(" ");
@@ -792,7 +799,7 @@
     }
 
     // Capitolize the first character of the string argument.
-    function capitolize(sz) {
+    function capitalize(sz) {
         return sz.substring ?
             sz.substring(0, 1).toUpperCase() + sz.substring(1, sz.length) :
             sz;
@@ -800,197 +807,189 @@
 
     // End defining internal utilities //
     /////////////////////////////////////
-
-    // Start installing output modes //
-    ///////////////////////////////////
-
-    // Install the label output.
-    (function() {
-        function getSelector($obj) {
-            return $obj.attr('id').length ?
-                ("#" + $obj.attr('id')) :
-                ("[name='" + $obj.attr('name') + "']");
-        }
-
-        function getIdentifier($obj) {
-            return $obj.attr('id').length ?
-                $obj.attr('id') :
-                $obj.attr('name');
-        }
-
-        $.validity.outputs.label = {
-            start:function() {
-                // Remove all the existing error labels.
-                $("label.error").remove();
-            },
-            
-            end:function(results) {
-                // If not valid and scrollTo is enabled, scroll the page to the first error.
-                if (!results.valid && $.validity.settings.scrollTo) {
-                    location.hash = $("label.error:eq(0)").attr('for');
-                }
-            },
-
-            raise:function($obj, msg) {
-                var 
-                    //errorId = $obj.attr('id'),
-                    errorSelector = getSelector($obj),
-                    labelSelector = "label.error[for='" + getIdentifier($obj) + "']";
-
-                // If an error label already exists for the bad input just update its text:
-                if ($(labelSelector).length) {
-                    $(labelSelector).text(msg);
-                }
-
-                // Otherwize create a new one and stick it after the input:
-                else {
-                    $("<label/>")
-                        .attr("for", getIdentifier($obj))
-                        .addClass("error")
-                        .text(msg)
-
-                        // In the case that the element does not have an id
-                        // then the for attribute in the label will not cause
-                        // clicking the label to focus the element. This line 
-                        // will make that happen.
-                        .click(function() {
-                            if ($obj.length) {
-                                $obj[0].select();
-                            }
-                        })
-
-                        .insertAfter($obj);
-                }
-            },
-
-            raiseAggregate:function($obj, msg) {
-                // Just raise the error on the last input.
-                if ($obj.length) {
-                    this.raise($($obj.get($obj.length - 1)), msg);
-                }
-            }
-        };
-    })();
-
-    // Install the modal output.
-    (function() {
-        var 
-            // Class to apply to modal errors.
-            errorClass = "validity-modal-msg",
-            
-            // The selector for the element where modal errors will me injected semantically.
-            container = "body";
-            
-        $.validity.outputs.modal = {
-            start:function() {
-                // Remove all the existing errors.
-                $("." + errorClass).remove();
-            },
-            
-            end:function(results) {
-                // If not valid and scrollTo is enabled, scroll the page to the first error.
-                if (!results.valid && $.validity.settings.scrollTo) {
-                    location.hash = $("." + errorClass + ":eq(0)").attr('id')
-                }
-            },
-
-            raise:function($obj, msg) {
-                if ($obj.length) {
-                    var 
-                        off = $obj.offset(),
-                        obj = $obj.get(0),
-
-                        // Design a style object based off of the input's location.
-                        errorStyle = {
-                            left:parseInt(off.left + $obj.width() + 4) + "px",
-                            top:parseInt(off.top - 10) + "px"
-                        };
-                        
-                    // Create one and position it next to the input.
-                    $("<div/>")
-                        .addClass(errorClass)
-                        .css(errorStyle)
-                        .text(msg)
-                        .click($.validity.settings.modalErrorsClickable ?
-                            function() { $(this).remove(); } : null
-                        )
-                        .appendTo(container);
-                }
-            },
-
-            raiseAggregate:function($obj, msg) {
-                // Just raise the error on the last input.
-                if ($obj.length) {
-                    this.raise($($obj.get($obj.length - 1)), msg);
-                }
-            }
-        };
-    })();
-
-    // Install the summary output
-    (function() {
-        var 
-            // Container contains the summary. This is the element that is shown or hidden.
-            container = ".validity-summary-container",
-            
-            // Erroneous refers to an input with an invalid value,
-            // not the error message itself.
-            erroneous = "validity-erroneous",
-            
-            // Selector for erroneous inputs.
-            errors = "." + erroneous,
-            
-            // The wrapper for entries in the summary.
-            wrapper = "<li/>",
-
-            // Buffer to contain all the error messages that build up during validation.
-            // When validation ends, it'll be flushed into the summary.
-            // This way, the summary doesn't flicker empty then fill up.
-            buffer = [];
-
-        $.validity.outputs.summary = {
-            start:function() {
-                $(errors).removeClass(erroneous);
-                buffer = [];
-            },
-
-            end:function(results) {
-                // Hide the container and empty its summary.
-                $(container)
-                    .hide()
-                    .find("ul")
-                        .html('');
-
-                // If there are any errors at all:
-                // (Otherwise the container shouldn't be shown):
-                if (buffer.length) {
-                    // Use integer based iteration for solution to Issue 7.
-                    for (var i = 0; i < buffer.length; i++) {
-                        $(wrapper)
-                            .text(buffer[i])
-                            .appendTo(container + " ul");
-                    }
-
-                    $(container).show();
-                    
-                    // If scrollTo is enabled, scroll the page to the first error.
-                    if ($.validity.settings.scrollTo) {
-                        location.hash = $(errors + ":eq(0)").attr("id");
-                    }
-                }
-            },
-
-            raise:function($obj, msg) {
-                buffer.push(msg);
-                $obj.addClass(erroneous);
-            },
-
-            raiseAggregate:function($obj, msg) {
-                this.raise($obj, msg);
-            }
-        };
-    })();
-
-    // End installing output modes //
-    /////////////////////////////////
 })(jQuery);
+
+// Start installing output modes //
+///////////////////////////////////
+
+// Install the label output.
+(function($) {
+    function getIdentifier($obj) {
+        return $obj.attr('id').length ?
+            $obj.attr('id') :
+            $obj.attr('name');
+    }
+
+    $.validity.outputs.label = {
+        start:function() {
+            // Remove all the existing error labels.
+            $("label.error").remove();
+        },
+        
+        end:function(results) {
+            // If not valid and scrollTo is enabled, scroll the page to the first error.
+            if (!results.valid && $.validity.settings.scrollTo) {
+                location.hash = $("label.error:eq(0)").attr('for');
+            }
+        },
+
+        raise:function($obj, msg) {
+            var 
+                labelSelector = "label.error[for='" + getIdentifier($obj) + "']";
+
+            // If an error label already exists for the bad input just update its text:
+            if ($(labelSelector).length) {
+                $(labelSelector).text(msg);
+            }
+
+            // Otherwize create a new one and stick it after the input:
+            else {
+                $("<label/>")
+                    .attr("for", getIdentifier($obj))
+                    .addClass("error")
+                    .text(msg)
+
+                    // In the case that the element does not have an id
+                    // then the for attribute in the label will not cause
+                    // clicking the label to focus the element. This line 
+                    // will make that happen.
+                    .click(function() {
+                        if ($obj.length) {
+                            $obj[0].select();
+                        }
+                    })
+
+                    .insertAfter($obj);
+            }
+        },
+
+        raiseAggregate:function($obj, msg) {
+            // Just raise the error on the last input.
+            if ($obj.length) {
+                this.raise($($obj.get($obj.length - 1)), msg);
+            }
+        }
+    };
+})(jQuery);
+
+// Install the modal output.
+(function($) {
+    var 
+        // Class to apply to modal errors.
+        errorClass = "validity-modal-msg",
+        
+        // The selector for the element where modal errors will me injected semantically.
+        container = "body";
+        
+    $.validity.outputs.modal = {
+        start:function() {
+            // Remove all the existing errors.
+            $("." + errorClass).remove();
+        },
+        
+        end:function(results) {
+            // If not valid and scrollTo is enabled, scroll the page to the first error.
+            if (!results.valid && $.validity.settings.scrollTo) {
+                location.hash = $("." + errorClass + ":eq(0)").attr('id');
+            }
+        },
+
+        raise:function($obj, msg) {
+            if ($obj.length) {
+                var 
+                    off = $obj.offset(),
+                    obj = $obj.get(0),
+
+                    // Design a style object based off of the input's location.
+                    errorStyle = {
+                        left:parseInt(off.left + $obj.width() + 4, 10) + "px",
+                        top:parseInt(off.top - 10, 10) + "px"
+                    };
+                    
+                // Create one and position it next to the input.
+                $("<div/>")
+                    .addClass(errorClass)
+                    .css(errorStyle)
+                    .text(msg)
+                    .click($.validity.settings.modalErrorsClickable ?
+                        function() { $(this).remove(); } : null
+                    )
+                    .appendTo(container);
+            }
+        },
+
+        raiseAggregate:function($obj, msg) {
+            // Just raise the error on the last input.
+            if ($obj.length) {
+                this.raise($($obj.get($obj.length - 1)), msg);
+            }
+        }
+    };
+})(jQuery);
+
+// Install the summary output
+(function($) {
+    var 
+        // Container contains the summary. This is the element that is shown or hidden.
+        container = ".validity-summary-container",
+        
+        // Erroneous refers to an input with an invalid value,
+        // not the error message itself.
+        erroneous = "validity-erroneous",
+        
+        // Selector for erroneous inputs.
+        errors = "." + erroneous,
+        
+        // The wrapper for entries in the summary.
+        wrapper = "<li/>",
+
+        // Buffer to contain all the error messages that build up during validation.
+        // When validation ends, it'll be flushed into the summary.
+        // This way, the summary doesn't flicker empty then fill up.
+        buffer = [];
+
+    $.validity.outputs.summary = {
+        start:function() {
+            $(errors).removeClass(erroneous);
+            buffer = [];
+        },
+
+        end:function(results) {
+            // Hide the container and empty its summary.
+            $(container)
+                .hide()
+                .find("ul")
+                    .html('');
+
+            // If there are any errors at all:
+            // (Otherwise the container shouldn't be shown):
+            if (buffer.length) {
+                // Use integer based iteration for solution to Issue 7.
+                for (var i = 0; i < buffer.length; i++) {
+                    $(wrapper)
+                        .text(buffer[i])
+                        .appendTo(container + " ul");
+                }
+
+                $(container).show();
+                
+                // If scrollTo is enabled, scroll the page to the first error.
+                if ($.validity.settings.scrollTo) {
+                    location.hash = $(errors + ":eq(0)").attr("id");
+                }
+            }
+        },
+
+        raise:function($obj, msg) {
+            buffer.push(msg);
+            $obj.addClass(erroneous);
+        },
+
+        raiseAggregate:function($obj, msg) {
+            this.raise($obj, msg);
+        }
+    };
+})(jQuery);
+
+// End installing output modes //
+/////////////////////////////////
