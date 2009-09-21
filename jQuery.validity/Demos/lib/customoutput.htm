@@ -1,8 +1,8 @@
 <html>
   <head>
     <title>Custom Output</title>
-    <script type="text/javascript" src="jquery.js"></script>
-    <script type="text/javascript" src="jquery.validity.js"></script>
+    <script type="text/javascript" src="../../jquery.js"></script>
+    <script type="text/javascript" src="../../jquery.validity.js"></script>
     <script type="text/javascript">
     (function(){
         $.validity.outputs.custom = {
@@ -12,7 +12,12 @@
                     .removeClass('fail');
             },
             
-            end:function() { },
+            end:function(results) {
+                // If not valid and scrollTo is enabled, scroll the page to the first error.
+                if (!results.valid && $.validity.settings.scrollTo) {
+                    location.hash = $(".fail:eq(0)").attr('id')
+                }
+            },
             
             raise:function($obj, msg){
                 alert(msg);
