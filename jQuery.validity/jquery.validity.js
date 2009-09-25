@@ -1,13 +1,13 @@
 /*
- * jQuery.validity v1.0.0
+ * jQuery.validity v1.0.1
  * http://validity.thatscaptaintoyou.com/
  * http://code.google.com/p/validity/
  * 
  * Copyright (c) 2009 Wyatt Allen
  * Dual licensed under the MIT and GPL licenses.
  *
- * Date: 2009-8-13 (Sunday, 13 September 2009)
- * Revision: 117
+ * Date: 2009-9-25 (Friday, 25 September 2009)
+ * Revision: 122
  */
 (function($) {
     // Default settings.
@@ -71,7 +71,7 @@
             time12:/^[01]?\d:[0-5]\d?\s?[aApP]\.?[mM]\.?$/,
             time24:/^(20|21|22|23|[01]\d|\d)(([:][0-5]\d){1,2})$/,
 
-            nonHtml:/[^<>]/g
+            nonHtml:/^[^<>]*$/
         },
 
         // Built-in set of default error messages (for use when message isn't specified).
@@ -101,7 +101,7 @@
 
             // Value length messages:
             tooLong:"#{field} cannot be longer than #{max} characters.",
-            tooShort:"#{field} cannot be shorter than #{min} characters.}",
+            tooShort:"#{field} cannot be shorter than #{min} characters.",
 
             // Aggregate validator messages:
             equal:"Values don't match.",
@@ -110,7 +110,7 @@
             sumMax:"The sum of the values must be less than #{max}.",
             sumMin:"The sum of the values must be greater than #{min}.",
 
-            nonHtml:"#{field} cannot contain Html characters.",
+            nonHtml:"#{field} cannot contain HTML characters.",
 
             generic:"Invalid."
         },
@@ -219,7 +219,7 @@
         ///////////////////////////////
 
         // Validate whether the field has a value.
-        // http://code.google.com/p/validity/wiki/Validators#Require
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#Require
         require:function(msg) {
             return validate(
                 this,
@@ -231,7 +231,7 @@
         },
 
         // Validate whether the field matches a regex.
-        // http://code.google.com/p/validity/wiki/Validators#Match
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#Match
         match:function(rule, msg) {
             // If a default message is to be used:
             if (!msg) {
@@ -269,7 +269,7 @@
             );
         },
 
-        // http://code.google.com/p/validity/wiki/Validators#Range
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#Range
         range:function(min, max, msg) {
             return validate(
                 this,
@@ -297,7 +297,7 @@
             );
         },
 
-        // http://code.google.com/p/validity/wiki/Validators#GreaterThan
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#GreaterThan
         greaterThan:function(min, msg) {
             return validate(
                 this,
@@ -319,7 +319,7 @@
             );
         },
 
-        // http://code.google.com/p/validity/wiki/Validators#GreaterThanOrEqualTo
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#GreaterThan
         greaterThanOrEqualTo:function(min, msg) {
             return validate(
                 this,
@@ -363,7 +363,7 @@
             );
         },
 
-        // http://code.google.com/p/validity/wiki/Validators#LessThanOrEqualTo
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#LessThan
         lessThanOrEqualTo:function(max, msg) {
             return validate(
                 this,
@@ -385,7 +385,7 @@
             );
         },
 
-        // http://code.google.com/p/validity/wiki/Validators#MaxLength
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#LessThan
         maxLength:function(max, msg) {
             return validate(
                 this,
@@ -400,7 +400,7 @@
             );
         },
 
-        // http://code.google.com/p/validity/wiki/Validators#MinLength
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#Length
         minLength:function(min, msg) {
             return validate(
                 this,
@@ -417,7 +417,7 @@
 
         // Validate that all matched elements bear the same values.
         // Accepts a function to transform the values for testing.
-        // http://code.google.com/p/validity/wiki/Validators#Equal
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#Equal
         equal:function(arg0, arg1) {
             var 
                 // If a reduced set is attached, use it.
@@ -477,7 +477,7 @@
 
         // Validate that all matched elements bear distinct values.
         // Accepts an optional function to transform the values for testing.
-        // http://code.google.com/p/validity/wiki/Validators#Distinct
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#Distinct
         distinct:function(arg0, arg1) {
             var 
                 // If a reduced set is attached, use it.
@@ -547,7 +547,7 @@
         },
 
         // Validate that the numeric sum of all values is equal to a given value.
-        // http://code.google.com/p/validity/wiki/Validators#Sum
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#Sum
         sum:function(sum, msg) {
             // If a reduced set is attached, use it.
             // Also, remove unsupported elements.
@@ -570,7 +570,7 @@
         },
 
         // Validates an inclusive upper-bound on the numeric sum of the values of all matched elements.
-        // http://code.google.com/p/validity/wiki/Validators#SumMax
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#Sum
         sumMax:function(max, msg) {
             // If a reduced set is attached, use it.
             // Also, remove unsupported elements.
@@ -593,7 +593,7 @@
         },
 
         // Validates an inclusive lower-bound on the numeric sum of the values of all matched elements.
-        // http://code.google.com/p/validity/wiki/Validators#SumMin
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#Sum
         sumMin:function(min, msg) {
             // If a reduced set is attached, use it.
             // Also, remove unsupported elements.
@@ -616,6 +616,7 @@
         },
 
         // Validate that the input does not contain potentially dangerous strings.
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#NonHtml
         nonHtml:function(msg) {
             return validate(
                 this,
@@ -631,7 +632,7 @@
         // If expression is a function, it will be called on each matched element.
         // Otherwise, it is treated as a boolean, and the determines the validity 
         // of elements in an aggregate fashion.
-        // http://code.google.com/p/validity/wiki/Validators#Assert
+        // http://validity.thatscaptaintoyou.com/Demos/index.htm#Assert
         assert:function(expression, msg) {
             // If a reduced set is attached, use it.
             // Do not reduce to supported elements.

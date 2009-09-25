@@ -179,6 +179,17 @@
                     $.validity.start();
                     $('input').sumMax(200);
                     $.validity.end();
+                },
+                "Non HTML Test (Should Fail)":function(){
+                    var values = [
+                        "text", 2312, "<", "Safe text", "Un<safe Tex>t", "Loooooooooooooooooooooooooooooooooooooooooooooong text", "<<<<><<><", "ERM"
+                    ];
+                    $('input').each(function(i){
+                        this.value = values[i];
+                    });
+                    $.validity.start();
+                    $('input').nonHtml();
+                    $.validity.end();
                 }
 			};
 			

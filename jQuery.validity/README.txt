@@ -1,0 +1,1 @@
+Go to http://validity.thatscaptaintoyou.com/ for release notes.
