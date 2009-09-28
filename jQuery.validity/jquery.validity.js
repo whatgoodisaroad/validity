@@ -262,6 +262,12 @@
                     } :
 
                     function(obj) {
+                        // Fix for regexes where the global flag is set.
+                        // Make sure to test from the start of the string.
+                        if (rule.global) {
+                            rule.lastIndex = 0;
+                        }
+                    
                         return !obj.value.length || rule.test(obj.value);
                     },
 
