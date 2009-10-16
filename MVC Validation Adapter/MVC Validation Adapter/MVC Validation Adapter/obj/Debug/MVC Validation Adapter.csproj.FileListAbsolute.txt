@@ -1,0 +1,5 @@
+C:\Users\Wyatt\Documents\My Dropbox\source\validity\MVC Validation Adapter\MVC Validation Adapter\MVC Validation Adapter\bin\MVC Validation Adapter.dll
+C:\Users\Wyatt\Documents\My Dropbox\source\validity\MVC Validation Adapter\MVC Validation Adapter\MVC Validation Adapter\bin\MVC Validation Adapter.pdb
+C:\Users\Wyatt\Documents\My Dropbox\source\validity\MVC Validation Adapter\MVC Validation Adapter\MVC Validation Adapter\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Wyatt\Documents\My Dropbox\source\validity\MVC Validation Adapter\MVC Validation Adapter\MVC Validation Adapter\obj\Debug\MVC Validation Adapter.dll
+C:\Users\Wyatt\Documents\My Dropbox\source\validity\MVC Validation Adapter\MVC Validation Adapter\MVC Validation Adapter\obj\Debug\MVC Validation Adapter.pdb

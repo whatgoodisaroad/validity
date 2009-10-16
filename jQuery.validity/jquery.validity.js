@@ -1,13 +1,13 @@
 /*
- * jQuery.validity v1.0.1
+ * jQuery.validity v1.0.2
  * http://validity.thatscaptaintoyou.com/
  * http://code.google.com/p/validity/
  * 
  * Copyright (c) 2009 Wyatt Allen
  * Dual licensed under the MIT and GPL licenses.
  *
- * Date: 2009-9-25 (Friday, 25 September 2009)
- * Revision: 122
+ * Date: 2009-10-12 (Monday, 12 October 2009)
+ * Revision: 127
  */
 (function($) {
     // Default settings.
