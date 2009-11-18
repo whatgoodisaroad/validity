@@ -1,5 +1,5 @@
 /*
- * jQuery.validity v1.0.2
+ * jQuery.validity v1.1.0
  * http://validity.thatscaptaintoyou.com/
  * http://code.google.com/p/validity/
  * 
@@ -27,7 +27,7 @@
             defaultFieldName:"This field",
             
             // jQuery selector to filter down to validation-supported elements.
-            elementSupport:":text, :password, textarea, select, :radio, :checkbox",
+            elementSupport:":text, :password, textarea, select, :radio, :checkbox, :email, :number, :url",
             
             // Function to stringify argments for use when generating error messages.
             // (Primarily, it just generates pretty date strings.)
