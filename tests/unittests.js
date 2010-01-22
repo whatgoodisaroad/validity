@@ -217,5 +217,75 @@ $.extend(tests, {
         var r = $.validity.end();
         
         expect(3, r);
+    },
+    
+    "Basic Hexadecimal Alphabet Test (Should Succeed)":function(){
+        var values = [
+            "93afe2", "ABCD", "112121", "aFdA", "11aabb44", "1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b", "1", "F"
+        ];
+        $('input').each(function(i){
+            this.value = values[i];
+        });
+        $.validity.start();
+        $('input').alphabet("0123456789abcdefABCDEF");
+        var r = $.validity.end();
+        
+        expect(0, r);
+    },
+    
+    "Basic Hexadecimal Alphabet Test (Should Partially Fail)":function(){
+        var values = [
+            "93afe2", "*@*##@()FNCNI", "112121", "aFdA", "11aabb44", "kekeke", "~", "L"
+        ];
+        $('input').each(function(i){
+            this.value = values[i];
+        });
+        $.validity.start();
+        $('input').alphabet("0123456789abcdefABCDEF");
+        var r = $.validity.end();
+        
+        expect(4, r);
+    },
+    
+    "Symbol Alphabet Test (Should Partially Fail)":function(){ 
+        var values = [
+            "ahhah!", "!!!!!!", "$($*#*(@\\", "um", "these aren't symbols", " ", "&", "R"
+        ];
+        $('input').each(function(i){
+            this.value = values[i];
+        });
+        $.validity.start();
+        $('input').alphabet("!@#$%^&*()_-+={[]}?/>|\\~`<,\'\":;");
+        var r = $.validity.end();
+        
+        expect(5, r);
+    },
+    
+    "Min Char Class (Should Succeed)":function(){ 
+        var values = [
+            "qwert12345", "a1b2c3d4e5", "x0xxxx0xxxx0xxxx0xxxx0x", "09876", "83838383838383883833838", "010aaa010", "12345", "00000"
+        ];
+        $('input').each(function(i){
+            this.value = values[i];
+        });
+        $.validity.start();
+        $('input').minCharClass("numeric", 5);
+        var r = $.validity.end();
+        
+        expect(0, r);
+    },
+    
+    "Min Char Class (Should Fail)":function(){ 
+        var values = [
+            "a@dre", "73737S@", "xxxxxxxxxxxx*xxxxxxx", "sssssss", "83838", "&", "d", "="
+        ];
+        $('input').each(function(i){
+            this.value = values[i];
+        });
+        $.validity.start();
+        $('input').minCharClass("symbol", 2);
+        var r = $.validity.end();
+        
+        expect(8, r);
     }
 });

@@ -1,7 +1,19 @@
-html, body { padding:0; margin:0; color:#2c2c2c; font-family:Calibri, Lucida Sans Unicode, Lucida Grande, sans-serif }
+html, body { 
+    margin:20px 0px; padding:0px;   /* Need to set body margin and padding to get consistency between browsers. */
+	text-align:center;              /* Hack for IE5/Win */
+    
+    color:#2c2c2c;
+    font-family:"Segoe UI","Microsoft Sans Serif",Arial,Geneva,Sans-Serif; 
+}
+
 iframe, pre { width:98%; border:1px solid #2c2c2c; padding:10px; margin:4px; }
 a, a:visited { color:#2c2c2c; }
+
+li { margin-bottom:20px; }
+
 #main {
+    margin:0px auto;
+
     background-image:url('../img/back.png');
     background-position:bottom center;
     background-repeat:no-repeat;
@@ -9,7 +21,8 @@ a, a:visited { color:#2c2c2c; }
     padding:100px;
     padding-top:0;
 }
-#logo { display:block; }
+
+#logo { display:inline; }
 #nav { top:-25px; position:relative; }
 #header h1, #header h2, #header h3 { margin:0; }
 p, ol { text-align:justify; text-justify:newspaper; }
@@ -21,6 +34,7 @@ p, ol { text-align:justify; text-justify:newspaper; }
     color:#bbb;
     display:block;
     text-align:center;
+    margin:0px auto;
 }
 
 #carouselDownload:hover, #downloadLink:hover {

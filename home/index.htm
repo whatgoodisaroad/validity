@@ -11,15 +11,26 @@
         <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
         <script type="text/javascript" src="js/jquery.infinitecarousel.js"></script>
         <script type="text/javascript" src="js/js.js"></script>
+        <script type="text/javascript" src="lib/src.js"></script>
+        
+        <script type="text/javascript" src="lib/prettify.js"></script>
+        <script type="text/javascript" src="lib/lang-css.js"></script>
+        <link rel="stylesheet" type="text/css" href="lib/prettify.css" />
+        <script type="text/javascript">
+            $(function() { 
+                prettyPrint(); 
+            });
+        </script>
     </head>
     <body>
-        <center>
+        
             <div id="main">
                 <div id="header">
                     <img id="logo" src="img/validity.logo.png" alt="Validity" />
                     <div id="nav">
                         <a href="/">Home</a> |
                         <a href="Demos/index.htm">Documentation</a> |
+                        <a href="http://blog.thatscaptaintoyou.com/">Blog</a> |
                         <a href="http://code.google.com/p/validity/downloads/list" target="_none">Download</a>
                     </div>
                     <h1>jQuery.validity</h1>
@@ -34,9 +45,9 @@
                             <img alt="" src="images/slide1.png" width="800" height="400" />
                             <div style="position:relative;top:-260px;width:360px;text-align:left;left:0px;">
                                 <h2>
-                                    jQuery.validity is a jQuery plugin for powerful, accurate client-side form validation. 
-                                    It is organized and versatile enough to be easily appropriate for validating any web-page
-                                    that has a text-box.
+                                    jQuery.validity is a jQuery plugin for powerful, accurate client-side form validation.
+                                    <br/>
+                                    It is well-organized, versatile and can easily tackle any validation problem.
                                 </h2>
                             </div>
                         </li>
@@ -46,13 +57,12 @@
                                 <h3>
                                     jQuery.validity is cleaner than alternatives:
                                 </h3>
+                                <h4>
+                                    Configuring validation can be 100% unobtrusive.
+                                    You won't need to include non-semantic markup or use ugly, unmanageable classes.
+                                </h4>
                                 <h3>
-                                    Validation rules can be configured unobtrusively in the JavaScript. You'll won't need
-                                    to include non-semantic markup or give your inputs ugly, unmanageable classes to specify
-                                    validation rules.
-                                </h3>
-                                <h3>
-                                    With jQuery.validity, your validation logic might be as concice as:
+                                    With jQuery.validity, setting up validation could be as concice as...
                                 </h3>
                             </div>
                         </li>
@@ -63,7 +73,7 @@
                                     jQuery.validity is easy to install and lightweight:
                                 </h2>
                                 <h3 style="padding-left:20px;width:440px;">
-                                    Size of JavaScript: only <u>11KB</u>. Validity won't slow down the loading of your page.
+                                    The JavaScript is only <u>9KB</u>. Validity won't slow down your page.
                                 </h3>
                                 <h2>
                                     
@@ -76,59 +86,140 @@
                         </li>
                     </ul>
                 </div>
+                
+                <h2 style="text-align:left; margin:0; margin-top:50px;">
+                    What is it?
+                </h2>
 
                 <p>
-                    jQuery.validity is an elegant and powerful jQuery plug-in you can use to setup client-side form validation. Instead of writing validation manually or balancing some unwieldy server-side framework, validity allows you to design client-side validation in a manner that feels natural and straightforward.
+                    <b>jQuery.validity is an elegant and powerful jQuery plug-in</b> you can use to 
+                    setup client-side form validation. Instead of writing validation manually or 
+                    balancing some unwieldy server-side framework, validity allows you to design 
+                    client-side validation in a manner that feels natural and straightforward.
                 </p>
                 
                 <p>
-                    jQuery.validity is easy to learn and use in simple validation scenarios, but it's also designed to cleanly and naturally tackle more complected, dynamic or conditional scenarios.
+                    <b>jQuery.validity is easy to learn and use.</b> It's totally appropriate in 
+                    simple validation scenarios, but it's also designed to cleanly and naturally 
+                    tackle more complex, dynamic, or conditional scenarios.
                 </p>
                 
                 <p>
-                    jQuery.validity takes advantage of jQuery's selector engine to perform validation on logical groupings of inputs: making it very declarative and clean. This means that the inputs on a page can be added, removed or changed and validation will still work without having to be reconfigured.
+                    <b>jQuery.validity takes advantage of jQuery's selector engine</b> to perform 
+                    validation on logical groupings of inputs, making it declarative and clean. 
+                    This means that the inputs on a page can be added, removed, or changed and 
+                    validation will still work without reconfiguration.
                 </p>
                 
                 <p>
-                    jQuery.validity is also designed to give you total control over how validation failures are handled so you can easily and naturally adapt the way validation errors are displayed to the look and feel of your site.
+                    <b>jQuery.validity is designed to give you total control</b> over how validation 
+                    messages appear, so you can easily adapt the way validation errors 
+                    are displayed to the look and feel of your site.
                 </p>
                 
-                <p>
-                    In short: Validity was concieved with three goals:
+                <p style="margin-top:50px;">
+                    In short, Validity was conceived with three goals:
                 </p>
                 
                 <ol>
                     <li>
                         <strong>Easy Setup:</strong> Validity employs the principle of <em>Convention Over Configuration</em> to
-                        aid in keeping code manageable and semantic. Very little work is required to enable Validity
-                        for a page.
+                        keep code manageable and semantic. Very little work is required to put Validity on your page.
                     </li>
                     <li>
-                        <strong>Unobtrusive JavaScript:</strong> Using Validity will have almost no effect on the semantics
-                        of your markup. Additionally, Validity will degrade gracefully and leave no residuals in browser
+                        <strong>Unobtrusive JavaScript:</strong> Using Validity will have almost no effect on your markup. 
+                        Additionally, Validity will degrade gracefully - leaving no residuals in browser
                         environments where JavaScript is disabled or unsupported.
                     </li>
                     <li>
-                        <strong>Customizable Appearence:</strong> Validity is an effort to deliver a solid core-library of 
-                        validation tools that can be used in any web-design. Therefore, in order to be truly versatile, Validation logic is separated
+                        <strong>Customizable Appearance:</strong> Validity delivers a solid core-library of 
+                        validation tools that can be used in any web-design. So, in order to be truly versatile, Validation logic is separated
                         from the way it displays errors. With Validity, you, the developer, have full control
                         of error handling and adapting it to the design of your page.
                     </li>
                 </ol>
-                
-                <p>
-                    Below is a live example where the first field is required, and must be a number between 4 and 12, and the second field 
-                    must be a date before the current one:
-                </p>
-                
-                <h2 style="text-align:left; margin:0;">
+
+                <h2 style="text-align:left; margin:0; margin-top:50px;">
                     Try it!
                 </h2>
                 
-                <iframe src="lib/simple.htm" ></iframe>
+                <p>
+                    Below is a live example. The first field is required, and must be a number between 4 and 12. The second field 
+                    must be a date before today:
+                </p>
+
+                
+                <!--<iframe src="lib/simple.htm" ></iframe>-->
+                
+                <div class="ex_w_src" style="text-align:left;">
+                    <div>[<a href="#_">View Source</a>]</div>
+                    <iframe id="setup-iframe" src="lib/simple.htm" frameborder="0"></iframe>
+                    <pre id="setup-src" class="prettyprint lang-html">
+    &lt;html&gt;
+        &lt;head&gt;
+            &lt;title&gt;Simple&lt;/title&gt;
+            
+            &lt;link type="text/css" rel="Stylesheet" href="jquery.validity.css" /&gt;
+            &lt;script type="text/javascript" src="jquery.js"&gt; &lt;/script&gt;
+            &lt;script type="text/javascript" src="jquery.validity.js"&gt; &lt;/script&gt;
+            
+            &lt;script type="text/javascript"&gt;
+            
+                //
+                // This is where validation rules are assigned:
+                //
+                
+                $(function() { 
+                
+                    $("form").validity(function() {
+                    
+                        $("#vehicles")
+                            .require()
+                            .match("number")
+                            .range(4, 12);
+                        
+                        $("#dob")
+                            .require()
+                            .match("date")
+                            .lessThanOrEqualTo(new Date());
+                            
+                    });
+                    
+                });
+                
+                //
+                // That's it!
+                // No more setup is necessary!
+                //
+                
+            &lt;/script&gt;
+            
+        &lt;/head&gt;
+        
+        
+        &lt;body&gt;
+        
+            &lt;form method="get" action="simple.htm"&gt;
+                Number of Vehicles:
+                &lt;input type="text" id="vehicles" name="vehicles" title="Vehicle Count" /&gt;
+                &lt;br /&gt;&lt;br /&gt;
+                Date of birth:
+                &lt;input type="text" id="dob" name="dob" title="Birthday" /&gt;
+                &lt;br /&gt;&lt;br /&gt;
+                &lt;input type="submit" /&gt;
+            &lt;/form&gt;
+            
+        &lt;/body&gt;
+    &lt;/html&gt;
+                    </pre>
+                </div>
+                
+                <h2 style="text-align:left; margin:0; margin-top:50px;">
+                    Get It!
+                </h2>
                 
                 <p>
-                    jQuery.validity is easy to install and lightweight: the JavaScript is only <u>9KB</u>. Validity won't slow down the loading of your page.
+                    jQuery.validity is easy to install and lightweight: the JavaScript is only <u>9KB</u>.
                 </p>
                 
                 <a id="downloadLink" href="http://code.google.com/p/validity/downloads/list" target="_none">
@@ -144,6 +235,21 @@
                 </form>
                 
             </div>
-        </center>
+
+
+
+<!-- Google Analytics Hotness -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-8413863-2");
+pageTracker._trackPageview();
+} catch(err) {}</script>            
+
+
+            
     </body>
 </html>

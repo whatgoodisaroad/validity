@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="750125e8-f73b-49c0-adce-a67bb4388fb1" name="Wyatt@RIVERDANUBE 2010-01-19 14:32:08" runUser="RiverDanube\Wyatt" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2006">
+  <TestRunConfiguration name="Local Test Run" id="7f0f012d-4d64-4abf-8366-ee4ad488d4b6">
+    <Description>This is a default test run configuration for a local test run.</Description>
+    <Deployment runDeploymentRoot="C:\Users\Wyatt\Documents\My Dropbox\source\validity\NValidity\TestResults\Wyatt_RIVERDANUBE 2010-01-19 14_32_08">
+      <DeploymentItem filename="C:\Users\Wyatt\Documents\My Dropbox\source\validity\NValidity\NValidity\bin\Debug\NValidity.dll" />
+    </Deployment>
+    <TestTypeSpecific />
+  </TestRunConfiguration>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" error="0" failed="1" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <Times creation="2010-01-19T14:32:08.7184889-08:00" queuing="2010-01-19T14:32:31.1067695-08:00" start="2010-01-19T14:32:33.7019179-08:00" finish="2010-01-19T14:32:38.2231765-08:00" />
+  <TestDefinitions>
+    <UnitTest name="ConstructorTest" storage="c:\users\wyatt\documents\my dropbox\source\validity\nvalidity\nvalidity.test\bin\debug\nvalidity.test.dll" id="7d4079d0-53d8-f1dc-21da-1a798e8a52eb">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <Execution id="2d8bb203-9b9f-49a0-839b-3ef48bda8acb" />
+      <TestMethod codeBase="C:\Users\Wyatt\Documents\My Dropbox\source\validity\NValidity\NValidity.Test\bin\Debug\NValidity.Test.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="NValidity.Test.ValidityTest, NValidity.Test" name="ConstructorTest" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="7d4079d0-53d8-f1dc-21da-1a798e8a52eb" executionId="2d8bb203-9b9f-49a0-839b-3ef48bda8acb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="2d8bb203-9b9f-49a0-839b-3ef48bda8acb" testId="7d4079d0-53d8-f1dc-21da-1a798e8a52eb" testName="ConstructorTest" computerName="RIVERDANUBE" duration="00:00:00.3181459" startTime="2010-01-19T14:32:34.6889744-08:00" endTime="2010-01-19T14:32:37.3041239-08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsTrue failed. Validity object initialized into an invalid state.</Message>
+          <StackTrace>   at NValidity.Test.ValidityTest.ConstructorTest() in C:\Users\Wyatt\Documents\My Dropbox\source\validity\NValidity\NValidity.Test\ValidityTest.cs:line 60
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>

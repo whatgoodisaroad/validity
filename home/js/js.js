@@ -1,5 +1,5 @@
 $(function(){
 	$('#carousel').infiniteCarousel({
-		displayTime:10000
+		displayTime:15000
 	});
 });

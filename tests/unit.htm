@@ -26,26 +26,28 @@
             function perform() {
 				$("#testArea").show();
                 
-                var halting = confirm("Halt on test completion?");
+                if (confirm("Do tests?")) {
                 
-                for (var test in tests) {
-					for(var om in $.validity.outputs) {
-                        currentTest = test + " " + om;
-                        
-                        $.validity.clear();
-                        
-                        $.validity.setup({outputMode:om});
-                        
-                        $('input').val('');
-                        
-                        tests[test]();
-                        
-                        if (halting) {
-                            halting = confirm("Halted. Continue tests with halting?");
+                    var halting = confirm("Halt on test completion?");
+                    
+                    for (var test in tests) {
+                        for(var om in $.validity.outputs) {
+                            currentTest = test + " " + om;
+                            
+                            $.validity.clear();
+                            
+                            $.validity.setup({outputMode:om});
+                            
+                            $('input').val('');
+                            
+                            tests[test]();
+                            
+                            if (halting) {
+                                halting = confirm("Halted. Continue tests with halting?");
+                            }
                         }
                     }
-				}
-                
+                }
                 
                 if (log.length) {
                     $("body").html("<h1 style='color:#f00;'>Fail: Some tests failed.</h1><ul/>");
