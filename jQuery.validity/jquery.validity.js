@@ -18,6 +18,9 @@
         defaults = {
             // The default output mode is label because it requires no dependencies:
             outputMode:"label",
+            
+            // The css class on the output
+            cssClass:"error",
 
             // The this property is set to true, validity will scroll the browser viewport
             // so that the first error is visible when validation fails:
@@ -1022,19 +1025,19 @@
     $.validity.outputs.label = {
         start:function() {
             // Remove all the existing error labels.
-            $("label.error").remove();
+            $("label." + $.validity.settings.cssClass).remove();
         },
         
         end:function(results) {
             // If not valid and scrollTo is enabled, scroll the page to the first error.
             if (!results.valid && $.validity.settings.scrollTo) {
-                location.hash = $("label.error:eq(0)").attr('for');
+                location.hash = $("label." + $.validity.settings.cssClass + ":eq(0)").attr('for');
             }
         },
 
         raise:function($obj, msg) {
             var 
-                labelSelector = "label.error[for='" + getIdentifier($obj) + "']";
+                labelSelector = "label." + $.validity.settings.cssClass + "[for='" + getIdentifier($obj) + "']";
 
             // If an error label already exists for the bad input just update its text:
             if ($(labelSelector).length) {
@@ -1045,7 +1048,7 @@
             else {
                 $("<label/>")
                     .attr("for", getIdentifier($obj))
-                    .addClass("error")
+                    .addClass($.validity.settings.cssClass)
                     .text(msg)
 
                     // In the case that the element does not have an id
