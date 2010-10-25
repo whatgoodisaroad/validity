@@ -2,20 +2,20 @@
     <head>
         <title>Simple</title>
         <link type="text/css" rel="Stylesheet" href="jquery.validity.css" />
-        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="jquery-1.4.1.min.js"></script>
         <script type="text/javascript" src="jquery.validity.js"></script>
         <script type="text/javascript">
             $(function() { 
                 $("form").validity(function() {
                     $("#vehicles")
-						.require()
-						.match("number")
-						.range(4, 12);
+                        .require()
+                        .match("number")
+                        .range(4, 12);
                     
                     $("#dob")
-						.require()
-						.match("date")
-						.lessThanOrEqualTo(new Date());
+                        .require()
+                        .match("date")
+                        .lessThanOrEqualTo(new Date());
                 });
             });
         </script>

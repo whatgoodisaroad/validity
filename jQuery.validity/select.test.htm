@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>Simple</title>
+        <link type="text/css" rel="Stylesheet" href="jquery.validity.css" />
+        <script type="text/javascript" src="jquery-1.4.1.min.js"></script>
+        <script type="text/javascript" src="jquery.validity.js"></script>
+        <script type="text/javascript">
+            $(function() { 
+                $("form").validity("select");
+            });
+        </script>
+    </head>
+    <body>
+        <form method="get" action="select.test.htm">
+            <label for="sel">This select is required:</label>
+            <select id="sel">
+              <option value="">[Pick one]</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+            <br /><br />
+            <input type="submit" />
+        </form>
+    </body>
+</html>

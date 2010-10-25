@@ -1,5 +1,0 @@
-C:\Users\Wyatt\Documents\My Dropbox\source\validity\NValidity\NValidity\bin\Debug\NValidity.dll
-C:\Users\Wyatt\Documents\My Dropbox\source\validity\NValidity\NValidity\bin\Debug\NValidity.pdb
-C:\Users\Wyatt\Documents\My Dropbox\source\validity\NValidity\NValidity\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Wyatt\Documents\My Dropbox\source\validity\NValidity\NValidity\obj\Debug\NValidity.dll
-C:\Users\Wyatt\Documents\My Dropbox\source\validity\NValidity\NValidity\obj\Debug\NValidity.pdb

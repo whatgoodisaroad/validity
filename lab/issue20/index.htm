@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <title>Issue 20</title>
+        <link rel="stylesheet" type="text/css" href="jquery.validity.css" />
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="jquery.validity.js"></script>
+        <script type="text/javascript">
+            $(function() {
+                //$.validity.setup({ outputMode:'modal' });
+                $("form").validity(function() {
+                    $("fieldset").assert(
+                        $("fieldset input:radio:checked").length,
+                        "You must select at least one category."
+                    );
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <form action="index.htm?submitted=yes">
+            <fieldset id="fieldsetid" style="width:300px;">
+                <legend>
+                    <span class="label">Category<abbr title="required">*</abbr></span>
+                </legend>
+                <ol>
+                    <li>
+                        <label for="category_id_459957753">
+                            <input type="radio" value="459957753" title="Category" name="foo[category_id]" id="category_id_459957753"/>
+                            F1
+                        </label>
+                    </li>
+                    <li>
+                        <label for="category_id_203777732">
+                            <input type="radio" value="203777732" title="Category" name="foo[category_id]" id="category_id_203777732"/>
+                            F2
+                        </label>
+                    </li>
+                    <li>
+                        <label for="category_id_1782774752">
+                            <input type="radio" value="1782774752" title="Category" name="foo[category_id]" id="category_id_1782774752"/>
+                            F3
+                        </label>
+                    </li>
+                </ol>
+            </fieldset>
+            <input type="submit" />
+        </form>
+    </body>
+</html>

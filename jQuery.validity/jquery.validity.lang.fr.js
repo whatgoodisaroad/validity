@@ -1,13 +1,13 @@
 /*
- * jQuery.validity v1.1.1
+ * jQuery.validity v1.1.0
  * http://validity.thatscaptaintoyou.com/
  * http://code.google.com/p/validity/
  * 
  * Copyright (c) 2010 Wyatt Allen
  * Dual licensed under the MIT and GPL licenses.
  *
- * Date: 2010-08-16 (Tuesday, 16 August 2010)
- * Revision: 134
+ * Date: 2010-07-14 (Wednesday, 14 July 2010)
+ * Revision: 127
  */
 (function($) {
     
@@ -30,7 +30,7 @@
             modalErrorsClickable:true,
 
             // If a field name cannot be otherwise inferred, this will be used:
-            defaultFieldName:"This field",
+            defaultFieldName:"Ce champ",
             
             // jQuery selector to filter down to validation-supported elements:
             elementSupport:":text, :password, textarea, select, :radio, :checkbox",
@@ -62,7 +62,7 @@
             // The fix is to use a RegExp that will only accept American Middle-Endian form.
             // See the Internationalization section in the documentation for how to
             // cause it to support other date formats:
-            date:/^((0?\d)|(1[012]))\/([012]?\d|30|31)\/\d{1,4}$/, 
+            date:/^([01]?\d)\/([012]?\d|30|31)\/\d{1,4}$/, 
             
             email:/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i,
             usd:/^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/,
@@ -86,50 +86,50 @@
         // Built-in set of default error messages (for use when a message isn't specified):
         messages:{
 
-            require:"#{field} is required.",
+            require:"#{field} est requis.",
             // Format validators:
-            match:"#{field} is in an invalid format.",
-            integer:"#{field} must be a positive, whole number.",
-            date:"#{field} must be formatted as a date.",
-            email:"#{field} must be formatted as an email.",
-            usd:"#{field} must be formatted as a US Dollar amount.",
-            url:"#{field} must be formatted as a URL.",
-            number:"#{field} must be formatted as a number.",
-            zip:"#{field} must be formatted as a zipcode ##### or #####-####.",
-            phone:"#{field} must be formatted as a phone number ###-###-####.",
-            guid:"#{field} must be formatted as a guid like {3F2504E0-4F89-11D3-9A0C-0305E82C3301}.",
-            time24:"#{field} must be formatted as a 24 hour time: 23:00.",
-            time12:"#{field} must be formatted as a 12 hour time: 12:00 AM/PM",
+            match:"#{field} est dans un mauvais format.",
+            integer:"#{field} doit être un nombre entier positif.",
+            date:"#{field} doit être une date.",
+            email:"#{field} doit être une adresse email.",
+            usd:"#{field} doit être un montant en US Dollars.",
+            url:"#{field} doit être une adresse URL.",
+            number:"#{field} doit être un nombre.",
+            zip:"#{field} doit être un code postal ##### ou #####-####.",
+            phone:"#{field} doit être un numéro de téléphone ###-###-####.",
+            guid:"#{field} doit être un guid du type {3F2504E0-4F89-11D3-9A0C-0305E82C3301}.",
+            time24:"#{field} doit être une heure au format 24 heures (ex: 23:00).",
+            time12:"#{field} doit être une heure au format 12 heures (ex:12:00 AM/PM)",
 
             // Value range messages:
-            lessThan:"#{field} must be less than #{max}.",
-            lessThanOrEqualTo:"#{field} must be less than or equal to #{max}.",
-            greaterThan:"#{field} must be greater than #{min}.",
-            greaterThanOrEqualTo:"#{field} must be greater than or equal to #{min}.",
-            range:"#{field} must be between #{min} and #{max}.",
+            lessThan:"#{field} doit être inférieur à #{max}.",
+            lessThanOrEqualTo:"#{field} doit être inférieur ou égal à #{max}.",
+            greaterThan:"#{field} doit être supérieur à #{min}.",
+            greaterThanOrEqualTo:"#{field} doit être supérieur ou égal à #{min}.",
+            range:"#{field} doit être compris entre #{min} et #{max}.",
 
             // Value length messages:
-            tooLong:"#{field} cannot be longer than #{max} characters.",
-            tooShort:"#{field} cannot be shorter than #{min} characters.",
+            tooLong:"#{field} ne doit pas dépasser #{max} caractères.",
+            tooShort:"#{field} doit contenir au minimum #{min} caractères.",
 
             // Composition validators:
-            nonHtml:"#{field} cannot contain HTML characters.",
-            alphabet:"#{field} contains disallowed characters.",
+            nonHtml:"#{field} ne doit pas contenir de caractères HTML.",
+            alphabet:"#{field} contient des caratères interdits.",
 
-            minCharClass:"#{field} cannot have more than #{min} #{charClass} characters.",
-            maxCharClass:"#{field} cannot have less than #{min} #{charClass} characters.",
+            minCharClass:"#{field} ne doit pas contenir plus de #{min} #{charClass} caractères.",
+            maxCharClass:"#{field} ne doit pas contenir moins de #{min} #{charClass} caractères.",
             
             // Aggregate validator messages:
-            equal:"Values don't match.",
-            distinct:"A value was repeated.",
-            sum:"Values don't add to #{sum}.",
-            sumMax:"The sum of the values must be less than #{max}.",
-            sumMin:"The sum of the values must be greater than #{min}.",
+            equal:"Les valeurs ne correspondent pas.",
+            distinct:"Une valeur est répétée.",
+            sum:"La somme des valeurs diffère de #{sum}.",
+            sumMax:"La somme des valeurs doit être inférieure à #{max}.",
+            sumMin:"La somme des valeurs doit être supérieure à #{min}.",
 
             // Radio validator messages:
-            radioChecked:"The selected value is not valid.",
+            radioChecked:"La valeur sélectionnée est invalide.",
             
-            generic:"Invalid."
+            generic:"Invalide."
         },
         
         // Character classes can be used to determine the quantity
@@ -259,11 +259,16 @@
             return validate(
                 this,
                 function(obj) {
-                    var val = $(obj).val();
                     
-                    var res = val.length;
+                    // Fix for IE selects:
+                    if (obj.tagName === "SELECT") {
+                        return $(":selected", this).text().length;
+                    }
                     
-                    return res;
+                    else {
+                        return obj.value.length;
+                    }
+                    
                 },
                 msg || $.validity.messages.require
             );
@@ -328,23 +333,11 @@
                         return d >= new Date(min) && d <= new Date(max);
                     } :
 
-                    min.substring && max.substring && Big ?
-
-                        // If both arguments are strings then parse them 
-                        // using the Arbitrary-Precision library.
-                        function(obj) {
-                            var n = new Big(obj.value);
-                            return (
-                                n.greaterThanOrEqualTo(new Big(min)) && 
-                                n.lessThanOrEqualTo(new Big(max))
-                            );
-                        } :
-
-                        // Otherwise treat them like floats.
-                        function(obj) {
-                            var f = parseFloat(obj.value);
-                            return f >= min && f <= max;
-                        },
+                    // Otherwise treat them like floats.
+                    function(obj) {
+                        var f = parseFloat(obj.value);
+                        return f >= min && f <= max;
+                    },
 
                 msg || format(
                     $.validity.messages.range, {
@@ -365,15 +358,9 @@
                         return new Date(obj.value) > min;
                     } :
 
-                    min.substring && Big ?
-
-                        function(obj) {
-                           return new Big(obj.value).greaterThan(new Big(min)); 
-                        } :
-
-                        function(obj) {
-                            return parseFloat(obj.value) > min;
-                        },
+                    function(obj) {
+                        return parseFloat(obj.value) > min;
+                    },
 
                 msg || format(
                     $.validity.messages.greaterThan, {
@@ -393,15 +380,9 @@
                         return new Date(obj.value) >= min;
                     } :
 
-                    min.substring && Big ?
-
-                        function(obj) {
-                            return new Big(obj.value).greaterThanOrEqualTo(new Big(min));
-                        } :
-
-                        function(obj) {
-                            return parseFloat(obj.value) >= min;
-                        },
+                    function(obj) {
+                        return parseFloat(obj.value) >= min;
+                    },
 
                 msg || format(
                     $.validity.messages.greaterThanOrEqualTo, {
@@ -421,15 +402,9 @@
                         return new Date(obj.value) < max;
                     } :
 
-                    max.substring && Big ?
-
-                        function(obj) {
-                            return new Big(obj.value).lessThan(new Big(max));
-                        } :
-
-                        function(obj) {
-                            return parseFloat(obj.value) < max;
-                        },
+                    function(obj) {
+                        return parseFloat(obj.value) < max;
+                    },
 
                 msg || format(
                     $.validity.messages.lessThan, {
@@ -449,15 +424,9 @@
                         return new Date(obj.value) <= max;
                     } :
 
-                    max.substring && Big ?
-
-                        function(obj) {
-                            return new Big(obj.value).lessThanOrEqualTo(new Big(max));
-                        } :
-
-                        function(obj) {
-                            return parseFloat(obj.value) <= max;
-                        },
+                    function(obj) {
+                        return parseFloat(obj.value) <= max;
+                    },
 
                 msg || format(
                     $.validity.messages.lessThanOrEqualTo, {
@@ -1250,7 +1219,7 @@
         container:function() {
             document.write(
                 "<div class=\"validity-summary-container\">" + 
-                    "The form didn't submit for the following reason(s):" +
+                    "Le formulaire n'a pas été validé pour les raisons suivantes:" +
                     "<ul></ul>" +
                 "</div>"
             );

@@ -325,8 +325,8 @@ namespace NValidity
         }
 
         protected void Invalidate() {
-            reduction.RemoveAll();
-            parent.Equals++;
+            reduction.RemoveAll(x => true);
+            parent.Errors++;
         }
 
         protected void Invalidate(string s)
