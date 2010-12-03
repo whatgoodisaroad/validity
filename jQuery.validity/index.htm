@@ -2,9 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
     <head>
         <script type="text/javascript" src="jquery.js"></script>
-        <script type="text/javascript" src="jquery.validity.pack.js"></script>
+        <script type="text/javascript" src="jquery.validity.js"></script>
         <script type="text/javascript">
-			function hotSwitchMode(mode){
+            $(function() {
+                $.validity.setup({ scrollTo:true });
+            });
+            
+            function hotSwitchMode(mode){
 				$.validity.start();
 				$.validity.end();
 				$.validity.setup({outputMode:mode});

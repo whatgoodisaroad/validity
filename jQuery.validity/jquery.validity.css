@@ -2,16 +2,38 @@
  * Style used by the label output mode.
  * Applied to the error labels that get positioned after an input.
  */
-label.error { 
-    color:#fff; 
-    margin-left:2px;     
-    background-image:url('arrow.gif');
-    background-position:left center;
-    background-repeat:no-repeat;
+.error .corner1{ 
+    /*color:#fff; */
+    /*margin-left:2px;     */
+    
+    
     padding:2px;
     padding-left:18px;
-    -moz-border-radius:4px;
-    -webkit-border-radius: 4px;
+    
+    width:0; 
+    height:0; 
+    border-top: 10px solid transparent; 
+    border-bottom: 10px solid transparent;
+    border-right: 20px solid red;
+    border-left: 0;
+    display:inline-block;
+    
+    
+    
+    
+    
+    /*background-image:url('arrow.gif');*/
+    /*-moz-border-radius:4px;
+    -webkit-border-radius: 4px;*/
+    /*background-position:left center;
+    background-repeat:no-repeat;*/
+}
+
+.error label {
+    background-color:red;
+    display:inline-block;
+    height:20px;
+    padding:auto;
 }
 
 /*
@@ -42,3 +64,74 @@ label.error {
 .validity-summary-container { display:none; }
 .validity-summary-output ul { }
 .validity-erroneous { border:solid 2px #f56600 !important; }
+
+
+
+.validity-tooltip {
+    cursor:pointer;
+    
+    padding: .5em;
+    width:16em;
+    
+    border-width:2px;
+    border-color:#555;
+    border-style:solid;
+    color:#111;
+    
+    position: absolute;
+    background-color:#f56600;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    
+    -webkit-box-shadow: 0px 1px 2px #000000;
+    -moz-box-shadow: 0px 1px 2px #000000;
+    box-shadow: 0px 1px 2px #000000;
+}
+
+.validity-tooltip:hover {
+    border-color:#333;
+    -webkit-box-shadow: 0px 2px 5px #000000;
+    -moz-box-shadow: 0px 2px 5px #000000;
+    box-shadow: 0px 2px 5px #000000;
+}
+
+.validity-tooltip .validity-tooltip-outer, .validity-tooltip .validity-tooltip-inner {
+    position: absolute; 
+    width:0; 
+    height:0; 
+    border-right-width: 0;
+    background:none;
+    bottom:auto;
+}
+
+.validity-tooltip .validity-tooltip-outer {	
+    border-color:#333;
+    border-style:solid;
+    
+    border-top: 12px solid transparent; 
+    border-bottom: 12px solid transparent;
+    /*border-right-width:20px;*/
+    border-right-width:20px;
+    border-right-style:solid;
+    border-right-color:inherit;
+    
+    border-left-width:0px;
+    top:4px;
+    left:-22px;
+}
+
+.validity-tooltip .validity-tooltip-inner {
+    border-top: 12px solid transparent; 
+    border-bottom: 12px solid transparent;
+    border-right: 20px solid #f56600;
+    /*border-right-width:20px;
+    border-right-style:solid;
+    border-right-color:inherit;*/
+    
+    border-left-width:0px;
+    top:-12px;
+    left:4px;
+}
+
+

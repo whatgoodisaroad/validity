@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <title>Tooltip Lab</title>
+        <style type="text/css">
+            html { font-family:sans-serif; }
+            
+            .validity-tooltip {
+                display:none;
+                padding: .5em;
+                width:16em;
+                
+                border-width:2px;
+                border-color:#333;
+                border-style:solid;
+                color:#111;
+                
+                position: absolute;
+                background-color:#f56600;
+                -webkit-border-radius: 6px;
+                -moz-border-radius: 6px;
+                border-radius: 6px;
+                -webkit-box-shadow: 0px 2px 5px #000000;
+                -moz-box-shadow: 0px 2px 5px #000000;
+                box-shadow: 0px 2px 5px #000000;
+            }
+            
+            .validity-tooltip .validity-tooltip-outer, .validity-tooltip .validity-tooltip-inner {
+                position: absolute; 
+                width:0; 
+                height:0; 
+                border-right-width: 0;
+                background:none;
+                bottom:auto;
+            }
+            
+            .validity-tooltip .validity-tooltip-outer {	
+                border-color:#333;
+                border-style:solid;
+                
+                border-top: 12px solid transparent; 
+                border-bottom: 12px solid transparent;
+                border-right-width:20px;
+                border-left-width:0px;
+                top:4px;
+                left:-22px;
+            }
+            
+            .validity-tooltip .validity-tooltip-inner {
+                border-top: 12px solid transparent; 
+                border-bottom: 12px solid transparent;
+                border-right: 20px solid #f56600;
+                border-left-width:0px;
+                top:-12px;
+                left:4px;
+            }
+
+        </style>
+        
+        <script type="text/javascript" src="../jQuery.validity/jquery.js"></script>
+        <script type="text/javascript">
+            $(function() {
+                $.fn.raiseOn = function() {
+                    var pos = this.offset();
+                    pos.left += this.width() + 24;
+                    pos.top -= 8;
+                    
+                    $(".validity-tooltip")
+                        .css(pos)
+                        .show();
+                };
+                
+                $("#x").raiseOn();
+            });
+        </script>
+    </head>
+    <body>
+        <div class="validity-tooltip">
+            OMG, your input is friggin not valid.
+            The habits of temperance recommended in the schools are 
+            still more essential in the severe discipline of a camp.
+			 <div class="validity-tooltip-outer">
+             <div class="validity-tooltip-inner"></div>
+            </div>
+		</div>
+        
+        <p>
+            But how shall we excuse the supine inattention of the Pagan and philosophic 
+            world to those evidences which were presented by the hand of Omnipotence, not
+            to their reason, but to their senses? During the age of Christ, of his a
+            postles, and their first disciples, the doctrine which they preached was 
+            confirmed by innumerable prodigies. The lame walked, the blind saw, the sick 
+            were healed, the dead were raised, daemons were expelled, and the laws of 
+            Nature were frequently suspended for the benefit of the church. But the sages 
+            of Greece and Rome turned aside from the awful spectacle, and, pursuing the 
+            ordinary occupations of life and study, appeared unconscious of any 
+            alterations in the moral of physical government of the world.
+        </p>
+        
+        <p>
+            <label for="x">Stick some kind of friggin text here:</label>
+            <input type="text" id="x" />
+        </p>
+        
+        <p>
+            Under these <a href="#_">melancholy</a> circumstances, an inexperienced 
+            youth was appointed to save and to govern the provinces of 
+            Gaul, or rather, as he expresses it himself, to exhibit the
+            vain image of Imperial greatness. The retired scholastic 
+            education of Julian, in which he had been more conversant 
+            with books than with arms, with the dead than with the 
+            living, left him in profound ignorance of the practical 
+            arts of war and government; and when he awkwardly repeated 
+            some military exercise which it was necessary for him to 
+            learn, he exclaimed with a sigh, 'O Plato, Plato, what a 
+            task for a philosopher!' Yet even this speculative 
+            philosophy, which men of business are too apt to despise, 
+            had filled the mind of Julian with the noblest precepts and 
+            the most shining examples; had animated him with the love 
+            of virtue, the desire of fame, and the contempt of death. 
+            The habits of temperance recommended in the schools are 
+            still more essential in the severe discipline of a camp.
+        </p>
+
+       
+
+    </body>
+</html>

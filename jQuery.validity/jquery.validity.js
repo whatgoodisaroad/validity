@@ -16,11 +16,13 @@
     
     var 
         defaults = {
-            // The default output mode is label because it requires no dependencies:
-            outputMode:"label",
+            // The default output mode is tooltip because it requires no dependencies:
+            outputMode:"tooltip",
             
             // The css class on the output
             cssClass:"error",
+            
+            tooltipClass:"validity-tooltip",
 
             // The this property is set to true, validity will scroll the browser viewport
             // so that the first error is visible when validation fails:
@@ -923,6 +925,10 @@
             }
 
             return this;
+        },
+        
+        fail:function(msg) {
+            return this.assert(false, msg);
         }
     });
 
@@ -1070,6 +1076,54 @@
 // Each output mode gets its own closure, 
 // distinct from the validity closure.
 
+// Install the tooltip output.
+(function($) {
+    $.validity.outputs.tooltip = {
+        start:function() {
+            $("." + $.validity.settings.tooltipClass)
+                .remove();
+        },
+        
+        end:function(results) {
+            // If not valid and scrollTo is enabled, scroll the page to the first error.
+            if (!results.valid && $.validity.settings.scrollTo) {
+                document.body.scrollTop = $("." + $.validity.settings.tooltipClass)
+                    .offset()
+                    .top;
+            }
+        },
+
+        raise:function($obj, msg) {
+            var pos = $obj.offset();
+            pos.left += $obj.width() + 24;
+            pos.top -= 8;            
+            
+            $(
+                "<div class=\"validity-tooltip\">" + 
+                    msg +
+                    "<div class=\"validity-tooltip-outer\">" +
+                        "<div class=\"validity-tooltip-inner\"></div>" + 
+                    "</div>" +
+                "</div>"
+            )
+                .click(function() {
+                    $obj.focus();
+                    $(this).remove();
+                })
+                .css(pos)
+                .appendTo("body");
+        },
+
+        raiseAggregate:function($obj, msg) {
+            // Just raise the error on the last input.
+            if ($obj.length) {
+                this.raise($obj.filter(":last"), msg);
+            }
+        }
+    };
+})(jQuery);
+
+
 // Install the label output.
 (function($) {
     function getIdentifier($obj) {
@@ -1081,19 +1135,20 @@
     $.validity.outputs.label = {
         start:function() {
             // Remove all the existing error labels.
-            $("label." + $.validity.settings.cssClass).remove();
+            $("." + $.validity.settings.cssClass)
+                .remove();
         },
         
         end:function(results) {
             // If not valid and scrollTo is enabled, scroll the page to the first error.
             if (!results.valid && $.validity.settings.scrollTo) {
-                location.hash = $("label." + $.validity.settings.cssClass + ":eq(0)").attr('for');
+                location.hash = $("." + $.validity.settings.cssClass + ":eq(0)").attr('for');
             }
         },
 
         raise:function($obj, msg) {
             var 
-                labelSelector = "label." + $.validity.settings.cssClass + "[for='" + getIdentifier($obj) + "']";
+                labelSelector = "." + $.validity.settings.cssClass + "[for='" + getIdentifier($obj) + "']";
 
             // If an error label already exists for the bad input just update its text:
             if ($(labelSelector).length) {
@@ -1102,22 +1157,47 @@
 
             // Otherwize create a new one and stick it after the input:
             else {
-                $("<label/>")
-                    .attr("for", getIdentifier($obj))
+                $("<span><div class=\"corner1\"/><label/></span>")
                     .addClass($.validity.settings.cssClass)
-                    .text(msg)
+                
+                    .find("label")
+                        .attr("for", getIdentifier($obj))
+                        
+                        .text(msg)
 
-                    // In the case that the element does not have an id
-                    // then the for attribute in the label will not cause
-                    // clicking the label to focus the element. This line 
-                    // will make that happen.
-                    .click(function() {
-                        if ($obj.length) {
-                            $obj[0].select();
-                        }
-                    })
+                        // In the case that the element does not have an id
+                        // then the for attribute in the label will not cause
+                        // clicking the label to focus the element. This line 
+                        // will make that happen.
+                        .click(function() {
+                            if ($obj.length) {
+                                $obj[0].select();
+                            }
+                        })
 
+                    .end()
                     .insertAfter($obj);
+                    
+                    
+                    
+                    
+                
+                // $("<label/>")
+                    // .attr("for", getIdentifier($obj))
+                    // .addClass($.validity.settings.cssClass)
+                    // .text(msg)
+
+                    // // In the case that the element does not have an id
+                    // // then the for attribute in the label will not cause
+                    // // clicking the label to focus the element. This line 
+                    // // will make that happen.
+                    // .click(function() {
+                        // if ($obj.length) {
+                            // $obj[0].select();
+                        // }
+                    // })
+
+                    // .insertAfter($obj);
             }
         },
 
