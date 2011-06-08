@@ -428,11 +428,227 @@ test("$('...').match('phone')", 4, function() {
     equal(result, expected, "match('number') fails on 10-digit phone number with hyphens where the area code starts with 1 (100-321-4321).");
 });
 
-test("$('...').match('guid')", 0, function() { throw "Not Implemented" });
-test("$('...').match('time12')", 0, function() { throw "Not Implemented" });
-test("$('...').match('time24')", 0, function() { throw "Not Implemented" });
-test("$('...').match(/regex/)", 0, function() { throw "Not Implemented" });
-test("$('...').match(fn)", 0, function() { throw "Not Implemented" });
+test("$('...').match('guid')", 2, function() {
+    var expected, result;
+
+    $('#qunit-fixture input:first').val("{3F2504E0-4F89-11D3-9A0C-0305E82C3301}");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('guid');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('guid') does not fail proper guid ({3F2504E0-4F89-11D3-9A0C-0305E82C3301}).");
+    
+    $('#qunit-fixture input:first').val("obviously not a guid.");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('guid');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('guid') fails on non-guid (obviously not a guid.).");
+});
+
+test("$('...').match('time12')", 11, function() {
+    var expected, result;
+
+    $('#qunit-fixture input:first').val("12:30 AM");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time12');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('time12') does not fail proper 12-hour time (12:30 AM).");
+    
+    $('#qunit-fixture input:first').val("4:00 PM");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time12');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('time12') does not fail proper 12-hour time (4:00 PM).");
+    
+    $('#qunit-fixture input:first').val("4:00PM");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time12');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('time12') does not fail proper 12-hour time without space (4:00PM).");
+    
+    $('#qunit-fixture input:first').val("4:00 pM");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time12');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('time12') does not fail proper 12-hour time with mixed-case meridian (4:00 pM).");
+    
+    $('#qunit-fixture input:first').val("4:00 P.M.");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time12');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('time12') does not fail proper 12-hour time with dots in meridian (4:00 P.M.).");
+    
+    $('#qunit-fixture input:first').val("04:00 PM");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time12');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('time12') does not fail with leading zero in hour (04:00 PM).");
+    
+    $('#qunit-fixture input:first').val("13:00 P.M.");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time12');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('time12') fails on invalid hour (13:00 P.M.).");
+    
+    $('#qunit-fixture input:first').val("11:90 P.M.");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time12');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('time12') fails on invalid minute (11:90 P.M.).");
+    
+    $('#qunit-fixture input:first').val("11:60 P.M.");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time12');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('time12') fails on invalid minute (11:60 P.M.).");
+    
+    $('#qunit-fixture input:first').val("11:00 AP");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time12');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('time12') fails on invalid meridian (11:00 AP).");
+    
+    $('#qunit-fixture input:first').val("11:000 PM");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time12');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('time12') fails with too many minute digits (11:000 PM).");
+});
+
+test("$('...').match('time24')", 8, function() {
+    var expected, result;
+
+    $('#qunit-fixture input:first').val("1:30");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time24');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('time24') does not fail proper 24-hour time (1:30).");
+    
+    $('#qunit-fixture input:first').val("14:14");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time24');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('time24') does not fail proper 24-hour time (14:14).");
+    
+    $('#qunit-fixture input:first').val("04:14");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time24');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('time24') does not fail proper 24-hour time with leading zero in hour (04:14).");
+    
+    $('#qunit-fixture input:first').val("24:14");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time24');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('time24') fails on invalid hour (24:14).");
+    
+    $('#qunit-fixture input:first').val("26:14");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time24');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('time24') fails on invalid hour (26:14).");
+    
+    $('#qunit-fixture input:first').val("22:64");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time24');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('time24') fails on invalid minute (22:64).");
+    
+    $('#qunit-fixture input:first').val("004:24");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time24');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('time24') fails on too many hour digits (004:24).");
+    
+    $('#qunit-fixture input:first').val("4:024");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time24');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('time24') fails on too many minute digits (4:024).");
+});
+
+test("$('...').match(/regex/)", 6, function() {
+    var expected, result;
+
+    $('#qunit-fixture input:first').val("12-3456");
+    $.validity.start();
+    $('#qunit-fixture input:first').match(/^\d{2}[-]\d{4}$/);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match(/^\d{2}[-]\d{4}$/) does not fail proper value (12-3456).");
+    
+    $('#qunit-fixture input:first').val("123456");
+    $.validity.start();
+    $('#qunit-fixture input:first').match(/^\d{2}[-]\d{4}$/);
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match(/^\d{2}[-]\d{4}$/) fails on improper value (123456).");
+    
+    // This next set is for 
+    // http://blog.thatscaptaintoyou.com/strange-behavior-of-the-global-regex-flag/
+    var reg = /duck/g;
+    $('#qunit-fixture input:first').val("duck duck goose");
+    $.validity.start();
+    $('#qunit-fixture input:first').match(reg);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match(/duck/g) does not fail (duck duck goose).");
+    $.validity.start();
+    $('#qunit-fixture input:first').match(reg);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match(/duck/g) does not fail (duck duck goose).");
+    $.validity.start();
+    $('#qunit-fixture input:first').match(reg);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match(/duck/g) does not fail (duck duck goose).");
+    $.validity.start();
+    $('#qunit-fixture input:first').match(reg);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match(/duck/g) does not fail (duck duck goose).");
+});
+
+test("$('...').match(fn)", 2    , function() {
+    var expected, result;
+
+    var fn = function(v) { return v.length == 16; };
+    
+    $('#qunit-fixture input:first').val("16-letter-phrase");
+    $.validity.start();
+    $('#qunit-fixture input:first').match(fn);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match(function(v) { return v.length == 16; }) does not fail proper value (16-letter-phrase).");
+    
+    $('#qunit-fixture input:first').val("017-letter-phrase");
+    $.validity.start();
+    $('#qunit-fixture input:first').match(fn);
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match(function(v) { return v.length == 16; }) does not fail proper value (017-letter-phrase).");
+});
 
 test("$('...').range(min, max)", 1, function() {
     var values = [
