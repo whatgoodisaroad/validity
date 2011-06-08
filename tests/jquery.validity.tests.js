@@ -1,16 +1,51 @@
-﻿module("common");
+﻿module("static");
 
-test("$('...').require()", 1, function() {
-    $('#qunit-fixture input:odd').val('a value');
+test("$.validity.isValidating()", 3, function() {
+    var expected, result;
+    
+    expected = false;
+    result = $.validity.isValidating();
+    equal(result, expected, "isValidating returns false when nothing has been started.");
     
     $.validity.start();
+    
+    expected = true;
+    result = $.validity.isValidating();
+    equal(result, expected, "isValidating returns true when validation has been started but not ended.");
+    
+    $.validity.end();
+    
+    expected = false;
+    result = $.validity.isValidating();
+    equal(result, expected, "isValidating returns false when validation has been ended.");
+});
+
+module("common");
+
+test("$('...').require()", 3, function() {
+    var expected, result;
+    
+    $('#qunit-fixture input:odd').val('a value');
+    $('#qunit-fixture input:even').val('');
+    $.validity.start();
     $('#qunit-fixture input').require();
+    result = $.validity.end().errors;
+    expected = $('#qunit-fixture input:even').length;
+    equal(result, expected, "require validation fails on only empty inputs");
     
-    var 
-        result = $.validity.end().errors,
-        expected = $('#qunit-fixture input:even').length
+    $('#qunit-fixture input').val('');
+    $.validity.start();
+    $('#qunit-fixture input').require();
+    result = $.validity.end().errors;
+    expected = 8;
+    equal(result, expected, "require validation fails on all inputs when all are empty");
     
-    equal(result, expected);
+    $('#qunit-fixture input').val('value');
+    $.validity.start();
+    $('#qunit-fixture input').require();
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "require validation does not fail when there are not empty inputs");
 });
 
 test("$('...').match('integer')", 1, function() {
@@ -29,7 +64,39 @@ test("$('...').match('integer')", 1, function() {
         result = $.validity.end().errors,
         expected = 5;
     
-    equal(result, expected);
+    equal(result, expected, "match('integer') raises 5 errors when there are 5 non integers in 8 inputs");
+});
+
+test("$('...').match('date')", 4, function() {
+    var expected, result;
+
+    $('#qunit-fixture input:first').val("09/23/2007");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('date');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('date') does not fail on simple, correct mm/dd/yyyy format.");
+    
+    $('#qunit-fixture input:first').val("23/09/2007");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('date');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('date') fails on dd/mm/yyyy format.");
+    
+    $('#qunit-fixture input:first').val("09/80/2007");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('date');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('date') fails when day is too large.");
+    
+    $('#qunit-fixture input:first').val("45642/2673270/132563657");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('date');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('date') fails when all date components are far too large.");
 });
 
 test("$('...').match('number')", 1, function() {
@@ -48,7 +115,7 @@ test("$('...').match('number')", 1, function() {
         result = $.validity.end().errors,
         expected = 2;
     
-    equal(result, expected);
+    equal(result, expected, "match('number') has 2 failures when there are 2 non numbers in 8 inputs");
 });
 
 test("$('...').range(min, max)", 1, function() {
@@ -67,7 +134,7 @@ test("$('...').range(min, max)", 1, function() {
         result = $.validity.end().errors,
         expected = 5;
     
-    equal(result, expected);
+    equal(result, expected, "range(10, 20) finds 5 failures when 5 of 8 inputs have values outside that range");
 });
 
 test("$('...').maxLength(max)", 1, function() {
@@ -88,7 +155,7 @@ test("$('...').maxLength(max)", 1, function() {
         result = $.validity.end().errors,
         expected = 5;
     
-    equal(result, expected);
+    equal(result, expected, "maxLength(10) finds 5 failures when 5 inputs amon 8 are too long.");
 });
 
 test("$('...').nonHtml()", 1, function() {
@@ -105,7 +172,7 @@ test("$('...').nonHtml()", 1, function() {
         result = $.validity.end().errors,
         expected = 3;
     
-    equal(result, expected);
+    equal(result, expected, "noHtml() finds 3 failures when 3 inputs among 8 have HTML charactes.");
 });
 
 test("$('...').alphabet(alpha)", 3, function() {
@@ -128,7 +195,7 @@ test("$('...').alphabet(alpha)", 3, function() {
     result = $.validity.end().errors;
     expected = 0;
     
-    equal(result, expected);
+    equal(result, expected, "alphabet for hexadecimal characters finds no failures among 8 valid inputs");
     
     values = [
         "93afe2", "*@*##@()FNCNI", "112121", "aFdA", "11aabb44", "kekeke", "~", "L"
@@ -142,7 +209,7 @@ test("$('...').alphabet(alpha)", 3, function() {
     result = $.validity.end().errors;
     expected = 4;
     
-    equal(result, expected);
+    equal(result, expected, "alphabet for hexadecimal characters finds 4 failures when 4 inputs among 8 have invalid values");
     
     alpha = "!@#$%^&*()_-+={[]}?/>|\\~`<,\'\":;";
     values = [
@@ -156,10 +223,10 @@ test("$('...').alphabet(alpha)", 3, function() {
     result = $.validity.end().errors;
     expected = 5;
     
-    equal(result, expected);
+    equal(result, expected, "alphabet for symbols characters finds 5 failures when 5 inputs among 8 have invalid values");
 });
 
-test("$('...').minCharClass(cclass)", 2, function() {
+test("$('...').minCharClass(cclass, min)", 2, function() {
     var result, expected, values;
     
     values = [
@@ -174,7 +241,7 @@ test("$('...').minCharClass(cclass)", 2, function() {
     result = $.validity.end().errors;
     expected = 0;
     
-    equal(result, expected);
+    equal(result, expected, "minCharClass('numeric', 5) finds no failures among 8 valid inputs");
     
     values = [
         "a@dre", "73737S@", "xxxxxxxxxxxx*xxxxxxx", "sssssss", "83838", "&", "d", "="
@@ -188,7 +255,7 @@ test("$('...').minCharClass(cclass)", 2, function() {
     result = $.validity.end().errors;
     expected = 8;
     
-    equal(result, expected);
+    equal(result, expected, "minCharClass('numeric', 5) finds 8 failures among 8 invalid inputs");
 });
 
 module("aggregate");
@@ -209,7 +276,7 @@ test("$('...').equal()", 2, function() {
     
     result = $.validity.end().errors;
     expected = 0;
-    equal(result, expected);
+    equal(result, expected, "equal() finds no failure among 8 equal inputs");
     
     values = [
         1,1,1,'Ugly Duckling',1,1,1,1
@@ -224,7 +291,7 @@ test("$('...').equal()", 2, function() {
     
     result = $.validity.end().errors;
     expected = 1;
-    equal(result, expected);
+    equal(result, expected, "equal() finds a failure when 1 among 8 inputs is not equal to the other 7");
 });
 
 test("$('...').distinct()", 2, function() {
@@ -243,7 +310,7 @@ test("$('...').distinct()", 2, function() {
     
     result = $.validity.end().errors;
     expected = 0;
-    equal(result, expected);
+    equal(result, expected, "distinct() finds no failure when none among 8 inputs have equal values");
     
     values = [
         1, 2, 3, 4, 1, 6, 7, 8
@@ -258,7 +325,7 @@ test("$('...').distinct()", 2, function() {
     
     result = $.validity.end().errors;
     expected = 1;
-    equal(result, expected);
+    equal(result, expected, "distinct() finds failure when 2 among 8 inputs have equal values");
 });
 
 test("$('...').sum(val)", 3, function() {
@@ -277,7 +344,7 @@ test("$('...').sum(val)", 3, function() {
     
     result = $.validity.end().errors;
     expected = 0;
-    equal(result, expected);
+    equal(result, expected, "sum(200) finds no failures when all 8 inputs sum exactly to 200.");
     
     values = [
         5, 12, 5, 7, 5, 6, 87, 5
