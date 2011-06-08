@@ -99,6 +99,53 @@ test("$('...').match('date')", 4, function() {
     equal(result, expected, "match('date') fails when all date components are far too large.");
 });
 
+test("$('...').match('email')", 6, function() {
+    var expected, result;
+
+    $('#qunit-fixture input:first').val("wyatt@example.com");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('email');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('email') does not fail on simple email.");
+    
+    $('#qunit-fixture input:first').val("wyatt.wyatt@email.server.located.at.example.com");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('email');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('email') does not fail on email with several dots.");
+    
+    $('#qunit-fixture input:first').val("wyatt+wyatt+wyatt+validity@example.com");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('email');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('email') does not fail on email with '+' signs in the local part.");
+    
+    $('#qunit-fixture input:first').val("wyatt-wyatt-wyatt-validity@example.com");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('email');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('email') does not fail on email with '-' signs in the local part.");
+    
+    $('#qunit-fixture input:first').val("132563657@example.com");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('email');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('email') does not fail on email with digits in the local part.");
+    
+    $('#qunit-fixture input:first').val("wyatt_wyatt@example.com");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('email');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('email') does not fail on email with underscores in the local part.");
+});
+
+
 test("$('...').match('number')", 1, function() {
     var values = [
         '', '4', '4444444444', '-12', '3.14', '1.312e5', 'not a number', '123abc'
@@ -359,7 +406,7 @@ test("$('...').sum(val)", 3, function() {
     
     result = $.validity.end().errors;
     expected = 1;
-    equal(result, expected);
+    equal(result, expected, "sum(200) finds failure when sum of inputs is less than 200");
     
     values = [
         5, 12, 5, 7, 5, 6, 837, 5
@@ -374,7 +421,7 @@ test("$('...').sum(val)", 3, function() {
     
     result = $.validity.end().errors;
     expected = 1;
-    equal(result, expected);
+    equal(result, expected, "sum(200) finds failure when sum of inputs is greater than 200");
 });
 
 test("$('...').sum(max)", 3, function() {
@@ -393,7 +440,7 @@ test("$('...').sum(max)", 3, function() {
     
     result = $.validity.end().errors;
     expected = 0;
-    equal(result, expected);
+    equal(result, expected, "sumMax(200) finds no failures when all 8 inputs sum exactly to 200.");
     
     values = [
         5, 12, 5, 7, 5, 6, 87, 5
@@ -408,7 +455,7 @@ test("$('...').sum(max)", 3, function() {
     
     result = $.validity.end().errors;
     expected = 0;
-    equal(result, expected);
+    equal(result, expected, "sumMax(200) finds no failures when all 8 inputs sum to less than 200.");
     
     values = [
         5, 12, 5, 7, 5, 6, 837, 5
@@ -423,7 +470,7 @@ test("$('...').sum(max)", 3, function() {
     
     result = $.validity.end().errors;
     expected = 1;
-    equal(result, expected);
+    equal(result, expected, "sumMax(200) finds failure when all 8 inputs sum to more than 200.");
 });
 
 
