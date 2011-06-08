@@ -174,7 +174,9 @@ test("$('...').match('email')", 10, function() {
     equal(result, expected, "match('email') fails on email without @ sign.");
 });
 
-test("$('...').match('usd')", 1, function() {
+test("$('...').match('usd')", 12, function() {
+    var expected, result;
+
     $('#qunit-fixture input:first').val("$20.00");
     $.validity.start();
     $('#qunit-fixture input:first').match('usd');
@@ -260,8 +262,9 @@ test("$('...').match('usd')", 1, function() {
     equal(result, expected, "match('usd') fails with missing whole digit ($.56).");
 });
 
+test("$('...').match('number')", 14, function() {
+    var expected, result;
 
-test("$('...').match('number')", 1, function() {
     var values = [
         '', '4', '4444444444', '-12', '3.14', '1.312e5', 'not a number', '123abc'
     ];
@@ -272,13 +275,164 @@ test("$('...').match('number')", 1, function() {
     
     $.validity.start();
     $('#qunit-fixture input').match('number');
-    
-    var 
-        result = $.validity.end().errors,
-        expected = 2;
-    
+    result = $.validity.end().errors;
+    expected = 2;
     equal(result, expected, "match('number') has 2 failures when there are 2 non numbers in 8 inputs");
+    
+    $('#qunit-fixture input:first').val("1234");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('number');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on simple whole number (1234).");
+    
+    $('#qunit-fixture input:first').val("0.4321");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('number');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on simple fractional number with leading zero (0.4321).");
+    
+    $('#qunit-fixture input:first').val(".4321");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('number');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on simple fractional number without leading zero (.4321).");
+    
+    $('#qunit-fixture input:first').val("3.1425926");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('number');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on number with both whole part and fractional part (3.1415926).");
+    
+    $('#qunit-fixture input:first').val("3.");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('number');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on whole number with decimal point but no fractional part (3.).");
+    
+    $('#qunit-fixture input:first').val("-3987464239");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('number');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on negative whole number (-3987464239).");
+    
+    $('#qunit-fixture input:first').val("6.022e23");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('number');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on number in scientific notation with lowecase 'e' 6.022e23).");
+    
+    $('#qunit-fixture input:first').val("6.022E23");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('number');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on number in scientific notation with uppercase 'E' 6.022E23).");
+    
+    $('#qunit-fixture input:first').val("9.10938188e-31");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('number');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on number in scientific notation with negative radix (9.10938188e-31).");
+    
+    $('#qunit-fixture input:first').val("validity");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('number');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('number') fails on nonsense text (validity).");
+    
+    $('#qunit-fixture input:first').val("0x34fa");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('number');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('number') fails on hexadecimal number with 0x prefix (0x34fa).");
+    
+    $('#qunit-fixture input:first').val("34fa");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('number');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('number') fails on hexadecimal number without 0x prefix (34fa).");
+    
+    $('#qunit-fixture input:first').val("1234abcd");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('number');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('number') fails when number has trailing latin (1234abcd).");
 });
+
+test("$('...').match('zip')", 3, function() {
+    var expected, result;
+
+    $('#qunit-fixture input:first').val("97231");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('zip');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on 5-digit zip (97231).");
+    
+    $('#qunit-fixture input:first').val("97231-1234");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('zip');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on zipcode in ZIP+4 format (97231-1234).");
+    
+    $('#qunit-fixture input:first').val("972311234");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('zip');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('number') fails on zipcode in ZIP+4 format with missing hyphen (972311234).");
+});
+
+test("$('...').match('phone')", 4, function() {
+    var expected, result;
+
+    $('#qunit-fixture input:first').val("321-321-4321");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('phone');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on 10-digit phone number with hyphens (321-321-4321).");
+    
+    $('#qunit-fixture input:first').val("321-4321");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('phone');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on 7-digit phone number with hyphens (321-4321).");
+    
+    $('#qunit-fixture input:first').val("1-800-321-4321");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('phone');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('number') does not fail on 11-digit phone number with hyphens (1-800-321-4321).");
+    
+    $('#qunit-fixture input:first').val("100-321-4321");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('phone');
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "match('number') fails on 10-digit phone number with hyphens where the area code starts with 1 (100-321-4321).");
+});
+
+test("$('...').match('guid')", 0, function() { throw "Not Implemented" });
+test("$('...').match('time12')", 0, function() { throw "Not Implemented" });
+test("$('...').match('time24')", 0, function() { throw "Not Implemented" });
+test("$('...').match(/regex/)", 0, function() { throw "Not Implemented" });
+test("$('...').match(fn)", 0, function() { throw "Not Implemented" });
 
 test("$('...').range(min, max)", 1, function() {
     var values = [
@@ -298,6 +452,11 @@ test("$('...').range(min, max)", 1, function() {
     
     equal(result, expected, "range(10, 20) finds 5 failures when 5 of 8 inputs have values outside that range");
 });
+
+test("$('...').greaterThan(min)", 0, function() { throw "Not Implemented" });
+test("$('...').greaterThanOrEqualTo(min)", 0, function() { throw "Not Implemented" });
+test("$('...').lessThan(max)", 0, function() { throw "Not Implemented" });
+test("$('...').lessThanOrEqualTo(max)", 0, function() { throw "Not Implemented" });
 
 test("$('...').maxLength(max)", 1, function() {
     var values = [
@@ -320,22 +479,7 @@ test("$('...').maxLength(max)", 1, function() {
     equal(result, expected, "maxLength(10) finds 5 failures when 5 inputs amon 8 are too long.");
 });
 
-test("$('...').nonHtml()", 1, function() {
-    var values = [
-        "text", 2312, "<", "Safe text", "Un<safe Tex>t", "Loooooooooooooooooooooooooooooooooooooooooooooong text", "<<<<><<><", "ERM"
-    ];
-    $('#qunit-fixture input').each(function(i){
-        this.value = values[i];
-    });
-    $.validity.start();
-    $('#qunit-fixture input').nonHtml();
-    
-    var 
-        result = $.validity.end().errors,
-        expected = 3;
-    
-    equal(result, expected, "noHtml() finds 3 failures when 3 inputs among 8 have HTML charactes.");
-});
+test("$('...').minLength(min)", 0, function() { throw "Not Implemented" });
 
 test("$('...').alphabet(alpha)", 3, function() {
     var result, expected, values, alpha;
@@ -418,6 +562,27 @@ test("$('...').minCharClass(cclass, min)", 2, function() {
     expected = 8;
     
     equal(result, expected, "minCharClass('numeric', 5) finds 8 failures among 8 invalid inputs");
+});
+
+test("$('...').password({ opts })", 0, function() { throw "Not Implemented" });
+
+test("$('...').nonHtml()", 1, function() {
+    var values = [
+        "text", 2312, "<", "Safe text", "Un<safe Tex>t", 
+        "Loooooooooooooooooooooooooooooooooooooooooooooong text", 
+        "<<<<><<><", "ERM"
+    ];
+    $('#qunit-fixture input').each(function(i){
+        this.value = values[i];
+    });
+    $.validity.start();
+    $('#qunit-fixture input').nonHtml();
+    
+    var 
+        result = $.validity.end().errors,
+        expected = 3;
+    
+    equal(result, expected, "noHtml() finds 3 failures when 3 inputs among 8 have HTML charactes.");
 });
 
 module("aggregate");
