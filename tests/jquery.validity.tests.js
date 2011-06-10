@@ -669,10 +669,189 @@ test("$('...').range(min, max)", 1, function() {
     equal(result, expected, "range(10, 20) finds 5 failures when 5 of 8 inputs have values outside that range");
 });
 
-test("$('...').greaterThan(min)", 0, function() { throw "Not Implemented" });
-test("$('...').greaterThanOrEqualTo(min)", 0, function() { throw "Not Implemented" });
-test("$('...').lessThan(max)", 0, function() { throw "Not Implemented" });
-test("$('...').lessThanOrEqualTo(max)", 0, function() { throw "Not Implemented" });
+test("$('...').greaterThan(min)", 6, function() {
+    var expected, result;
+
+    $('#qunit-fixture input:first').val(4);
+    $.validity.start();
+    $('#qunit-fixture input:first').greaterThan(0);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "greaterThan(0) does not fail on simple value (4).");
+    
+    $('#qunit-fixture input:first').val(0);
+    $.validity.start();
+    $('#qunit-fixture input:first').greaterThan(-1);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "greaterThan(-1) does not fail on negative min (0).");
+    
+    $('#qunit-fixture input:first').val(0);
+    $.validity.start();
+    $('#qunit-fixture input:first').greaterThan(4);
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "greaterThan(4) fails on bad value (0).");
+    
+    $('#qunit-fixture input:first').val(0);
+    $.validity.start();
+    $('#qunit-fixture input:first').greaterThan(0);
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "greaterThan(0) fails on equal value (0).");
+    
+    $('#qunit-fixture input:first').val(4);
+    $.validity.start();
+    $('#qunit-fixture input:first').greaterThan(4);
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "greaterThan(4) fails on equal value (4).");
+    
+    $('#qunit-fixture input:first').val(4.00000001);
+    $.validity.start();
+    $('#qunit-fixture input:first').greaterThan(4);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "greaterThan(4) does not fail on proper value (4.00000001).");
+});
+
+test("$('...').greaterThanOrEqualTo(min)", 6, function() {
+    var expected, result;
+
+    $('#qunit-fixture input:first').val(4);
+    $.validity.start();
+    $('#qunit-fixture input:first').greaterThanOrEqualTo(0);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "greaterThanOrEqualTo(0) does not fail on simple value (4).");
+    
+    $('#qunit-fixture input:first').val(0);
+    $.validity.start();
+    $('#qunit-fixture input:first').greaterThanOrEqualTo(-1);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "greaterThanOrEqualTo(-1) does not fail on negative min (0).");
+    
+    $('#qunit-fixture input:first').val(0);
+    $.validity.start();
+    $('#qunit-fixture input:first').greaterThanOrEqualTo(4);
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "greaterThanOrEqualTo(4) fails on bad value (0).");
+    
+    $('#qunit-fixture input:first').val(0);
+    $.validity.start();
+    $('#qunit-fixture input:first').greaterThanOrEqualTo(0);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "greaterThanOrEqualTo(0) does not fail on value (0).");
+    
+    $('#qunit-fixture input:first').val(4);
+    $.validity.start();
+    $('#qunit-fixture input:first').greaterThanOrEqualTo(4);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "greaterThanOrEqualTo(4) does not fail on equal value (4).");
+    
+    $('#qunit-fixture input:first').val(4.00000001);
+    $.validity.start();
+    $('#qunit-fixture input:first').greaterThanOrEqualTo(4);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "greaterThanOrEqualTo(4) does not fail on proper value (4.00000001).");
+});
+
+test("$('...').lessThan(max)", 6, function() {
+    var expected, result;
+
+    $('#qunit-fixture input:first').val(1);
+    $.validity.start();
+    $('#qunit-fixture input:first').lessThan(4);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "lessThan(4) does not fail on simple value (0).");
+    
+    $('#qunit-fixture input:first').val(-1);
+    $.validity.start();
+    $('#qunit-fixture input:first').lessThan(0);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "lessThan(0) does not fail on negative value (-1).");
+    
+    $('#qunit-fixture input:first').val(4);
+    $.validity.start();
+    $('#qunit-fixture input:first').lessThan(0);
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "lessThan(0) fails on bad value (4).");
+    
+    $('#qunit-fixture input:first').val(0);
+    $.validity.start();
+    $('#qunit-fixture input:first').lessThan(0);
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "lessThan(0) fails on equal value (0).");
+    
+    $('#qunit-fixture input:first').val(4);
+    $.validity.start();
+    $('#qunit-fixture input:first').lessThan(4);
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "lessThan(4) fails on equal value (4).");
+    
+    $('#qunit-fixture input:first').val(4);
+    $.validity.start();
+    $('#qunit-fixture input:first').lessThan(4.00000001);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "lessThan(4.00000001) does not fail on proper value (4).");
+});
+
+test("$('...').lessThanOrEqualTo(max)", 6, function() {
+    var expected, result;
+
+    $('#qunit-fixture input:first').val(1);
+    $.validity.start();
+    $('#qunit-fixture input:first').lessThanOrEqualTo(4);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "lessThanOrEqualTo(4) does not fail on simple value (0).");
+    
+    $('#qunit-fixture input:first').val(-1);
+    $.validity.start();
+    $('#qunit-fixture input:first').lessThanOrEqualTo(0);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "lessThanOrEqualTo(0) does not fail on negative value (-1).");
+    
+    $('#qunit-fixture input:first').val(4);
+    $.validity.start();
+    $('#qunit-fixture input:first').lessThanOrEqualTo(0);
+    result = $.validity.end().errors;
+    expected = 1;
+    equal(result, expected, "lessThanOrEqualTo(0) fails on bad value (4).");
+    
+    $('#qunit-fixture input:first').val(0);
+    $.validity.start();
+    $('#qunit-fixture input:first').lessThanOrEqualTo(0);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "lessThanOrEqualTo(0) fails on equal value (0).");
+    
+    $('#qunit-fixture input:first').val(4);
+    $.validity.start();
+    $('#qunit-fixture input:first').lessThanOrEqualTo(4);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "lessThanOrEqualTo(4) fails on equal value (4).");
+    
+    $('#qunit-fixture input:first').val(4);
+    $.validity.start();
+    $('#qunit-fixture input:first').lessThanOrEqualTo(4.00000001);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "lessThanOrEqualTo(4.00000001) does not fail on proper value (4).");
+});
 
 test("$('...').maxLength(max)", 1, function() {
     var values = [
