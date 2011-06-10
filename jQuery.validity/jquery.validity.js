@@ -574,53 +574,6 @@
             );
         },
         
-        // TODO: Document
-        password:function(opts, msg) {
-            opts = $.extend({
-                    alphabet:null,
-            
-                    minLength:0,
-                    maxLength:0,
-                    
-                    minSymbol:0,
-                    minAlphabetical:0,
-                    minNumeric:0,
-                    minAlphaNumeric:0
-                }, 
-                opts
-            );
-            
-            if (opts.alphabet) {
-                this.alphabet(opts.alphabet);
-            }
-            
-            if (opts.minLength) {
-                this.minLength(opts.minLength);
-            }
-            
-            if (opts.maxLength) {
-                this.maxLength(opts.maxLength);
-            }
-            
-            if (opts.minSymbol) {
-                this.minCharClass("symbol", opts.minSymbol);
-            }
-            
-            if (opts.minAlphabetical) {
-                this.minCharClass("alphabetical", opts.minAlphabetical);
-            }
-            
-            if (opts.minNumeric) {
-                this.minCharClass("numeric", opts.minNumeric);
-            }
-            
-            if (opts.minAlphanumeric) {
-                this.minCharClass("alphanumeric", opts.minAlphanumeric);
-            }
-            
-            return this;
-        },
-        
         // Validate that the input does not contain potentially dangerous strings.
         // http://validity.thatscaptaintoyou.com/Demos/index.htm#NonHtml
         nonHtml:function(msg) {
