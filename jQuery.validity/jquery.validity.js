@@ -9,7 +9,7 @@
  * Date: 2010-08-16 (Tuesday, 16 August 2010)
  * Revision: 134
  */
-(function($) {
+(function($, undefined) {
     
     // Default settings:
     ////////////////////////////////////////////////////////////////
@@ -43,7 +43,9 @@
                 return val.getDate ?
                     (val.getMonth() + 1) + "/" + val.getDate() + "/" + val.getFullYear() :
                     val;
-            }
+            },
+            
+            debugPrivates:false
         };
     
     // Static functions and properties:
@@ -146,10 +148,28 @@
         // Object to contain the output modes. The three built-in output modes are installed
         // later on in this script.
         outputs:{},
+        
+        __private:undefined,
 
         // Override the default settings with user-specified ones.
         setup:function(options) {
             this.settings = $.extend(this.settings, options);
+            
+            if (this.settings.debugPrivates) {
+                this.__private = { 
+                    validate:validate,
+                    addToReport:addToReport,
+                    raiseError:raiseError,
+                    raiseAggregateError:raiseAggregateError,
+                    numericSum:numericSum,
+                    format:format,
+                    infer:infer,
+                    capitalize:capitalize
+                };
+            }
+            else {
+                this.__private = undefined;
+            }
         },
 
         // Object to store information about ongoing validation.

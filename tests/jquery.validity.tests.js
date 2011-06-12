@@ -1,4 +1,33 @@
-﻿module("static");
+﻿function setup8Inputs() {
+    $("#qunit-fixture").html(
+        '<div id="testArea" style="display:none;">' +
+            '<div class="validity-summary-container">' +
+                'Summary:' +
+                '<ul></ul>' +
+            '</div>' +
+            '<input type="text" name="i0" id="i0" /><br />' +
+            '<input type="text" name="i1" id="i1" /><br />' +
+            '<input type="text" name="i2" id="i2" /><br />' +
+            '<input type="text" name="i3" id="i3" /><br />' +
+            '<input type="text" name="i4" id="i4" /><br />' +
+            '<input type="text" name="i5" id="i5" /><br />' +
+            '<input type="text" name="i6" id="i6" /><br />' +
+            '<input type="text" name="i7" id="i7" /><br />' +
+            '<div class="validity-summary-container">' +
+                'Summary:' +
+                '<ul></ul>' +
+            '</div>' +
+        '</div>'
+    );
+}
+
+function setup8InputsAndDebugPrivates() {
+    setup8Inputs();
+    
+    $.validity.setup({ debugPrivates:true });
+}
+
+module("static", { setup:setup8Inputs });
 
 test("$.validity.isValidating()", 3, function() {
     var expected, result;
@@ -20,9 +49,9 @@ test("$.validity.isValidating()", 3, function() {
     equal(result, expected, "isValidating returns false when validation has been ended.");
 });
 
-module("common");
+module("common", { setup:setup8Inputs });
 
-test("$('...').require()", 3, function() {
+test("$.fn.require()", 3, function() {
     var expected, result;
     
     $('#qunit-fixture input:odd').val('a value');
@@ -48,7 +77,7 @@ test("$('...').require()", 3, function() {
     equal(result, expected, "require validation does not fail when there are not empty inputs");
 });
 
-test("$('...').match('integer')", 1, function() {
+test("$.fn.match('integer')", 1, function() {
     var values = [
         '', '4', '4444444444', '-12', '3.14', '1.312e5', 'not a number', '123abc'
     ];
@@ -67,7 +96,7 @@ test("$('...').match('integer')", 1, function() {
     equal(result, expected, "match('integer') raises 5 errors when there are 5 non integers in 8 inputs");
 });
 
-test("$('...').match('date')", 4, function() {
+test("$.fn.match('date')", 4, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val("09/23/2007");
@@ -100,7 +129,7 @@ test("$('...').match('date')", 4, function() {
 });
 
 // Used http://tools.ietf.org/html/rfc5322 for reference.
-test("$('...').match('email')", 10, function() {
+test("$.fn.match('email')", 10, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val("wyatt@example.com");
@@ -174,7 +203,7 @@ test("$('...').match('email')", 10, function() {
     equal(result, expected, "match('email') fails on email without @ sign.");
 });
 
-test("$('...').match('usd')", 12, function() {
+test("$.fn.match('usd')", 12, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val("$20.00");
@@ -262,7 +291,7 @@ test("$('...').match('usd')", 12, function() {
     equal(result, expected, "match('usd') fails with missing whole digit ($.56).");
 });
 
-test("$('...').match('number')", 14, function() {
+test("$.fn.match('number')", 14, function() {
     var expected, result;
 
     var values = [
@@ -371,7 +400,7 @@ test("$('...').match('number')", 14, function() {
     equal(result, expected, "match('number') fails when number has trailing latin (1234abcd).");
 });
 
-test("$('...').match('zip')", 3, function() {
+test("$.fn.match('zip')", 3, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val("97231");
@@ -396,7 +425,7 @@ test("$('...').match('zip')", 3, function() {
     equal(result, expected, "match('number') fails on zipcode in ZIP+4 format with missing hyphen (972311234).");
 });
 
-test("$('...').match('phone')", 4, function() {
+test("$.fn.match('phone')", 4, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val("321-321-4321");
@@ -410,15 +439,15 @@ test("$('...').match('phone')", 4, function() {
     $.validity.start();
     $('#qunit-fixture input:first').match('phone');
     result = $.validity.end().errors;
-    expected = 0;
-    equal(result, expected, "match('number') does not fail on 7-digit phone number with hyphens (321-4321).");
+    expected = 1;
+    equal(result, expected, "match('number') fails on 7-digit phone number with hyphens (321-4321).");
     
     $('#qunit-fixture input:first').val("1-800-321-4321");
     $.validity.start();
     $('#qunit-fixture input:first').match('phone');
     result = $.validity.end().errors;
-    expected = 0;
-    equal(result, expected, "match('number') does not fail on 11-digit phone number with hyphens (1-800-321-4321).");
+    expected = 1;
+    equal(result, expected, "match('number') fails on 11-digit phone number with hyphens (1-800-321-4321).");
     
     $('#qunit-fixture input:first').val("100-321-4321");
     $.validity.start();
@@ -428,7 +457,7 @@ test("$('...').match('phone')", 4, function() {
     equal(result, expected, "match('number') fails on 10-digit phone number with hyphens where the area code starts with 1 (100-321-4321).");
 });
 
-test("$('...').match('guid')", 2, function() {
+test("$.fn.match('guid')", 2, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val("{3F2504E0-4F89-11D3-9A0C-0305E82C3301}");
@@ -446,7 +475,7 @@ test("$('...').match('guid')", 2, function() {
     equal(result, expected, "match('guid') fails on non-guid (obviously not a guid.).");
 });
 
-test("$('...').match('time12')", 11, function() {
+test("$.fn.match('time12')", 11, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val("12:30 AM");
@@ -527,7 +556,7 @@ test("$('...').match('time12')", 11, function() {
     equal(result, expected, "match('time12') fails with too many minute digits (11:000 PM).");
 });
 
-test("$('...').match('time24')", 8, function() {
+test("$.fn.match('time24')", 8, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val("1:30");
@@ -587,7 +616,7 @@ test("$('...').match('time24')", 8, function() {
     equal(result, expected, "match('time24') fails on too many minute digits (4:024).");
 });
 
-test("$('...').match(/regex/)", 6, function() {
+test("$.fn.match(/regex/)", 6, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val("12-3456");
@@ -630,7 +659,7 @@ test("$('...').match(/regex/)", 6, function() {
     equal(result, expected, "match(/duck/g) does not fail (duck duck goose).");
 });
 
-test("$('...').match(fn)", 2    , function() {
+test("$.fn.match(fn)", 2    , function() {
     var expected, result;
 
     var fn = function(v) { return v.length == 16; };
@@ -650,7 +679,7 @@ test("$('...').match(fn)", 2    , function() {
     equal(result, expected, "match(function(v) { return v.length == 16; }) does not fail proper value (017-letter-phrase).");
 });
 
-test("$('...').range(min, max)", 1, function() {
+test("$.fn.range(min, max)", 1, function() {
     var values = [
         1, 4, 6, 11, 18, 20, 22, 103
     ];
@@ -669,7 +698,7 @@ test("$('...').range(min, max)", 1, function() {
     equal(result, expected, "range(10, 20) finds 5 failures when 5 of 8 inputs have values outside that range");
 });
 
-test("$('...').greaterThan(min)", 6, function() {
+test("$.fn.greaterThan(min)", 6, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val(4);
@@ -715,7 +744,7 @@ test("$('...').greaterThan(min)", 6, function() {
     equal(result, expected, "greaterThan(4) does not fail on proper value (4.00000001).");
 });
 
-test("$('...').greaterThanOrEqualTo(min)", 6, function() {
+test("$.fn.greaterThanOrEqualTo(min)", 6, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val(4);
@@ -761,7 +790,7 @@ test("$('...').greaterThanOrEqualTo(min)", 6, function() {
     equal(result, expected, "greaterThanOrEqualTo(4) does not fail on proper value (4.00000001).");
 });
 
-test("$('...').lessThan(max)", 6, function() {
+test("$.fn.lessThan(max)", 6, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val(1);
@@ -807,7 +836,7 @@ test("$('...').lessThan(max)", 6, function() {
     equal(result, expected, "lessThan(4.00000001) does not fail on proper value (4).");
 });
 
-test("$('...').lessThanOrEqualTo(max)", 6, function() {
+test("$.fn.lessThanOrEqualTo(max)", 6, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val(1);
@@ -853,7 +882,7 @@ test("$('...').lessThanOrEqualTo(max)", 6, function() {
     equal(result, expected, "lessThanOrEqualTo(4.00000001) does not fail on proper value (4).");
 });
 
-test("$('...').maxLength(max)", 1, function() {
+test("$.fn.maxLength(max)", 1, function() {
     var values = [
         'yes', 'yesss', 'yessssssss', 'yesssssssssssss', 
         'yesssssssssssssssssssss', 'yeahhhhhhhhhhhhhhhhhh', 
@@ -874,7 +903,7 @@ test("$('...').maxLength(max)", 1, function() {
     equal(result, expected, "maxLength(10) finds 5 failures when 5 inputs amon 8 are too long.");
 });
 
-test("$('...').minLength(min)", 7, function() {
+test("$.fn.minLength(min)", 7, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val("short");
@@ -927,7 +956,7 @@ test("$('...').minLength(min)", 7, function() {
     equal(result, expected, "minLength(6) does not on long value (extremely long wordy nonsense).");
 });
 
-test("$('...').alphabet(alpha)", 3, function() {
+test("$.fn.alphabet(alpha)", 3, function() {
     var result, expected, values, alpha;
     
     alpha = "0123456789abcdefABCDEF";
@@ -978,7 +1007,7 @@ test("$('...').alphabet(alpha)", 3, function() {
     equal(result, expected, "alphabet for symbols characters finds 5 failures when 5 inputs among 8 have invalid values");
 });
 
-test("$('...').minCharClass(cclass, min)", 2, function() {
+test("$.fn.minCharClass(cclass, min)", 2, function() {
     var result, expected, values;
     
     values = [
@@ -1010,7 +1039,7 @@ test("$('...').minCharClass(cclass, min)", 2, function() {
     equal(result, expected, "minCharClass('numeric', 5) finds 8 failures among 8 invalid inputs");
 });
 
-test("$('...').nonHtml()", 1, function() {
+test("$.fn.nonHtml()", 1, function() {
     var values = [
         "text", 2312, "<", "Safe text", "Un<safe Tex>t", 
         "Loooooooooooooooooooooooooooooooooooooooooooooong text", 
@@ -1029,9 +1058,9 @@ test("$('...').nonHtml()", 1, function() {
     equal(result, expected, "noHtml() finds 3 failures when 3 inputs among 8 have HTML charactes.");
 });
 
-module("aggregate");
+module("aggregate", { setup:setup8Inputs });
 
-test("$('...').equal()", 2, function() {
+test("$.fn.equal()", 2, function() {
     var result, expected, values;
     
     values = [
@@ -1065,7 +1094,7 @@ test("$('...').equal()", 2, function() {
     equal(result, expected, "equal() finds a failure when 1 among 8 inputs is not equal to the other 7");
 });
 
-test("$('...').distinct()", 2, function() {
+test("$.fn.distinct()", 2, function() {
     var result, expected, values;
     
     values = [
@@ -1099,7 +1128,7 @@ test("$('...').distinct()", 2, function() {
     equal(result, expected, "distinct() finds failure when 2 among 8 inputs have equal values");
 });
 
-test("$('...').sum(val)", 3, function() {
+test("$.fn.sum(val)", 3, function() {
     var result, expected, values;
     
     values = [
@@ -1148,7 +1177,7 @@ test("$('...').sum(val)", 3, function() {
     equal(result, expected, "sum(200) finds failure when sum of inputs is greater than 200");
 });
 
-test("$('...').sum(max)", 3, function() {
+test("$.fn.sum(max)", 3, function() {
     var result, expected, values;
     
     values = [
@@ -1164,7 +1193,11 @@ test("$('...').sum(max)", 3, function() {
     
     result = $.validity.end().errors;
     expected = 0;
-    equal(result, expected, "sumMax(200) finds no failures when all 8 inputs sum exactly to 200.");
+    equal(
+        result, 
+        expected, 
+        "sumMax(200) finds no failures when all 8 inputs sum exactly to 200."
+    );
     
     values = [
         5, 12, 5, 7, 5, 6, 87, 5
@@ -1179,7 +1212,11 @@ test("$('...').sum(max)", 3, function() {
     
     result = $.validity.end().errors;
     expected = 0;
-    equal(result, expected, "sumMax(200) finds no failures when all 8 inputs sum to less than 200.");
+    equal(
+        result, 
+        expected, 
+        "sumMax(200) finds no failures when all 8 inputs sum to less than 200."
+    );
     
     values = [
         5, 12, 5, 7, 5, 6, 837, 5
@@ -1194,11 +1231,66 @@ test("$('...').sum(max)", 3, function() {
     
     result = $.validity.end().errors;
     expected = 1;
-    equal(result, expected, "sumMax(200) finds failure when all 8 inputs sum to more than 200.");
+    equal(
+        result, 
+        expected, 
+        "sumMax(200) finds failure when all 8 inputs sum to more than 200."
+    );
 });
 
+module("__private", { setup:setup8InputsAndDebugPrivates });
 
+test("$.validity.setup({ debugPrivates:true })", 1, function() {
+    notEqual(
+        $.validity.__private, 
+        undefined, 
+        "Private functions are properly exposed."
+    );
+});
 
+test("$.validity.__private.validate($obj, regimen, message)", 0, function() {
+    var $obj, regimen, message, expected, result, actual;
+    
+    $obj = $("<input type='text' value='some value' />");
+    regimen = function(elem) { return false; };
+    message = "message";
+    
+    equal(
+        $obj.reduction, 
+        undefined, 
+        "Regimen isn't defined on a new jQuery object for some reason."
+    );
+    
+    result = $.validity.__private.validate($obj, regimen, message);
+    
+    notEqual(
+        $obj.reduction, 
+        undefined, 
+        "Regimen is defined on the jQuery object after validate is called."
+    );
+    
+    expected = 0;
+    actual = result.reduction.length;
+    equal(
+        actual,
+        expected,
+        "Validation failure results in empty reduction."
+    );
+    
+    $obj = $("<input type='text' value='some value' />");
+    regimen = function(elem) { return true; };
+    
+    result = $.validity.__private.validate($obj, regimen, message);
+    
+    expected = result.length;
+    actual = result.reduction.length;
+    equal(
+        actual,
+        expected,
+        "Validation success results equivalent reduction."
+    );
+    
+});
 
 
 
