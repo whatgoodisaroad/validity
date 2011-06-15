@@ -1003,7 +1003,12 @@
     // that key's value.
     function format(str, obj) {
         for (var p in obj) {
-            str = str.replace("#{" + p + "}", obj[p]);
+            if (obj.hasOwnProperty(p)) {
+                str = str.replace(
+                    new RegExp("#\\{" + p + "\\}", "g"), 
+                    obj[p]
+                );
+            }
         }
         return capitalize(str);
     }
@@ -1015,6 +1020,7 @@
     function infer(field) {
         var 
             $f = $(field),
+            id = $f.attr("id"),
             ret = $.validity.settings.defaultFieldName;
 
         // Check for title.
@@ -1023,13 +1029,13 @@
         }
 
         // Check for UpperCamelCase.
-        else if (/^([A-Z0-9][a-z]*)+$/.test(field.id)) {
-            ret = field.id.replace(/([A-Z0-9])[a-z]*/g, " $&");
+        else if (/^([A-Z0-9][a-z]*)+$/.test(id)) {
+            ret = id.replace(/([A-Z0-9])[a-z]*/g, " $&");
         }
 
         // Check for lowercase_separated_by_underscores
-        else if (/^[a-z0-9_]*$/.test(field.id)) {
-            var arr = field.id.split("_");
+        else if (/^[a-z0-9]+(_[a-z0-9]+)*$/.test(id)) {
+            var arr = id.split("_");
 
             for (var i = 0; i < arr.length; ++i) {
                 arr[i] = capitalize(arr[i]);
@@ -1038,7 +1044,7 @@
             ret = arr.join(" ");
         }
 
-        return ret;
+        return $.trim(ret);
     }
 
     // Capitolize the first character of the string argument.

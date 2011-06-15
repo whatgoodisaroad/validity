@@ -1308,5 +1308,94 @@ test("$.validity.__private.addToReport()", 2, function() {
     };
 });
 
+test("$.validity.__private.numericSum(obj)", 2, function() {
+    var 
+        obj = $("<input/>")
+            .clone().andSelf()
+            .clone().andSelf() // 4 inputs
+            .val(1),
+        
+        result = $.validity.__private.numericSum(obj),
+        expected = 4;
+        
+    equal(result, expected, "numericSum properly finds the sum of 4 elements.");
+    
+    obj.val(2);
+    expected = 8;
+    
+    result = $.validity.__private.numericSum(obj);
+    
+    equal(result, expected, "numericSum properly finds the sum of 4 elements.");
+});
+
+test("$.validity.__private.format(str, obj)", 5, function() {
+    var str, obj, expected, result;
+    
+    str = "#{key}";
+    obj = { key:"value" };
+    expected = "Value";
+    result = $.validity.__private.format(str, obj);
+    equal(result, expected, "format works in simplest case");
+    
+    str = "#{key1} some text #{key2}";
+    obj = { key1:"before", key2:"after" };
+    expected = "Before some text after";
+    result = $.validity.__private.format(str, obj);
+    equal(result, expected, "format works with mixed keys and text");
+    
+    str = "#{key1}#{key2}";
+    obj = { key1:"before", key2:"after" };
+    expected = "Beforeafter";
+    result = $.validity.__private.format(str, obj);
+    equal(result, expected, "format works with adjacent keys");
+    
+    str = "#{key1} #{key1}";
+    obj = { key1:"good", key2:"bad" };
+    expected = "Good good";
+    result = $.validity.__private.format(str, obj);
+    equal(result, expected, "format works with repeated key");
+    
+    Object.prototype.inheritedKey = "bad";
+    
+    str = "#{localKey} #{inheritedKey}";
+    obj = { localKey:"good" };
+    expected = "Good #{inheritedKey}";
+    result = $.validity.__private.format(str, obj);
+    equal(result, expected, "format does not use keys from the object prototype");
+    
+    delete Object.prototype.inheritedKey;
+});
+
+test("$.validity.__private.infer(field)", 4, function() {
+    var field, expected, result;
+    
+    field = $("<input/>").attr("title", "name");
+    expected = "name";
+    result = $.validity.__private.infer(field);
+    equal(result, expected, "infer finds name on title.");
+    
+    field = $("<input/>").attr("id", "ABunchOfWords");
+    expected = "A Bunch Of Words";
+    result = $.validity.__private.infer(field);
+    equal(result, expected, "infer finds name in id with upper camelcase.");
+    
+    field = $("<input/>").attr("id", "words_separated_by_underscores");
+    expected = "Words Separated By Underscores";
+    result = $.validity.__private.infer(field);
+    equal(result, expected, "infer finds name in id in lowercase with underscores.");
+    
+    field = $("<input/>");
+    expected = $.validity.settings.defaultFieldName;
+    result = $.validity.__private.infer(field);
+    equal(result, expected, "infer defaults when name cannot be inferred.");
+    
+});
+
+
+
+
+
+
+
 
 
