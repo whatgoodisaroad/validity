@@ -1248,7 +1248,7 @@ test("$.validity.setup({ debugPrivates:true })", 1, function() {
     );
 });
 
-test("$.validity.__private.validate($obj, regimen, message)", 0, function() {
+test("$.validity.__private.validate($obj, regimen, message)", 4, function() {
     var $obj, regimen, message, expected, result, actual;
     
     $obj = $("<input type='text' value='some value' />");
@@ -1292,6 +1292,21 @@ test("$.validity.__private.validate($obj, regimen, message)", 0, function() {
     
 });
 
+test("$.validity.__private.addToReport()", 2, function() {
+    $.validity.start();
+    
+    if ($.validity.isValidating()) {
+        $.validity.report.errors = 0;
+        $.validity.report.valid = true;
+        
+        $.validity.__private.addToReport();
+        
+        var report = $.validity.report;
+        
+        equal(report.errors, 1, "addToReport properly increments error counter");
+        equal(report.valid, false, "addToReport properly sets valid to false.");
+    };
+});
 
 
 

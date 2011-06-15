@@ -19,11 +19,6 @@
             // The default output mode is tooltip because it requires no dependencies:
             outputMode:"tooltip",
             
-            // The css class on the output
-            cssClass:"error",
-            
-            tooltipClass:"validity-tooltip",
-
             // The this property is set to true, validity will scroll the browser viewport
             // so that the first error is visible when validation fails:
             scrollTo:false,
@@ -46,7 +41,8 @@
             },
             
             debugPrivates:false
-        };
+        },
+        __private;
     
     // Static functions and properties:
     ////////////////////////////////////////////////////////////////
@@ -136,6 +132,37 @@
             generic:"Invalid."
         },
         
+        // Abstract, fail-safe output interface.
+        out:{
+            start:function() {
+                this.defer("start");
+            },
+            end:function(results) {
+                this.defer("end", results);
+            },
+            raise:function($obj, msg) {
+                this.defer("raise", $obj, msg);
+            },
+            raiseAggregate:function($obj, msg) {
+                this.defer("raiseAggregate", $obj, msg);
+            },
+            defer:function(name) {
+                try {
+                    var 
+                        v = $.validity,
+                        o = v.outputs[v.settings.outputMode];
+                    
+                    o[name].apply(
+                        o,
+                        Array.prototype.slice.call(arguments, 1)
+                    );
+                }
+                catch(exc) {
+                    throw exc;
+                }
+            }
+        },
+        
         // Character classes can be used to determine the quantity
         // of a given type of character in a string:
         charClasses:{
@@ -156,16 +183,7 @@
             this.settings = $.extend(this.settings, options);
             
             if (this.settings.debugPrivates) {
-                this.__private = { 
-                    validate:validate,
-                    addToReport:addToReport,
-                    raiseError:raiseError,
-                    raiseAggregateError:raiseAggregateError,
-                    numericSum:numericSum,
-                    format:format,
-                    infer:infer,
-                    capitalize:capitalize
-                };
+                this.__private = __private;
             }
             else {
                 this.__private = undefined;
@@ -189,11 +207,8 @@
             // The output mode should be notified that validation is starting.
             // This usually means that the output mode will erase errors from the 
             // document in whatever way the mode needs to:
-            if (this.outputs[this.settings.outputMode] &&
-                this.outputs[this.settings.outputMode].start) {
-                this.outputs[this.settings.outputMode].start();
-            }
-
+            this.out.start();
+            
             // Initialize the report object:
             this.report = { errors:0, valid:true };
         },
@@ -206,10 +221,7 @@
             this.report = null;
             
             // Notify the current output mode that validation is over:
-            if (this.outputs[this.settings.outputMode] &&
-                this.outputs[this.settings.outputMode].end) {
-                this.outputs[this.settings.outputMode].end(results);
-            }
+            this.out.end(results);
             
             return results;
         },
@@ -961,10 +973,7 @@
     function raiseError(obj, msg) {
         addToReport();
 
-        if ($.validity.outputs[$.validity.settings.outputMode] &&
-            $.validity.outputs[$.validity.settings.outputMode].raise) {
-            $.validity.outputs[$.validity.settings.outputMode].raise($(obj), msg);
-        }
+        $.validity.out.raise($(obj), msg);
     }
 
     // Inform the report of a failure and display an aggregate error according to the 
@@ -972,10 +981,7 @@
     function raiseAggregateError($obj, msg) {
         addToReport();
 
-        if ($.validity.outputs[$.validity.settings.outputMode] &&
-            $.validity.outputs[$.validity.settings.outputMode].raiseAggregate) {
-            $.validity.outputs[$.validity.settings.outputMode].raiseAggregate($obj, msg);
-        }
+        $.validity.out.raiseAggregate($obj, msg);
     }
 
     // Yield the sum of the values of all fields matched in obj that can be parsed.
@@ -1040,6 +1046,17 @@
             sz.substring(0, 1).toUpperCase() + sz.substring(1, sz.length) :
             sz;
     }
+    
+    __private = { 
+        validate:validate,
+        addToReport:addToReport,
+        raiseError:raiseError,
+        raiseAggregateError:raiseAggregateError,
+        numericSum:numericSum,
+        format:format,
+        infer:infer,
+        capitalize:capitalize
+    };
 
 })(jQuery);
 
@@ -1052,15 +1069,18 @@
 // Install the tooltip output.
 (function($) {
     $.validity.outputs.tooltip = {
+        tooltipClass:"validity-tooltip",
+    
         start:function() {
-            $("." + $.validity.settings.tooltipClass)
+            $("." + $.validity.outputs.tooltip.tooltipClass)
                 .remove();
         },
         
         end:function(results) {
             // If not valid and scrollTo is enabled, scroll the page to the first error.
             if (!results.valid && $.validity.settings.scrollTo) {
-                document.body.scrollTop = $("." + $.validity.settings.tooltipClass)
+                return;
+                document.body.scrollTop = $("." + $.validity.outputs.tooltip.tooltipClass)
                     .offset()
                     .top;
             }
@@ -1068,8 +1088,8 @@
 
         raise:function($obj, msg) {
             var pos = $obj.offset();
-            pos.left += $obj.width() + 24;
-            pos.top -= 8;            
+            pos.left += $obj.width() + 18;
+            pos.top += 8;
             
             $(
                 "<div class=\"validity-tooltip\">" + 
@@ -1081,10 +1101,12 @@
             )
                 .click(function() {
                     $obj.focus();
-                    $(this).remove();
+                    $(this).fadeOut();
                 })
                 .css(pos)
-                .appendTo("body");
+                .hide()
+                .appendTo("body")
+                .fadeIn();
         },
 
         raiseAggregate:function($obj, msg) {
@@ -1106,6 +1128,8 @@
     }
 
     $.validity.outputs.label = {
+        cssClass:"error",
+    
         start:function() {
             // Remove all the existing error labels.
             $("." + $.validity.settings.cssClass)
@@ -1115,13 +1139,13 @@
         end:function(results) {
             // If not valid and scrollTo is enabled, scroll the page to the first error.
             if (!results.valid && $.validity.settings.scrollTo) {
-                location.hash = $("." + $.validity.settings.cssClass + ":eq(0)").attr('for');
+                location.hash = $("." + $.validity.outputs.label.cssClass + ":eq(0)").attr('for');
             }
         },
 
         raise:function($obj, msg) {
             var 
-                labelSelector = "." + $.validity.settings.cssClass + "[for='" + getIdentifier($obj) + "']";
+                labelSelector = "." + $.validity.outputs.label.cssClass + "[for='" + getIdentifier($obj) + "']";
 
             // If an error label already exists for the bad input just update its text:
             if ($(labelSelector).length) {
@@ -1130,47 +1154,22 @@
 
             // Otherwize create a new one and stick it after the input:
             else {
-                $("<span><div class=\"corner1\"/><label/></span>")
-                    .addClass($.validity.settings.cssClass)
-                
-                    .find("label")
-                        .attr("for", getIdentifier($obj))
-                        
-                        .text(msg)
+                $("<label/>")
+                    .attr("for", getIdentifier($obj))
+                    .addClass($.validity.outputs.label.cssClass)
+                    .text(msg)
 
-                        // In the case that the element does not have an id
-                        // then the for attribute in the label will not cause
-                        // clicking the label to focus the element. This line 
-                        // will make that happen.
-                        .click(function() {
-                            if ($obj.length) {
-                                $obj[0].select();
-                            }
-                        })
+                    // In the case that the element does not have an id
+                    // then the for attribute in the label will not cause
+                    // clicking the label to focus the element. This line 
+                    // will make that happen.
+                    .click(function() {
+                        if ($obj.length) {
+                            $obj[0].select();
+                        }
+                    })
 
-                    .end()
                     .insertAfter($obj);
-                    
-                    
-                    
-                    
-                
-                // $("<label/>")
-                    // .attr("for", getIdentifier($obj))
-                    // .addClass($.validity.settings.cssClass)
-                    // .text(msg)
-
-                    // // In the case that the element does not have an id
-                    // // then the for attribute in the label will not cause
-                    // // clicking the label to focus the element. This line 
-                    // // will make that happen.
-                    // .click(function() {
-                        // if ($obj.length) {
-                            // $obj[0].select();
-                        // }
-                    // })
-
-                    // .insertAfter($obj);
             }
         },
 
