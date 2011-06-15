@@ -1238,7 +1238,7 @@ test("$.fn.sum(max)", 3, function() {
     );
 });
 
-module("__private", { setup:setup8InputsAndDebugPrivates });
+module("private", { setup:setup8InputsAndDebugPrivates });
 
 test("$.validity.setup({ debugPrivates:true })", 1, function() {
     notEqual(
@@ -1387,10 +1387,17 @@ test("$.validity.__private.infer(field)", 4, function() {
     field = $("<input/>");
     expected = $.validity.settings.defaultFieldName;
     result = $.validity.__private.infer(field);
-    equal(result, expected, "infer defaults when name cannot be inferred.");
-    
+    equal(result, expected, "infer defaults when name cannot be inferred.");    
 });
 
+test("$.validity.__private.capitalize(sz)", 1, function() {
+    var sz, expected, result;
+    
+    sz = "lower";
+    expected = "Lower";
+    result = $.validity.__private.capitalize(sz);
+    equal(result, expected, "capitalize works on simple word.");
+});
 
 
 
