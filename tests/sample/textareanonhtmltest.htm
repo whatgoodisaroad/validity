@@ -1,0 +1,24 @@
+<html>
+    <head>
+        <title>Simple</title>
+        <link type="text/css" rel="Stylesheet" href="jquery.validity.css" />
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="jquery.validity.js"></script>
+        <script type="text/javascript">
+            $(function() { 
+                $("form").validity(function() {
+                    $("#bio")
+                        .require()
+                        .nonHtml();
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <form method="get" action="textareanonhtmltest.htm">
+            <textarea id="bio" name="bio" rows="20" cols="80" title="your biography"></textarea>
+            <br />
+            <input type="submit" />
+        </form>
+    </body>
+</html>

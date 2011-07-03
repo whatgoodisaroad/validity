@@ -1,0 +1,110 @@
+<html>
+    <head>
+        <title>Other Inputs</title>
+        <link rel="Stylesheet" type="text/css" href="jquery.validity.css" />
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="jquery.validity.js"></script>
+        <script type="text/javascript">
+            $.validity.setup({ outputMode:"summary" });
+
+            $(function() { 
+                $("form").validity(function() { 
+
+                    if ($(".group1:checked").val() == "Milk") {
+                        $(".group2")
+                            .radioNotChecked(
+                                "Wine", 
+                                "You can't have milk with wine, that's weird."
+                            );
+                    }
+                    
+                    if ($("#maillist").is(":checked")) {
+                        $("#email")
+                            .require("We're gonna need your email to send you updates")
+                            .match("email");
+                    }
+                    
+                    else {
+                        $("#email")
+                            .match("email");
+                    }
+                    
+                    $("#terms").checkboxChecked("You must accept the terms and conditions to continue.")
+
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <form action="otherinputs.htm" method="get">
+            <p>
+                Here's an example of validating the selected values of a radio group. Try selecting both
+                milk and wine.
+            </p>
+            <table>
+                <tr>
+                    <td>
+                        <input type="radio" name="group1" id="group1a" class="group1" value="Milk"> 
+                        <label for="group1a">Milk</label>
+                        <br />
+                        
+                        <input type="radio" name="group1" id="group1b" class="group1" value="Butter" checked>
+                        <label for="group1b">Butter</label>
+                        <br />
+                        
+                        <input type="radio" name="group1" id="group1c" class="group1" value="Cheese">
+                        <label for="group1c">Cheese</label>
+                        <br />
+                    </td>
+                    <td>
+                        <input type="radio" name="group2" id="group2a" class="group2" value="Water">
+                        <label for="group2a">Water</label>
+                        <br />
+                        
+                        <input type="radio" name="group2" id="group2b" class="group2" value="Beer">
+                        <label for="group2b">Beer</label>
+                        <br />
+                        
+                        <input type="radio" name="group2" id="group2c" class="group2" value="Wine" checked>
+                        <label for="group2c">Wine</label>
+                        <br />
+                    </td>
+                </tr>
+            </table>
+
+            <hr />
+
+            <p>
+                Here's an example of conditionally validating an input based on whether a checkbox is checked.
+                If it is checked, the input is required and also must be formatted as an email. Otherwise,
+                it only needs to be formatted as an email if there is a value.
+            </p>
+            
+            <input type="checkbox" id="maillist" name="maillist" />
+            <label for="maillist">Yes, I'd like to recieve updates:</label>
+            <br />
+            
+            <label for="email">My email:</label>
+            <input type="text" id="email" name="email" />
+
+            <hr />
+            
+            <p>
+                Here's an example of validating a checkbox itself. The form won't post if it's not checked.
+            </p>
+            
+            <input type="checkbox" id="terms" name="terms" />
+            <label for="terms">I accept the terms and conditions:</label>
+            <br />
+            
+            <hr />
+
+            <input type="submit" />
+            
+        </form>
+        
+        <script type="text/javascript">
+            $.validity.outputs.summary.container();
+        </script>
+    </body>
+</html>

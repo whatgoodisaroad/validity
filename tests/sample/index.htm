@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+    <head>
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="jquery.validity.js"></script>
+        <script type="text/javascript">
+            $(function() {
+                $.validity.setup({ scrollTo:true });
+            });
+            
+            function hotSwitchMode(mode){
+				$.validity.start();
+				$.validity.end();
+				$.validity.setup({outputMode:mode});
+			}
+			
+			function validateRequire(){
+				$.validity.start();
+				$('#req').require('A Name Is Required.');
+				$.validity.end();
+			}
+			
+			function validateMatch(){
+				$.validity.start();
+				$('#qty1').match('integer', 'Quantity Must Be Formatted as an Integer.');
+				$.validity.end();
+			}
+			
+			function validateChain(){
+				$.validity.start();
+				$('#qty2')
+					.require('Error: A Name Is Required.')
+					.match('integer');
+				$.validity.end();
+			}
+		
+            function validatePassword(){
+                $.validity.start();
+                $("input[type='password']").equal();
+                $.validity.end();
+            }
+			
+			function validateNames() {
+				$.validity.start();
+				$('input.Name').distinct('A name was repeated.');
+				$.validity.end();
+			}
+        </script>
+        
+        <link rel="Stylesheet" type="text/css" href="jquery.validity.css" />
+        <style type="text/css">
+            body {
+            	font-family:Arial,Helvetica,Sans-Serif;
+            	padding:0;
+            	margin:0;
+            	background-color:#555;
+            	font-size:smaller;}
+            
+            #main { width:900px; background-color:#bbb; padding:10px; margin: 20px; }
+            
+            #validity-summary-container { border:solid 1px #f56600; }
+        </style>
+        
+        <title>jQuery.validity Demo</title>
+    </head>
+    <body>
+        <div id='main'>
+            <h1>jQuery.validity Demo</h1>
+            <h2>Output Mode:</h2>
+            <p>
+                <i>validity</i> has three built-in Output-Modes: 'label', 'modal', and 'summary'. You will select the output
+                mode that is most appropriate for your application, or you may write your own custom output.
+                Below, the error summary will appear if an error is encountered and the outputMethod is set to 'summary'.
+                <br />
+                [<a href="#_" onclick="hotSwitchMode('label');">Set to Label</a>] 
+                [<a href="#_" onclick="hotSwitchMode('modal');">Set to Modal</a>] 
+                [<a href="#_" onclick="hotSwitchMode('summary');">Set to Summary</a>]
+            </p>
+            <div class="validity-summary-container">
+                Here's a summary of the validation failures:
+                <ul></ul>
+            </div>
+            <h2>Validation Functions:</h2>
+            <p>
+                To use <i>validity</i> you will be attaching validation functions to form elements. 
+                A basic template for this process would be:
+            </p>
+            <pre>
+                $(function() {
+                  $("form").validity(function() { 
+                      // This is where you perform the validation.
+                      // You do this by finding elements with jQuery and then calling the validity methods on them.
+                      // For example:
+                      
+                      $("#number").require().match("number");
+
+                      $("#date").require().match("date");
+                  });
+                });
+            </pre>
+            <p>
+                Now, whenever that form tries to submit, it will perform this function which will both raise errors,
+                and ultimately determine whether the form actually submits.
+            </p>
+            <h2>Requiring Fields:</h2>
+            <p>
+                Below is a required field. For this demo, its id attribute is set to be 'req'. The 'require' method
+                accepts a string of the error to display when an input fails. We validate with the code:
+            </p>
+            <pre>
+                $('#req').require('A Name Is Required.');
+            </pre>
+            <p>
+                Enter Your Name:<input type="text" id='req' name='req' />
+                <input type="button" value='Validate This Field!' onclick="validateRequire();" />
+            </p>
+            <h2>Format Validation:</h2>
+            <p>
+                Fields can be validated to match a regular expression format using the 'match' method. The following input is 
+                validated to only accept either an integer or nothing with the following code:
+            </p>
+            <pre>
+                $('#qty1').match("integer", 'Quantity Must Be Formatted as an Integer.');
+            </pre>
+            <p>
+                Optional: Enter Quantity:<input type="text" id='qty1' name='qty1' />
+                <input type="button" value='Validate This Field!' onclick="validateMatch();" />
+            </p>
+            <h2>Chaining:</h2>
+            <p>
+                You can chain your validator calls to build up a regimen of requirements the values must meet.
+                Each validator returns a jQuery object of less or equal count as it was called with. If an input
+                failes validation, it is excluded from the jQuery object that is returned. In this way, validators
+                only act on inputs that passed validation in every preceding link of the chain.
+            </p>
+            <pre>
+                $('#qty2')
+                    .require('Error: A Name Is Required.')
+                    .match("integer");
+            </pre>
+            <p>
+                Required: Enter Quantity: <input type="text" id="qty2" name="qty2" />
+                <input type="button" value='Validate This Field!' onclick="validateChain();" />
+            </p>
+            <h2>Equality:</h2>
+            <p>
+                Often, in account registration scenarios, we must check for the eqality of more than one input such as ensuring that a password
+                matches its confirmation field. We can do this validation with a jQuery selector that returns all the fields which must be equal
+                (in this case only two) and call the AreEqual method. Observe:
+            </p>
+            <pre>
+                $("input[type='password']").equal('Error: Passwords do not match.');
+            </pre>
+            <p>
+                Password:
+                <input type="password" id="Pass" name="Pass" />
+                Confirm Password:
+                <input type="password" id="PassConf" name="PassConf" />
+                <input type="button" value="Validate These Fields!" onclick="validatePassword();" />
+            </p>
+            <h2>Uniqueness:</h2>
+            <p>
+                The converse to the areEqual method - where no two matched elements have different values - the areNotEqual method will 
+                validate that no two elements have the same value. This is useful in situations where repeat values are not allowed. (It
+                should be noted that fields where no value is entered will be ignored.) We validate this in much the same way as the 
+                AreEqual:
+            </p>
+            <pre>
+                $('input.Name').distinct("A name was repeated.");
+            </pre>
+            <p>
+                Enter Names: 
+                <input id="u1" type="text" class="Name" />&nbsp;
+                <input id="u2" type="text" class="Name" />&nbsp;
+                <input id="u3" type="text" class="Name" />&nbsp;
+                <input id="u4" type="text" class="Name" />&nbsp;
+                <input type="button" value="Validate These Fields!" onclick="validateNames();" />
+            </p>
+            <br /><br /><br />
+            <p>
+                Have a look at the documentation at <a href="http://code.google.com/p/validity/w/list">the wiki</a> for
+                a more complete look at the validation functions.
+            </p>
+        </div>
+    </body>
+</html>
