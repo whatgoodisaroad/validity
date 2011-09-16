@@ -1,13 +1,12 @@
 <html>
     <head>
         <title>Simple</title>
-        <link type="text/css" rel="Stylesheet" href="jquery.validity.css" />
-        <script type="text/javascript" src="jquery-1.6.1.js"></script>
-        <script type="text/javascript" src="jquery.validity.js"></script>
+        <link type="text/css" rel="Stylesheet" href="../../lib/jquery.validity.css" />
+        <script type="text/javascript" src="../../lib/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="../../build/jquery.validity.js"></script>
+        
         <script type="text/javascript">
             $(function() { 
-                $.validity.setup({ outputMode:"label" });
-            
                 $("form").validity(function() {
                     $("#vehicles")
                         .require()
@@ -21,9 +20,10 @@
                 });
             });
         </script>
-    </head>
+
+        </head>
     <body>
-        <form method="get" action="simple.htm">
+        <form method="get" action="">
             Number of Vehicles:
             <input type="text" id="vehicles" name="vehicles" title="Vehicle Count" />
             <br /><br />
