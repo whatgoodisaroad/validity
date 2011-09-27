@@ -1,4 +1,5 @@
-= jQuery.validity =
+jQuery.validity
+===============
 
 Instead of writing validation manually or balancing some unwieldy server-side framework, validity allows you to design client-side validation in a manner that feels natural and straightforward.
 
