@@ -280,11 +280,7 @@
             return validate(
                 this,
                 function(obj) {
-                    var val = $(obj).val();
-                    
-                    var res = val.length;
-                    
-                    return res;
+                    return !!$(obj).val().length;
                 },
                 msg || $.validity.messages.require
             );

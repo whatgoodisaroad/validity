@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset=utf-8>
+        <title>A simple HTML5 page layout</title>
+        <link rel="stylesheet" href="jquery.validity.css" />
+    </head>
+    <body>
+        <form action="">
+            <frameset>
+                <legend>The form</legend>
+
+                <label for="requiredInput">This input is required.</label>
+                <input type="text" id="requiredInput" />
+
+                <input type="submit" />
+            </frameset>
+        </form>
+
+
+
+        <script src="jquery-1.8.0.min.js"></script>
+        <script src="jquery.validity.js"></script>
+        <script>
+            $("form").validity(function() {
+                $("#requiredInput").require();
+            });
+        </script>
+    </body>   
+</html>

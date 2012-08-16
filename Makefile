@@ -3,6 +3,7 @@ proj_dir 		= $(shell pwd)
 code_dir 		= $(proj_dir)/src
 comp_dir 		= $(proj_dir)/compiler
 build_dir 		= $(proj_dir)/build
+test_build_dir 	= $(proj_dir)/tests/build
 
 # Source files.
 code_header_src = $(code_dir)/jquery.validity.header.js
@@ -21,10 +22,13 @@ comp_includes 	= --js=$(code_core) --js=$(code_outputs)
 comp_output 	= --js_output_file=$(targ_temp_file)
 
 # Misc
+jQueryVersion 	= "1.8.0"
+jQueryFile 		= $(proj_dir)/jquery-$(jQueryVersion).min.js
 date 			= $(shell date '+%F \(%A, %d %B %Y\)')
 version 		= $(shell cat ./version.txt)
 compiler 		= $(comp_dir)/compiler.jar
-additional		= $(code_dir)/jquery.validity.lang.* $(code_dir)/arrow.gif $(proj_dir)/README.md
+additional		= $(code_dir)/jquery.validity.lang.* $(code_dir)/arrow.gif $(code_dir)/README.md $(code_dir)/jquery.validity.css $(jQueryFile) $(code_dir)/example.htm
+
 
 build: clean
 	@ echo "Building validity..."
@@ -50,10 +54,21 @@ build: clean
 	@ echo "Done."
 
 archive: build
-	@ echo "Compressing files..."
-	@ cd $(build_dir); tar -cvf jquery.validity.$(version).tar ./*
+	@ echo "Archiving files..."
+	@ cd $(build_dir); tar -zcvf jquery.validity.$(version).tar.gz ./*
 	@ cd $(build_dir); ls|grep -v .tar |xargs rm; 
 	@ echo "Done"
+
+tests: build
+	@ echo "Preparing test build..."
+	@ cp $(build_dir)/* $(proj_dir)/tests/build
+	@ cp $(proj_dir)/tests/build/jquery.validity.js validity.js
+	@ cp $(test_build_dir)/jquery.validity.js $(test_build_dir)/validity.js
+
+min_tests: build
+	@ echo "Preparing test build..."
+	@ cp $(build_dir)/* $(test_build_dir)
+	@ cp $(test_build_dir)/jquery.validity.min.js $(test_build_dir)/validity.js
 
 clean:
 	@ echo "Cleaning..."
