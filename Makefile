@@ -73,4 +73,5 @@ min_tests: build
 clean:
 	@ echo "Cleaning..."
 	@ rm -rf $(build_dir)
+	@ rm -rf $(test_build_dir)/*
 	
