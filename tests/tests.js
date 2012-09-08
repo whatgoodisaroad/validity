@@ -475,7 +475,7 @@ test("$.fn.match('guid')", 2, function() {
     equal(result, expected, "match('guid') fails on non-guid (obviously not a guid.).");
 });
 
-test("$.fn.match('time12')", 11, function() {
+test("$.fn.match('time12')", 12, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val("12:30 AM");
@@ -554,6 +554,13 @@ test("$.fn.match('time12')", 11, function() {
     result = $.validity.end().errors;
     expected = 1;
     equal(result, expected, "match('time12') fails with too many minute digits (11:000 PM).");
+
+    $('#qunit-fixture input:first').val("10:20 AM");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time12');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('time12') does not fail for specific valid time (10:20 AM).");
 });
 
 test("$.fn.match('time24')", 8, function() {
