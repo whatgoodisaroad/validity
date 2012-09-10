@@ -19,7 +19,7 @@
             defaultFieldName:"This field",
             
             // jQuery selector to filter down to validation-supported elements:
-            elementSupport:":text, :password, textarea, select, :radio, :checkbox",
+            elementSupport:":text, :hidden, :password, textarea, select, :radio, :checkbox",
             
             // Function to stringify argments for use when generating error messages.
             // Primarily, it just generates pretty date strings:
