@@ -96,7 +96,7 @@ test("$.fn.match('integer')", 1, function() {
     equal(result, expected, "match('integer') raises 5 errors when there are 5 non integers in 8 inputs");
 });
 
-test("$.fn.match('date')", 4, function() {
+test("$.fn.match('date')", 5, function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val("09/23/2007");
@@ -105,6 +105,13 @@ test("$.fn.match('date')", 4, function() {
     result = $.validity.end().errors;
     expected = 0;
     equal(result, expected, "match('date') does not fail on simple, correct mm/dd/yyyy format.");
+
+    $('#qunit-fixture input:first').val("09-23-2007");
+    $.validity.start();
+    $('#qunit-fixture input:first').match('date');
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "match('date') does not fail on simple, correct mm-dd-yyyy format.");
     
     $('#qunit-fixture input:first').val("23/09/2007");
     $.validity.start();
