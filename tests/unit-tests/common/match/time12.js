@@ -80,3 +80,21 @@ test("$.fn.match('time12')", 11, function() {
     expected = 1;
     equal(result, expected, "match('time12') fails with too many minute digits (11:000 PM).");
 });
+
+test("$.fn.match('time12')", 1, function() {
+    var expected, result;
+
+    $('#qunit-fixture input:first').val("10:30 AM");
+    
+    $.validity.start();
+    $('#qunit-fixture input:first').match('time12');
+    result = $.validity.end().errors;
+    
+    expected = 0;
+
+    equal(
+        result, 
+        expected, 
+        "match('time12') allows 10 in the hour part (10:30 AM)."
+    );
+});
