@@ -793,7 +793,7 @@ $.fn.extend({
         // elements.
         var $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport);
 
-        if ($reduction.length && min < numericSum($reduction)) {
+        if ($reduction.length && min > numericSum($reduction)) {
             raiseAggregateError(
                 $reduction,
                 msg || format(
