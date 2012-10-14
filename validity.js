@@ -30,7 +30,7 @@ var
         defaultFieldName:"This field",
         
         // jQuery selector to filter down to validation-supported elements:
-        elementSupport:":text, :password, textarea, select, :radio, :checkbox",
+        elementSupport:":text, :password, textarea, select, :radio, :checkbox, input[type='hidden']",
         
         // Function to stringify argments for use when generating error 
         // messages. Primarily, it just generates pretty date strings:
@@ -83,7 +83,6 @@ $.validity = {
         phone:/^[2-9]\d{2}-\d{3}-\d{4}$/,
         guid:/^(\{?([0-9a-fA-F]){8}-(([0-9a-fA-F]){4}-){3}([0-9a-fA-F]){12}\}?)$/,
         time12:/^((0?\d)|(1[012])):[0-5]\d?\s?[aApP]\.?[mM]\.?$/,
-        
         time24:/^(20|21|22|23|[01]\d|\d)(([:][0-5]\d){1,2})$/,
 
         nonHtml:/^[^<>]*$/
