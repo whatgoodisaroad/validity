@@ -4,6 +4,9 @@ code_dir 		= $(proj_dir)/src
 comp_dir 		= $(proj_dir)/compiler
 build_dir 		= $(proj_dir)/build
 test_build_dir 	= $(proj_dir)/tests/build
+demo_dir		= $(proj_dir)/demo
+demo_css_dir 	= $(demo_dir)/css
+demo_js_dir 	= $(demo_dir)/js
 
 # Source files.
 code_header_src = $(code_dir)/jquery.validity.header.js
@@ -27,7 +30,7 @@ jQueryFile 		= $(proj_dir)/jquery-$(jQueryVersion).min.js
 date 			= $(shell date '+%F \(%A, %d %B %Y\)')
 version 		= $(shell cat ./version.txt)
 compiler 		= $(comp_dir)/compiler.jar
-additional		= $(code_dir)/jquery.validity.lang.* $(code_dir)/arrow.gif $(code_dir)/README.md $(code_dir)/jquery.validity.css $(jQueryFile) $(code_dir)/example.htm
+additional		= $(code_dir)/jquery.validity.lang.fr.js $(code_dir)/jquery.validity.lang.rus.js $(code_dir)/arrow.gif $(code_dir)/README.md $(code_dir)/jquery.validity.css $(jQueryFile) $(code_dir)/example.htm
 
 
 build: clean
@@ -69,6 +72,10 @@ min_tests: build
 	@ echo "Preparing test build..."
 	@ cp $(build_dir)/* $(test_build_dir)
 	@ cp $(test_build_dir)/jquery.validity.min.js $(test_build_dir)/validity.js
+
+demo: build
+	@ cp $(build_dir)/jquery.validity.css $(demo_css_dir)
+	@ cp $(build_dir)/*.js $(demo_js_dir)
 
 clean:
 	@ echo "Cleaning..."
