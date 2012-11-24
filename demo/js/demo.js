@@ -17,6 +17,12 @@ $(function() {
             );
 
             var result = $.validity.end();
+
+            if (!result.errors) {
+                $("#success-message")
+                    .show()
+                    .fadeOut();
+            }
         });
     
 

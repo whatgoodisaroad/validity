@@ -19,3 +19,5 @@ test("$.validity.isValidating()", 3, function() {
     result = $.validity.isValidating();
     equal(result, expected, "isValidating returns false when validation has been ended.");
 });
+
+

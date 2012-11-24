@@ -1,11 +1,11 @@
 /*
- * jQuery.validity ﻿v1.2.0
+ * jQuery.validity ﻿v1.3.0
  * http://validity.thatscaptaintoyou.com/
  * https://github.com/whatgoodisaroad/validity
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2012-10-14 (Sunday, 14 October 2012)
+ * Date: 2012-11-24 (Saturday, 24 November 2012)
  */
 (function($, undefined) {
 
@@ -671,13 +671,13 @@ $.fn.extend({
         return this;
     },
 
-    // Validate that all matched elements bear distinct values. Accepts an
+    // Validate that all matched elements bear distinct values. Accepts an 
     // optional function to transform the values for testing.
     distinct:function(arg0, arg1) {
         var 
-            // If a reduced set is attached, use it. Also, remove unsupported 
-            // elements.
-            $reduction = (this.reduction || this).filter($.validity.settings.elementSupport),
+            // If a reduced set is attached, use it.
+            // Also, remove unsupported elements.
+            $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport),
 
             transform = function(val) {
                 return val;
@@ -687,6 +687,9 @@ $.fn.extend({
 
             // An empty array to store already-examined values
             subMap = [],
+
+            // An array with repeated values
+            repeatedVal = [],
 
             valid = true;
 
@@ -722,6 +725,8 @@ $.fn.extend({
                         // If we've already seen the transformed value:
                         if (subMap[i2] == map[i1]) {
                             valid = false;
+                            // Collect repeated values
+                            repeatedVal.push(map[i1]);
                         }
                     }
 
@@ -731,7 +736,25 @@ $.fn.extend({
             }
 
             if (!valid) {
-                raiseAggregateError($reduction, msg);
+                // Remove duplicates of duplicates
+                repeatedVal = $.unique(repeatedVal);
+                
+                // For all repeated values found...
+                for (
+                    var 
+                        i = 0, 
+                        repeatedLength = repeatedVal.length; 
+                    i < repeatedLength; 
+                    ++i) {
+                     
+                     // raise the error - aggregate will use last repeated value
+                     raiseAggregateError(
+                        $reduction.filter(
+                            "[value=\'" + repeatedVal[i] + "\']"
+                        ),
+                        msg
+                    );
+                }
 
                 // The set reduces to zero valid elements.
                 this.reduction = $([]);
@@ -1064,13 +1087,12 @@ __private = {
         },
         
         end:function(results) {
-            /*// If not valid and scrollTo is enabled, scroll the page to the first error.
+            // If not valid and scrollTo is enabled, scroll the page to the first error.
             if (!results.valid && $.validity.settings.scrollTo) {
-                return;
                 document.body.scrollTop = $("." + $.validity.outputs.tooltip.tooltipClass)
                     .offset()
                     .top;
-            }*/
+            }
         },
 
         raise:function($obj, msg) {

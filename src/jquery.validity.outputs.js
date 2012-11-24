@@ -15,13 +15,12 @@
         },
         
         end:function(results) {
-            /*// If not valid and scrollTo is enabled, scroll the page to the first error.
+            // If not valid and scrollTo is enabled, scroll the page to the first error.
             if (!results.valid && $.validity.settings.scrollTo) {
-                return;
                 document.body.scrollTop = $("." + $.validity.outputs.tooltip.tooltipClass)
                     .offset()
                     .top;
-            }*/
+            }
         },
 
         raise:function($obj, msg) {

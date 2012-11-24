@@ -5,7 +5,7 @@
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2012-10-14 (Sunday, 14 October 2012)
+ * Date: 2012-11-24 (Saturday, 24 November 2012)
  */
 (function($, undefined) {
 
@@ -1087,13 +1087,12 @@ __private = {
         },
         
         end:function(results) {
-            /*// If not valid and scrollTo is enabled, scroll the page to the first error.
+            // If not valid and scrollTo is enabled, scroll the page to the first error.
             if (!results.valid && $.validity.settings.scrollTo) {
-                return;
                 document.body.scrollTop = $("." + $.validity.outputs.tooltip.tooltipClass)
                     .offset()
                     .top;
-            }*/
+            }
         },
 
         raise:function($obj, msg) {
