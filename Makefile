@@ -25,7 +25,7 @@ comp_includes 	= --js=$(code_core) --js=$(code_outputs)
 comp_output 	= --js_output_file=$(targ_temp_file)
 
 # Misc
-jQueryVersion 	= "1.8.3"
+jQueryVersion 	= "1.9.0"
 jQueryFile 		= $(proj_dir)/jquery-$(jQueryVersion).min.js
 date 			= $(shell date '+%F \(%A, %d %B %Y\)')
 version 		= $(shell cat ./version.txt)

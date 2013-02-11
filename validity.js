@@ -1,11 +1,11 @@
 /*
- * jQuery.validity ﻿v1.3.0
+ * jQuery.validity ﻿v1.3.1
  * http://validity.thatscaptaintoyou.com/
  * https://github.com/whatgoodisaroad/validity
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2013-01-28 (Monday, 28 January 2013)
+ * Date: 2013-02-10 (Sunday, 10 February 2013)
  */
 (function($, undefined) {
 
@@ -30,7 +30,7 @@ var
         defaultFieldName:"This field",
         
         // jQuery selector to filter down to validation-supported elements:
-        elementSupport:":text, :password, textarea, select, :radio, :checkbox, input[type='hidden']",
+        elementSupport:":text, :password, textarea, select, :radio, :checkbox, input[type='hidden'], input[type='tel'], input[type='email']",
         
         // Function to stringify argments for use when generating error 
         // messages. Primarily, it just generates pretty date strings:
@@ -1089,9 +1089,11 @@ __private = {
         end:function(results) {
             // If not valid and scrollTo is enabled, scroll the page to the first error.
             if (!results.valid && $.validity.settings.scrollTo) {
-                document.body.scrollTop = $("." + $.validity.outputs.tooltip.tooltipClass)
-                    .offset()
-                    .top;
+                $(document).scrollTop(
+                    $("." + $.validity.outputs.tooltip.tooltipClass)
+                        .offset()
+                        .top
+                );
             }
         },
 
