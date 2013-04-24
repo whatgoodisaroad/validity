@@ -30,7 +30,7 @@ var
         defaultFieldName:"This field",
         
         // jQuery selector to filter down to validation-supported elements:
-        elementSupport:":text, :password, textarea, select, :radio, :checkbox, input[type='hidden'], input[type='tel'], input[type='email']",
+        elementSupport:":text, :password, textarea, select, :radio, :checkbox, input[type='hidden'], input[type='tel'], input[type='email'], input[type='number']",
         
         // Function to stringify argments for use when generating error 
         // messages. Primarily, it just generates pretty date strings:
