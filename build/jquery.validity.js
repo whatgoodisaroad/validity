@@ -1,5 +1,5 @@
 /*
- * jQuery.validity ﻿v1.3.1
+ * jQuery.validity ﻿v1.3.2
  * http://validity.thatscaptaintoyou.com/
  * https://github.com/whatgoodisaroad/validity
  * 
