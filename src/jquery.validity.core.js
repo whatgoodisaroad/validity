@@ -294,6 +294,13 @@ $.fn.extend({
     // Common validators:
     ///////////////////////////////////////////////////////////////////////////
     
+    // Validate two values
+    compare: function(arg0, msg) {
+        return validate(this, function (obj) {
+            return $(obj).val() == arg0;
+        }, msg || "Does not match");
+    },
+    
     // Validate whether the field has a value.
     require:function(msg) {
         return validate(
