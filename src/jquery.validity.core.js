@@ -299,7 +299,10 @@ $.fn.extend({
         return validate(
             this,
             function(obj) {
-                return !!$(obj).val().length;
+                if ($(obj).val()) {
+                    return !!$(obj).val().length;
+                }
+                return false;
             },
             msg || $.validity.messages.require
         );
