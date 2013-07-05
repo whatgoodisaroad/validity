@@ -300,7 +300,7 @@ $.fn.extend({
             this,
             function(obj) {
                 if ($(obj).val()) {
-                    return !!$(obj).val().length;
+                    return $(obj).val() != null && !!$(obj).val().length;
                 }
                 return false;
             },
