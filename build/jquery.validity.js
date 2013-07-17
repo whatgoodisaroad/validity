@@ -1145,7 +1145,7 @@ __private = {
 // Install the label output.
 (function($) {
     function getIdentifier($obj) {
-        return $obj.attr('id').length ?
+        return $obj.attr('id') ?
             $obj.attr('id') :
             $obj.attr('name');
     }
