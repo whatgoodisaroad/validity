@@ -1,11 +1,11 @@
 /*
- * jQuery.validity ﻿v1.3.2
+ * jQuery.validity ﻿v1.3.3
  * http://validity.thatscaptaintoyou.com/
  * https://github.com/whatgoodisaroad/validity
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2013-06-21 (Friday, 21 June 2013)
+ * Date: 2013-07-20 (Saturday, 20 July 2013)
  */
 (function($, undefined) {
 
@@ -308,7 +308,10 @@ $.fn.extend({
         return validate(
             this,
             function(obj) {
-                return !!$(obj).val().length;
+                if ($(obj).val()) {
+                    return $(obj).val() != null && !!$(obj).val().length;
+                }
+                return false;
             },
             msg || $.validity.messages.require
         );
@@ -1145,7 +1148,7 @@ __private = {
 // Install the label output.
 (function($) {
     function getIdentifier($obj) {
-        return $obj.attr('id') ?
+        return $obj.attr('id').length ?
             $obj.attr('id') :
             $obj.attr('name');
     }
