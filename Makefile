@@ -1,6 +1,7 @@
 # Directories
 proj_dir 		= $(shell pwd)
 code_dir 		= $(proj_dir)/src
+l18n_dir		= $(proj_dir)/l18n
 comp_dir 		= $(proj_dir)/compiler
 build_dir 		= $(proj_dir)/build
 test_build_dir 	= $(proj_dir)/tests/build
@@ -25,12 +26,12 @@ comp_includes 	= --js=$(code_core) --js=$(code_outputs)
 comp_output 	= --js_output_file=$(targ_temp_file)
 
 # Misc
-jQueryVersion 	= "1.9.0"
+jQueryVersion 	= "1.10.2"
 jQueryFile 		= $(proj_dir)/jquery-$(jQueryVersion).min.js
 date 			= $(shell date '+%F \(%A, %d %B %Y\)')
 version 		= $(shell cat ./version.txt)
 compiler 		= $(comp_dir)/compiler.jar
-additional		= $(code_dir)/jquery.validity.lang.fr.js $(code_dir)/jquery.validity.lang.rus.js $(code_dir)/arrow.gif $(code_dir)/README.md $(code_dir)/jquery.validity.css $(jQueryFile) $(code_dir)/example.htm
+additional		= $(l18n_dir)/*.js $(code_dir)/arrow.gif $(code_dir)/README.md $(code_dir)/jquery.validity.css $(jQueryFile) $(code_dir)/example.htm
 
 
 build: clean

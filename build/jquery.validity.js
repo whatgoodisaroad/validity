@@ -5,7 +5,7 @@
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2013-07-20 (Saturday, 20 July 2013)
+ * Date: 2013-08-31 (Saturday, 31 August 2013)
  */
 (function($, undefined) {
 
