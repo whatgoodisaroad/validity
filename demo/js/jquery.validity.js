@@ -1,11 +1,11 @@
 /*
- * jQuery.validity ﻿v1.3.1
+ * jQuery.validity ﻿v1.3.4
  * http://validity.thatscaptaintoyou.com/
  * https://github.com/whatgoodisaroad/validity
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2013-02-10 (Sunday, 10 February 2013)
+ * Date: 2013-09-23 (Monday, 23 September 2013)
  */
 (function($, undefined) {
 
@@ -30,7 +30,17 @@ var
         defaultFieldName:"This field",
         
         // jQuery selector to filter down to validation-supported elements:
-        elementSupport:":text, :password, textarea, select, :radio, :checkbox, input[type='hidden'], input[type='tel'], input[type='email']",
+        elementSupport:[
+            ":text", 
+            ":password", 
+            "textarea", 
+            "select", 
+            ":radio", 
+            ":checkbox", 
+            "input[type='hidden']", 
+            "input[type='tel']", 
+            "input[type='email']"
+        ].join(", "),
         
         // Function to stringify argments for use when generating error 
         // messages. Primarily, it just generates pretty date strings:
@@ -251,6 +261,8 @@ $.fn.extend({
         return this.each(
         
             function() {
+
+                var self = this;
             
                 // Only operate on forms:
                 if (this.tagName.toLowerCase() == "form") {
@@ -275,7 +287,7 @@ $.fn.extend({
                             "submit",
                             function() {
                                 $.validity.start();
-                                f();
+                                f.apply(self);
                                 return $.validity.end().valid;
                             }
                         );
@@ -296,7 +308,10 @@ $.fn.extend({
         return validate(
             this,
             function(obj) {
-                return !!$(obj).val().length;
+                if ($(obj).val()) {
+                    return $(obj).val() != null && !!$(obj).val().length;
+                }
+                return false;
             },
             msg || $.validity.messages.require
         );
@@ -865,16 +880,15 @@ $.fn.extend({
     ///////////////////////////////////////////////////////////////////////////
     
     checkboxChecked:function(msg) {
-        // If a reduced set is attached, use it. Also, remove unsupported 
-        // elements.
-        var $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport);
-        
-        if ($reduction.is(":checkbox") && !$reduction.is(":checked")) {
-            raiseAggregateError(
-                $reduction,
-                msg || $.validity.messages.radioChecked
-            );
-        }
+        return validate(
+            this,
+
+            function(obj) {
+                return !$(obj).is(":checkbox") || $(obj).is(":checked")
+            },
+
+            msg || $.validity.messages.nonHtml
+        );
     },
     
     // Specialized validators:

@@ -871,16 +871,15 @@ $.fn.extend({
     ///////////////////////////////////////////////////////////////////////////
     
     checkboxChecked:function(msg) {
-        // If a reduced set is attached, use it. Also, remove unsupported 
-        // elements.
-        var $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport);
-        
-        if ($reduction.is(":checkbox") && !$reduction.is(":checked")) {
-            raiseAggregateError(
-                $reduction,
-                msg || $.validity.messages.radioChecked
-            );
-        }
+        return validate(
+            this,
+
+            function(obj) {
+                return !$(obj).is(":checkbox") || $(obj).is(":checked")
+            },
+
+            msg || $.validity.messages.nonHtml
+        );
     },
     
     // Specialized validators:

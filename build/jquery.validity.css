@@ -11,7 +11,9 @@ label.error {
     padding:2px;
     padding-left:18px;
     border-radius:4px;
+    -webkit-border-radius: 4px;
 }
+
 
 /*
  * Styles used by the modal output mode.
@@ -74,7 +76,7 @@ label.error {
     bottom:auto;
 }
 
-.validity-tooltip .validity-tooltip-outer {
+.validity-tooltip .validity-tooltip-outer {	
     border-color:#333;
     border-style:solid;
     
