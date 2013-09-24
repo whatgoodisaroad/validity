@@ -27,7 +27,7 @@ $.extend($.validity.messages, {
   tooShort:"#{field} mag niet korter zijn dan #{min} karakters.",
 
   // Composition validators:
-  nonHtml:"#{field} mag niet HTML karakters bevatten.",
+  nonHtml:"#{field} mag geen HTML karakters bevatten.",
   alphabet:"#{field} bevat niet toegestane karakters.",
 
   minCharClass:"#{field} mag niet meer bevatten dan #{min} #{charClass} karakters.",
