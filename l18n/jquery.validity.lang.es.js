@@ -7,7 +7,7 @@ $.extend($.validity.messages, {
     email:"#{field} debe ser una dirección de email.",
     usd:"#{field} debe ser uan cantidad en dólares USA.",
     url:"#{field} debe ser una dirección URL.",
-    number:"#{field} debe ser un nombre.",
+    number:"#{field} debe ser un número.",
     zip:"#{field} debe ser un código postal ##### o #####-####.",
     phone:"#{field} debe ser un número de teléfono ###-###-####.",
     guid:"#{field} debe ser un GUID del tipo {3F2504E0-4F89-11D3-9A0C-0305E82C3301}.",
