@@ -30,8 +30,8 @@ $.extend($.validity.messages, {
   nonHtml:"#{field} mag niet HTML karakters bevatten.",
   alphabet:"#{field} bevat niet toegestane karakters.",
 
-  minCharClass:"#{field} mag niet meer bevatten dan #{min} #{charClass} karakters.",
-  maxCharClass:"#{field} mag niet minder bevatten dan #{min} #{charClass} karakters.",
+  minCharClass:"#{field} mag niet meer karakters bevatten dan #{min} #{charClass}.",
+  maxCharClass:"#{field} mag niet minder karakters bevatten dan #{min} #{charClass}.",
 
   // Aggregate validator messages:
   equal:"Waarden komen niet overeen.",
