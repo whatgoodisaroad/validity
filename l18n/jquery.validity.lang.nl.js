@@ -4,7 +4,7 @@ $.extend($.validity.messages, {
   // Format validators:
   match:"#{field} is in een ongeldig formaat.",
   integer:"#{field} moet een positief, heel getal zijn.",
-  date:"#{field}moet zijn opgesteld als een datum. (mm/dd/yyyy)",
+  date:"#{field} moet zijn opgesteld als een datum. (mm/dd/yyyy)",
   email:"#{field} moet zijn opgesteld als een email.",
   usd:"#{field} moet zijn opgesteld als een US Dollar bedrag.",
   url:"#{field} moet zijn opgesteld als een URL.",
