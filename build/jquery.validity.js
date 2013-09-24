@@ -1,11 +1,11 @@
 /*
- * jQuery.validity ﻿v1.3.4
+ * jQuery.validity ﻿v1.3.5
  * http://validity.thatscaptaintoyou.com/
  * https://github.com/whatgoodisaroad/validity
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2013-09-23 (Monday, 23 September 2013)
+ * Date: 2013-09-24 (Tuesday, 24 September 2013)
  */
 (function($, undefined) {
 
@@ -1292,6 +1292,7 @@ __private = {
         end:function(results) {
             // Hide the container and empty its summary.
             $(container)
+                .stop()
                 .hide()
                 .find("ul")
                     .html('');
