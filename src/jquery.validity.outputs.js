@@ -206,6 +206,7 @@
         end:function(results) {
             // Hide the container and empty its summary.
             $(container)
+                .stop()
                 .hide()
                 .find("ul")
                     .html('');
