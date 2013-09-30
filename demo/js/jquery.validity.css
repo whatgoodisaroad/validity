@@ -10,7 +10,7 @@ label.error {
     background-repeat:no-repeat;
     padding:2px;
     padding-left:18px;
-    -moz-border-radius:4px;
+    border-radius:4px;
     -webkit-border-radius: 4px;
 }
 

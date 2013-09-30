@@ -30,7 +30,7 @@
             pos.left += $obj.width() + 18;
             pos.top += 8;
             
-            $(
+            var tooltip = $(
                 "<div class=\"validity-tooltip\">" + 
                     msg +
                     "<div class=\"validity-tooltip-outer\">" +
@@ -46,6 +46,12 @@
                 .hide()
                 .appendTo("body")
                 .fadeIn();
+
+            if ($.validity.settings.fadeOutTooltipsOnFocus) {
+                $obj.on("focus", function() {
+                    tooltip.fadeOut();
+                });
+            }
         },
 
         raiseAggregate:function($obj, msg) {

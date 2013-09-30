@@ -1,11 +1,11 @@
 /*
- * jQuery.validity ﻿v1.3.4
+ * jQuery.validity ﻿v1.3.6
  * http://validity.thatscaptaintoyou.com/
  * https://github.com/whatgoodisaroad/validity
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2013-09-23 (Monday, 23 September 2013)
+ * Date: 2013-09-30 (Monday, 30 September 2013)
  */
 (function($, undefined) {
 
@@ -1116,7 +1116,7 @@ __private = {
             pos.left += $obj.width() + 18;
             pos.top += 8;
             
-            $(
+            var tooltip = $(
                 "<div class=\"validity-tooltip\">" + 
                     msg +
                     "<div class=\"validity-tooltip-outer\">" +
@@ -1132,6 +1132,12 @@ __private = {
                 .hide()
                 .appendTo("body")
                 .fadeIn();
+
+            if ($.validity.settings.fadeOutTooltipsOnFocus) {
+                $obj.on("focus", function() {
+                    tooltip.fadeOut();
+                });
+            }
         },
 
         raiseAggregate:function($obj, msg) {
@@ -1292,6 +1298,7 @@ __private = {
         end:function(results) {
             // Hide the container and empty its summary.
             $(container)
+                .stop()
                 .hide()
                 .find("ul")
                     .html('');
