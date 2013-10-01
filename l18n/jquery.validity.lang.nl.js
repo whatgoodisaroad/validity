@@ -46,4 +46,4 @@ $.extend($.validity.messages, {
   generic:"Ongeldig."
 });
 
-$.validity.setup({ defaultFieldName:"Dit veld", }); 
+$.validity.setup({ defaultFieldName:"Dit veld" }); 
