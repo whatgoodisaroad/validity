@@ -3,15 +3,14 @@
  * Applied to the error labels that get positioned after an input.
  */
 label.error { 
-    color:#fff; 
-    margin-left:2px;     
+    color:#fff;
+    margin-left:2px;
     background-image:url('arrow.gif');
     background-position:left center;
     background-repeat:no-repeat;
     padding:2px;
     padding-left:18px;
     border-radius:4px;
-    -webkit-border-radius: 4px;
 }
 
 
@@ -22,15 +21,15 @@ label.error {
  * to the user that the boxes are clickable.
  */
 .validity-modal-msg { 
-    position:absolute; 
-    z-index:2; 
-    background-color:#999; 
-    border:solid 1px #000; 
+    position:absolute;
+    z-index:2;
+    background-color:#999;
+    border:solid 1px #000;
     padding:4px;
-    cursor:pointer; 
+    cursor:pointer;
 }
 .validity-modal-msg:hover { 
-    background-color:#aaa; 
+    background-color:#aaa;
 }
 
 /*
@@ -68,9 +67,9 @@ label.error {
 }
 
 .validity-tooltip .validity-tooltip-outer, .validity-tooltip .validity-tooltip-inner {
-    position: absolute; 
-    width:0; 
-    height:0; 
+    position: absolute;
+    width:0;
+    height:0;
     border-right-width: 0;
     background:none;
     bottom:auto;
@@ -80,7 +79,7 @@ label.error {
     border-color:#333;
     border-style:solid;
     
-    border-top: 0px solid transparent; 
+    border-top: 0px solid transparent;
     border-bottom: 24px solid transparent;
     
     border-right-width:20px;
@@ -93,7 +92,7 @@ label.error {
 }
 
 .validity-tooltip .validity-tooltip-inner {
-    border-top: 0px solid transparent; 
+    border-top: 0px solid transparent;
     border-bottom: 24px solid transparent;
     border-right: 20px solid #f56600;
     border-left-width:0px;
