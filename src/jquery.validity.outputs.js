@@ -67,9 +67,11 @@
 // Install the label output.
 (function($) {
     function getIdentifier($obj) {
-        return $obj.attr('id').length ?
-            $obj.attr('id') :
-            $obj.attr('name');
+        if ($obj.attr('id') || $obj.attr('name')) {
+            return $obj.attr('id').length ? $obj.attr('id') : $obj.attr('name');
+        } else {
+            return '';
+        }
     }
 
     $.validity.outputs.label = {
