@@ -248,7 +248,7 @@
         container:function() {
             document.write(
                 "<div class=\"validity-summary-container\">" + 
-                    "The form didn't submit for the following reason(s):" +
+                    $.validity.settings.formDidNotSubmit
                     "<ul></ul>" +
                 "</div>"
             );
