@@ -137,6 +137,8 @@ $.validity = {
         // Radio validator messages:
         radioChecked:"The selected value is not valid.",
         
+        formDidNotSubmit:"The form didn't submit for the following reason(s):",
+        
         generic:"Invalid."
     },
     
