@@ -1031,7 +1031,7 @@ function format(str, obj) {
 // configuration.
 function infer(field) {
     if (!$.validity.settings.useInfer) {
-        return '';
+        return $.validity.settings.defaultFieldName;
     }
 
     var 

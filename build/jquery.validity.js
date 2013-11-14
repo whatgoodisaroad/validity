@@ -5,7 +5,7 @@
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2013-10-01 (Tuesday, 01 October 2013)
+ * Date: 2013-11-14 (Thursday, 14 November 2013)
  */
 (function($, undefined) {
 
@@ -25,6 +25,9 @@ var
         // If this setting is true, modal errors will disappear when they are 
         // clicked on:
         modalErrorsClickable:true,
+
+        //if set to true will include title with rendered errors
+        useInfer: true,
 
         // If a field name cannot be otherwise inferred, this will be used:
         defaultFieldName:"This field",
@@ -1036,6 +1039,10 @@ function format(str, obj) {
 // attribute. If that doesn't work, return the default field name in the 
 // configuration.
 function infer(field) {
+    if (!$.validity.settings.useInfer) {
+        return $.validity.settings.defaultFieldName;
+    }
+
     var 
         $f = $(field),
         id = $f.prop("id"),
@@ -1153,9 +1160,11 @@ __private = {
 // Install the label output.
 (function($) {
     function getIdentifier($obj) {
-        return $obj.attr('id').length ?
-            $obj.attr('id') :
-            $obj.attr('name');
+        if ($obj.attr('id') || $obj.attr('name')) {
+            return $obj.attr('id').length ? $obj.attr('id') : $obj.attr('name');
+        } else {
+            return '';
+        }
     }
 
     $.validity.outputs.label = {
