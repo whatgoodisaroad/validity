@@ -17,6 +17,9 @@ var
         // clicked on:
         modalErrorsClickable:true,
 
+        //if set to true will include title with rendered errors
+        useInfer: true,
+
         // If a field name cannot be otherwise inferred, this will be used:
         defaultFieldName:"This field",
         
@@ -1027,6 +1030,10 @@ function format(str, obj) {
 // attribute. If that doesn't work, return the default field name in the 
 // configuration.
 function infer(field) {
+    if (!$.validity.settings.useInfer) {
+        return '';
+    }
+
     var 
         $f = $(field),
         id = $f.prop("id"),
