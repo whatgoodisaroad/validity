@@ -1,7 +1,7 @@
-﻿/* 
- * Style used by the label output mode.
- * Applied to the error labels that get positioned after an input.
- */
+﻿// 
+ // Style used by the label output mode.
+ // Applied to the error labels that get positioned after an input.
+ //
 label.error { 
     color:#fff;
     margin-left:2px;
@@ -14,12 +14,12 @@ label.error {
 }
 
 
-/*
- * Styles used by the modal output mode.
- * '.validity-modal-msg' is applied to the modal boxes 
- * and '.validity-modal-msg:hover' is applied to suggest 
- * to the user that the boxes are clickable.
- */
+ //
+ // Styles used by the modal output mode.
+ // '.validity-modal-msg' is applied to the modal boxes 
+ // and '.validity-modal-msg:hover' is applied to suggest 
+ // to the user that the boxes are clickable.
+ //
 .validity-modal-msg { 
     position:absolute;
     z-index:2;
@@ -32,13 +32,13 @@ label.error {
     background-color:#aaa;
 }
 
-/*
- * Styles used by the summary output mode.
- * '.validity-summary-container' is a container on the page that should contain a UL 
- * which is the actual summary. The container can hold 
- * an extra bit of text (or anything really) that explains what the summary is.
- * '.validity-erroneous' is applied to every input that fails.
- */
+ //
+ // Styles used by the summary output mode.
+ // '.validity-summary-container' is a container on the page that should contain a UL 
+ // which is the actual summary. The container can hold 
+ // an extra bit of text (or anything really) that explains what the summary is.
+ // '.validity-erroneous' is applied to every input that fails.
+ //
 .validity-summary-container { display:none; }
 .validity-summary-output ul { }
 .validity-erroneous { border:solid 2px #f56600 !important; }
