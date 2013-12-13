@@ -1,11 +1,11 @@
 /*
- * jQuery.validity ﻿v1.3.6
+ * jQuery.validity ﻿v1.3.7
  * http://validity.thatscaptaintoyou.com/
  * https://github.com/whatgoodisaroad/validity
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2013-11-14 (Thursday, 14 November 2013)
+ * Date: 2013-12-13 (Friday, 13 December 2013)
  */
 (function($, undefined) {
 
@@ -226,7 +226,7 @@ $.validity = {
         this.out.start();
         
         // Initialize the report object:
-        this.report = { errors:0, valid:true };
+        this.report = { errors:0, valid:true, reductionObjects:[] };
     },
 
     // Function called when validation is over to examine the results and 
@@ -235,6 +235,10 @@ $.validity = {
 
         // Null coalescence: fix for Issue 5:
         var results = this.report || { errors: 0, valid: true };
+
+        for (var idx = 0; idx < this.report.reductionObjects.length; ++idx) {
+            delete this.report.reductionObjects[idx].reduction;
+        }
 
         this.report = null;
         
@@ -248,6 +252,10 @@ $.validity = {
     clear:function() {
         this.start();
         this.end();
+    },
+
+    registerReduction:function(obj) {
+        this.report.reductionObjects.push(obj);
     }
 };
 
@@ -631,6 +639,8 @@ $.fn.extend({
     // Validate that all matched elements bear the same values. Accepts a 
     // function to transform the values for testing.
     equal:function(arg0, arg1) {
+        $.validity.registerReduction(this);
+
         var 
             // If a reduced set is attached, use it. Also, remove unsupported 
             // elements.
@@ -692,6 +702,8 @@ $.fn.extend({
     // Validate that all matched elements bear distinct values. Accepts an 
     // optional function to transform the values for testing.
     distinct:function(arg0, arg1) {
+        $.validity.registerReduction(this);
+
         var 
             // If a reduced set is attached, use it.
             // Also, remove unsupported elements.
@@ -784,6 +796,8 @@ $.fn.extend({
 
     // Validate that the numeric sum of all values is equal to a given value.
     sum:function(sum, msg) {
+        $.validity.registerReduction(this);
+
         // If a reduced set is attached, use it. Also, remove unsupported 
         // elements.
         var $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport);
@@ -807,6 +821,8 @@ $.fn.extend({
     // Validates an inclusive upper-bound on the numeric sum of the values of 
     // all matched elements.
     sumMax:function(max, msg) {
+        $.validity.registerReduction(this);
+
         // If a reduced set is attached, use it. Also, remove unsupported 
         // elements.
         var $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport);
@@ -830,6 +846,8 @@ $.fn.extend({
     // Validates an inclusive lower-bound on the numeric sum of the values of 
     // all matched elements.
     sumMin:function(min, msg) {
+        $.validity.registerReduction(this);
+
         // If a reduced set is attached, use it. Also, remove unsupported 
         // elements.
         var $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport);
@@ -854,6 +872,8 @@ $.fn.extend({
     ///////////////////////////////////////////////////////////////////////////
     
     radioChecked:function(val, msg) {
+        $.validity.registerReduction(this);
+
         // If a reduced set is attached, use it. Also, remove unsupported 
         // elements.
         var $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport);
@@ -867,6 +887,8 @@ $.fn.extend({
     },
     
     radioNotChecked:function(val, msg) {
+        $.validity.registerReduction(this);
+
         // If a reduced set is attached, use it. Also, remove unsupported 
         // elements.
         var $reduction =  (this.reduction || this).filter($.validity.settings.elementSupport);
@@ -901,6 +923,8 @@ $.fn.extend({
     // Otherwise, it is treated as a boolean, and the determines the validity 
     // of elements in an aggregate fashion.
     assert:function(expression, msg) {
+
+        $.validity.registerReduction(this);
 
         // If a reduced set is attached, use it. Do not reduce to supported 
         // elements.
@@ -947,6 +971,8 @@ $.fn.extend({
 // Raise the specified error on failures. This function is the heart of 
 // validity:
 function validate($obj, regimen, message) {
+
+    $.validity.registerReduction($obj);
 
     var 
         // If a reduced set is attached, use it Also, remove any unsupported 

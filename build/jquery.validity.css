@@ -53,9 +53,7 @@ label.error {
     padding:3px;
     width:16em;
     
-    border-width:1px;
-    border-color:#555;
-    border-style:solid;
+    border:1px solid #555;
     color:#111;
     
     position: absolute;
