@@ -371,28 +371,28 @@ $.fn.extend({
             min.getTime && max.getTime ?
 
                 // If both arguments are dates then use them that way.
-                function(obj) {
+                orEmpty(function(obj) {
                     var d = new Date(obj.value);
                     return d >= new Date(min) && d <= new Date(max);
-                } :
+                }) :
 
                 min.substring && max.substring && Big ?
 
                     // If both arguments are strings then parse them  using the 
                     // Arbitrary-Precision library.
-                    function(obj) {
+                    orEmpty(function(obj) {
                         var n = new Big(obj.value);
                         return (
                             n.greaterThanOrEqualTo(new Big(min)) && 
                             n.lessThanOrEqualTo(new Big(max))
                         );
-                    } :
+                    }) :
 
                     // Otherwise treat them like floats.
-                    function(obj) {
+                    orEmpty(function(obj) {
                         var f = parseFloat(obj.value);
                         return f >= min && f <= max;
-                    },
+                    }),
 
             msg || format(
                 $.validity.messages.range, {
@@ -408,19 +408,19 @@ $.fn.extend({
             this,
 
             min.getTime ?
-                function(obj) {
+                orEmpty(function(obj) {
                     return new Date(obj.value) > min;
-                } :
+                }) :
 
                 min.substring && Big ?
 
-                    function(obj) {
+                    orEmpty(function(obj) {
                        return new Big(obj.value).greaterThan(new Big(min)); 
-                    } :
+                    }) :
 
-                    function(obj) {
+                    orEmpty(function(obj) {
                         return parseFloat(obj.value) > min;
-                    },
+                    }),
 
             msg || format(
                 $.validity.messages.greaterThan, {
@@ -435,19 +435,19 @@ $.fn.extend({
             this,
 
             min.getTime ?
-                function(obj) {
+                orEmpty(function(obj) {
                     return new Date(obj.value) >= min;
-                } :
+                }) :
 
                 min.substring && Big ?
 
-                    function(obj) {
+                    orEmpty(function(obj) {
                         return new Big(obj.value).greaterThanOrEqualTo(new Big(min));
-                    } :
+                    }) :
 
-                    function(obj) {
+                    orEmpty(function(obj) {
                         return parseFloat(obj.value) >= min;
-                    },
+                    }),
 
             msg || format(
                 $.validity.messages.greaterThanOrEqualTo, {
@@ -462,19 +462,19 @@ $.fn.extend({
             this,
 
             max.getTime ?
-                function(obj) {
+                orEmpty(function(obj) {
                     return new Date(obj.value) < max;
-                } :
+                }) :
 
                 max.substring && Big ?
 
-                    function(obj) {
+                    orEmpty(function(obj) {
                         return new Big(obj.value).lessThan(new Big(max));
-                    } :
+                    }) :
 
-                    function(obj) {
+                    orEmpty(function(obj) {
                         return parseFloat(obj.value) < max;
-                    },
+                    }),
 
             msg || format(
                 $.validity.messages.lessThan, {
@@ -489,19 +489,19 @@ $.fn.extend({
             this,
 
             max.getTime ?
-                function(obj) {
+                orEmpty(function(obj) {
                     return new Date(obj.value) <= max;
-                } :
+                }) :
 
                 max.substring && Big ?
 
-                    function(obj) {
+                    orEmpty(function(obj) {
                         return new Big(obj.value).lessThanOrEqualTo(new Big(max));
-                    } :
+                    }) :
 
-                    function(obj) {
+                    orEmpty(function(obj) {
                         return parseFloat(obj.value) <= max;
-                    },
+                    }),
 
             msg || format(
                 $.validity.messages.lessThanOrEqualTo, {
@@ -514,9 +514,9 @@ $.fn.extend({
     maxLength:function(max, msg) {
         return validate(
             this,
-            function(obj) {
+            orEmpty(function(obj) {
                 return obj.value.length <= max;
-            },
+            }),
             msg || format(
                 $.validity.messages.tooLong, {
                     max:max
@@ -528,9 +528,9 @@ $.fn.extend({
     minLength:function(min, msg) {
         return validate(
             this,
-            function(obj) {
+            orEmpty(function(obj) {
                 return obj.value.length >= min;
-            },
+            }),
             msg || format(
                 $.validity.messages.tooShort, {
                     min:min
@@ -576,9 +576,9 @@ $.fn.extend({
         
         return validate(
             this,
-            function(obj) {
+            orEmpty(function(obj) {
                 return (obj.value.match(charClass) || []).length >= min;
-            },
+            }),
             msg || format(
                 $.validity.messages.minCharClass, {
                     min:min,
@@ -1096,6 +1096,12 @@ function capitalize(sz) {
         sz;
 }
 
+function orEmpty(fn) {
+    return function(obj) {
+        return obj.value.length == 0 || fn(obj);
+    };
+}
+
 __private = { 
     validate:validate,
     addToReport:addToReport,
@@ -1104,7 +1110,8 @@ __private = {
     numericSum:numericSum,
     format:format,
     infer:infer,
-    capitalize:capitalize
+    capitalize:capitalize,
+    orEmpty:orEmpty
 };
 
 })(jQuery);

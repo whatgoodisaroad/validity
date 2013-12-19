@@ -1,6 +1,6 @@
 module("common", { setup:setup8Inputs });
 
-test("$.fn.range(min, max)", 1, function() {
+test("$.fn.range(min, max)", function() {
     var values = [
         1, 4, 6, 11, 18, 20, 22, 103
     ];
@@ -17,4 +17,11 @@ test("$.fn.range(min, max)", 1, function() {
         expected = 5;
     
     equal(result, expected, "range(10, 20) finds 5 failures when 5 of 8 inputs have values outside that range");
+
+    $('#qunit-fixture input:first').val("");
+    $.validity.start();
+    $('#qunit-fixture input:first').range(10, 20);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "range(10,20) allows empty string");
 });

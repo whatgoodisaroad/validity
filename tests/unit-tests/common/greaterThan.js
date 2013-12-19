@@ -1,6 +1,6 @@
 module("common", { setup:setup8Inputs });
 
-test("$.fn.greaterThan(min)", 6, function() {
+test("$.fn.greaterThan(min)", function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val(4);
@@ -44,4 +44,11 @@ test("$.fn.greaterThan(min)", 6, function() {
     result = $.validity.end().errors;
     expected = 0;
     equal(result, expected, "greaterThan(4) does not fail on proper value (4.00000001).");
+
+    $('#qunit-fixture input:first').val("");
+    $.validity.start();
+    $('#qunit-fixture input:first').greaterThan(4);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "greaterThan(4) allows empty string.");
 });

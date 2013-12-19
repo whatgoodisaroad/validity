@@ -1,6 +1,6 @@
 module("common", { setup:setup8Inputs });
 
-test("$.fn.lessThanOrEqualTo(max)", 6, function() {
+test("$.fn.lessThanOrEqualTo(max)", function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val(1);
@@ -44,4 +44,11 @@ test("$.fn.lessThanOrEqualTo(max)", 6, function() {
     result = $.validity.end().errors;
     expected = 0;
     equal(result, expected, "lessThanOrEqualTo(4.00000001) does not fail on proper value (4).");
+
+    $('#qunit-fixture input:first').val("");
+    $.validity.start();
+    $('#qunit-fixture input:first').lessThanOrEqualTo(4.00000001);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "lessThanOrEqualTo(4.00000001) accepts empty string.");
 });

@@ -1,6 +1,6 @@
 module("common", { setup:setup8Inputs });
 
-test("$.fn.minLength(min)", 7, function() {
+test("$.fn.minLength(min)", function() {
     var expected, result;
 
     $('#qunit-fixture input:first').val("short");
@@ -51,4 +51,11 @@ test("$.fn.minLength(min)", 7, function() {
     result = $.validity.end().errors;
     expected = 0;
     equal(result, expected, "minLength(6) does not on long value (extremely long wordy nonsense).");
+
+    $('#qunit-fixture input:first').val("");
+    $.validity.start();
+    $('#qunit-fixture input:first').minLength(2);
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "minLength(6) allows empty string");
 });

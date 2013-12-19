@@ -1,6 +1,6 @@
 module("common", { setup:setup8Inputs });
 
-test("$.fn.nonHtml()", 1, function() {
+test("$.fn.nonHtml()", function() {
     var values = [
         "text", 2312, "<", "Safe text", "Un<safe Tex>t", 
         "Loooooooooooooooooooooooooooooooooooooooooooooong text", 
@@ -17,5 +17,16 @@ test("$.fn.nonHtml()", 1, function() {
         expected = 3;
     
     equal(result, expected, "noHtml() finds 3 failures when 3 inputs among 8 have HTML charactes.");
+});
+
+test("$.fn.nonHtml()", function() {
+    $('#qunit-fixture input:first').val("");
+    $.validity.start();
+    $('#qunit-fixture input:first').nonHtml();
+    var 
+        result = $.validity.end().errors,
+        expected = 0;
+    
+    equal(result, expected, "noHtml() allows empty string");
 });
 

@@ -1,6 +1,6 @@
 module("common", { setup:setup8Inputs });
 
-test("$.fn.minCharClass(cclass, min)", 2, function() {
+test("$.fn.minCharClass(cclass, min)", function() {
     var result, expected, values;
     
     values = [
@@ -30,4 +30,13 @@ test("$.fn.minCharClass(cclass, min)", 2, function() {
     expected = 8;
     
     equal(result, expected, "minCharClass('numeric', 5) finds 8 failures among 8 invalid inputs");
+
+
+    $('#qunit-fixture input:first').val("");
+    $.validity.start();
+    $('#qunit-fixture input:first').minCharClass("symbol", 2);
+    var 
+        result = $.validity.end().errors,
+        expected = 0;
+    equal(result, expected, "minCharClass() allows empty string");
 });

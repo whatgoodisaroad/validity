@@ -1,6 +1,6 @@
 module("common", { setup:setup8Inputs });
 
-test("$.fn.alphabet(alpha)", 3, function() {
+test("$.fn.alphabet(alpha)", function() {
     var result, expected, values, alpha;
     
     alpha = "0123456789abcdefABCDEF";
@@ -49,4 +49,11 @@ test("$.fn.alphabet(alpha)", 3, function() {
     expected = 5;
     
     equal(result, expected, "alphabet for symbols characters finds 5 failures when 5 inputs among 8 have invalid values");
+
+    $('#qunit-fixture input:first').val("");
+    $.validity.start();
+    $('#qunit-fixture input:first').alphabet("alpha");
+    result = $.validity.end().errors;
+    expected = 0;
+    equal(result, expected, "alphabet allows empty string");
 });
