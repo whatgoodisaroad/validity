@@ -33,7 +33,8 @@ var
             ":checkbox", 
             "input[type='hidden']", 
             "input[type='tel']", 
-            "input[type='email']"
+            "input[type='email']",
+            "input[type='number']"
         ].join(", "),
         
         // Function to stringify argments for use when generating error 
