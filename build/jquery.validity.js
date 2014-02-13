@@ -1,11 +1,11 @@
 /*
- * jQuery.validity ﻿v1.4.0
+ * jQuery.validity ﻿v1.4.1
  * http://validity.thatscaptaintoyou.com/
  * https://github.com/whatgoodisaroad/validity
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2013-12-18 (Wednesday, 18 December 2013)
+ * Date: 2014-02-13 (Thursday, 13 February 2014)
  */
 (function($, undefined) {
 
@@ -42,7 +42,8 @@ var
             ":checkbox", 
             "input[type='hidden']", 
             "input[type='tel']", 
-            "input[type='email']"
+            "input[type='email']",
+            "input[type='number']"
         ].join(", "),
         
         // Function to stringify argments for use when generating error 
