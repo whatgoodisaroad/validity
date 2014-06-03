@@ -43,7 +43,8 @@ var
             "input[type='hidden']", 
             "input[type='tel']", 
             "input[type='email']",
-            "input[type='number']"
+            "input[type='number']",
+            "input[type='file']"
         ].join(", "),
         
         // Function to stringify argments for use when generating error 
