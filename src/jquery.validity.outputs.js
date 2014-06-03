@@ -72,7 +72,8 @@
         }
         else if ($obj.attr('name') && $obj.attr('name').length) {
             return $obj.attr('name');
-        } else {
+        } 
+        else {
             return '';
         }
     }
