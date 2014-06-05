@@ -1,11 +1,11 @@
 /*
- * jQuery.validity ﻿v1.4.2
+ * jQuery.validity ﻿v1.4.3
  * http://validity.thatscaptaintoyou.com/
  * https://github.com/whatgoodisaroad/validity
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2014-06-03 (Tuesday, 03 June 2014)
+ * Date: 2014-06-05 (Thursday, 05 June 2014)
  */
 (function($, undefined) {
 
@@ -150,7 +150,10 @@ $.validity = {
 
         // Radio validator messages:
         radioChecked:"The selected value is not valid.",
-        
+
+        // Checkbox validator message:
+        checkboxChecked:"#{field} must be checked.",
+		
         generic:"Invalid."
     },
     
@@ -914,7 +917,7 @@ $.fn.extend({
                 return !$(obj).is(":checkbox") || $(obj).is(":checked")
             },
 
-            msg || $.validity.messages.nonHtml
+            msg || $.validity.messages.checkboxChecked
         );
     },
     
