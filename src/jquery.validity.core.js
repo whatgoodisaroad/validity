@@ -141,6 +141,9 @@ $.validity = {
         // Radio validator messages:
         radioChecked:"The selected value is not valid.",
         
+		// Checkbox validator message:
+		checkboxChecked:"#{field} must be checked.",
+		
         generic:"Invalid."
     },
     
@@ -904,7 +907,7 @@ $.fn.extend({
                 return !$(obj).is(":checkbox") || $(obj).is(":checked")
             },
 
-            msg || $.validity.messages.nonHtml
+            msg || $.validity.messages.checkboxChecked
         );
     },
     
