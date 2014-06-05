@@ -83,7 +83,7 @@
     
         start:function() {
             // Remove all the existing error labels.
-            $("." + $.validity.outputs.label.cssClass)
+            $("label." + $.validity.outputs.label.cssClass)
                 .remove();
         },
         
@@ -105,7 +105,7 @@
 
             // Otherwize create a new one and stick it after the input:
             else {
-                $("<label/>")
+                var errorLabel = $("<label/>")
                     .attr("for", getIdentifier($obj))
                     .addClass($.validity.outputs.label.cssClass)
                     .text(msg)
@@ -118,9 +118,16 @@
                         if ($obj.length) {
                             $obj[0].select();
                         }
-                    })
+                    });
 
-                    .insertAfter($obj);
+                var $insertAfter = $obj;
+
+                // For checkboxes, append error label after the checkbox's label (if it exists)
+                if ($obj.is("input[type='checkbox']") && $obj.next().is("label[for='" + getIdentifier($obj) + "']")) {
+                    $insertAfter = $obj.next();
+                }
+
+                errorLabel.insertAfter($insertAfter);
             }
         },
 
