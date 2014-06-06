@@ -1,11 +1,11 @@
 /*
- * jQuery.validity ﻿v1.4.3
+ * jQuery.validity ﻿v1.4.4
  * http://validity.thatscaptaintoyou.com/
  * https://github.com/whatgoodisaroad/validity
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2014-06-05 (Thursday, 05 June 2014)
+ * Date: 2014-06-06 (Friday, 06 June 2014)
  */
 (function($, undefined) {
 
@@ -1214,7 +1214,7 @@ __private = {
     
         start:function() {
             // Remove all the existing error labels.
-            $("." + $.validity.outputs.label.cssClass)
+            $("label." + $.validity.outputs.label.cssClass)
                 .remove();
         },
         
@@ -1236,7 +1236,7 @@ __private = {
 
             // Otherwize create a new one and stick it after the input:
             else {
-                $("<label/>")
+                var errorLabel = $("<label/>")
                     .attr("for", getIdentifier($obj))
                     .addClass($.validity.outputs.label.cssClass)
                     .text(msg)
@@ -1249,9 +1249,18 @@ __private = {
                         if ($obj.length) {
                             $obj[0].select();
                         }
-                    })
+                    });
 
-                    .insertAfter($obj);
+                var $insertAfter = $obj;
+
+                // For checkboxes, append error label after the checkbox's label 
+                // (if it exists)
+                if ($obj.is(":checkbox") && 
+                    $("label[for='" + getIdentifier($obj) + "']").length) {
+                    $insertAfter = $("label[for='" + getIdentifier($obj) + "']");
+                }
+
+                errorLabel.insertAfter($insertAfter);
             }
         },
 

@@ -122,9 +122,11 @@
 
                 var $insertAfter = $obj;
 
-                // For checkboxes, append error label after the checkbox's label (if it exists)
-                if ($obj.is("input[type='checkbox']") && $obj.next().is("label[for='" + getIdentifier($obj) + "']")) {
-                    $insertAfter = $obj.next();
+                // For checkboxes, append error label after the checkbox's label 
+                // (if it exists)
+                if ($obj.is(":checkbox") && 
+                    $("label[for='" + getIdentifier($obj) + "']").length) {
+                    $insertAfter = $("label[for='" + getIdentifier($obj) + "']");
                 }
 
                 errorLabel.insertAfter($insertAfter);
