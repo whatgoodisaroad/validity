@@ -905,7 +905,7 @@ $.fn.extend({
             this,
 
             function(obj) {
-                return !$(obj).is(":checkbox") || $(obj).is(":checked")
+                return !$(obj).is(":checkbox") || $(obj).is(":checked");
             },
 
             msg || $.validity.messages.checkboxChecked
