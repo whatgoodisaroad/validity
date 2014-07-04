@@ -219,6 +219,11 @@
         buffer = [];
 
     $.validity.outputs.summary = {
+        options:{
+            // Configurable container selector to facilitate having multiple containers on one page
+            // Defaults to standard selector defined above
+            container : container
+        },
         start:function() {
             $(errors).removeClass(erroneous);
             buffer = [];
@@ -226,7 +231,7 @@
 
         end:function(results) {
             // Hide the container and empty its summary.
-            $(container)
+            $(this.options.container)
                 .stop()
                 .hide()
                 .find("ul")
@@ -239,10 +244,10 @@
                 for (var i = 0; i < buffer.length; ++i) {
                     $(wrapper)
                         .text(buffer[i])
-                        .appendTo(container + " ul");
+                        .appendTo(this.options.container + " ul");
                 }
 
-                $(container).show();
+                $(this.options.container).show();
                 
                 // If scrollTo is enabled, scroll the page to the first error.
                 if ($.validity.settings.scrollTo) {
@@ -262,10 +267,10 @@
         
         container:function() {
             document.write(
-                "<div class=\"validity-summary-container\">" + 
+                    "<div class=\"" + this.options.container + "\">" +
                     "The form didn't submit for the following reason(s):" +
                     "<ul></ul>" +
-                "</div>"
+                    "</div>"
             );
         }
     };

@@ -1,11 +1,11 @@
 /*
- * jQuery.validity ﻿v1.4.5
+ * jQuery.validity ﻿v1.4.6
  * http://validity.thatscaptaintoyou.com/
  * https://github.com/whatgoodisaroad/validity
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2014-06-23 (Monday, 23 June 2014)
+ * Date: 2014-07-04 (Friday, 04 July 2014)
  */
 (function($, undefined) {
 
@@ -1350,6 +1350,11 @@ __private = {
         buffer = [];
 
     $.validity.outputs.summary = {
+        options:{
+            // Configurable container selector to facilitate having multiple containers on one page
+            // Defaults to standard selector defined above
+            container : container
+        },
         start:function() {
             $(errors).removeClass(erroneous);
             buffer = [];
@@ -1357,7 +1362,7 @@ __private = {
 
         end:function(results) {
             // Hide the container and empty its summary.
-            $(container)
+            $(this.options.container)
                 .stop()
                 .hide()
                 .find("ul")
@@ -1370,10 +1375,10 @@ __private = {
                 for (var i = 0; i < buffer.length; ++i) {
                     $(wrapper)
                         .text(buffer[i])
-                        .appendTo(container + " ul");
+                        .appendTo(this.options.container + " ul");
                 }
 
-                $(container).show();
+                $(this.options.container).show();
                 
                 // If scrollTo is enabled, scroll the page to the first error.
                 if ($.validity.settings.scrollTo) {
@@ -1393,10 +1398,10 @@ __private = {
         
         container:function() {
             document.write(
-                "<div class=\"validity-summary-container\">" + 
+                    "<div class=\"" + this.options.container + "\">" +
                     "The form didn't submit for the following reason(s):" +
                     "<ul></ul>" +
-                "</div>"
+                    "</div>"
             );
         }
     };
