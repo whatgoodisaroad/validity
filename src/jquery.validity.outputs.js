@@ -178,6 +178,7 @@
                     
                 // Create one and position it next to the input.
                 $("<div/>")
+                    .attr('id', 'validity-modal-msg-' + off.left + '-' + off.top)
                     .addClass(errorClass)
                     .css(errorStyle)
                     .text(msg)
