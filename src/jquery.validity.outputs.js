@@ -12,6 +12,10 @@
         start:function() {
             $("." + $.validity.outputs.tooltip.tooltipClass)
                 .remove();
+            if ($.validity.settings.tooltipCustomClass) {
+                $("." + $.validity.outputs.tooltip.tooltipCustomClass)
+                    .remove();
+            }
         },
         
         end:function(results) {
@@ -30,8 +34,14 @@
             pos.left += $obj.width() + 18;
             pos.top += 8;
             
+            var tooltipClasses = '\"validity-tooltip ';
+            if ($.validity.settings.tooltipCustomClass) {
+                tooltipClasses += $.validity.settings.tooltipCustomClass;
+            }
+            tooltipClasses += '\"';
+
             var tooltip = $(
-                "<div class=\"validity-tooltip\">" + 
+                "<div class=" + tooltipClasses + ">" +
                     msg +
                     "<div class=\"validity-tooltip-outer\">" +
                         "<div class=\"validity-tooltip-inner\"></div>" + 
