@@ -49,6 +49,8 @@ var
                 val + "";
         },
         
+        tooltipCustomClass: null,
+
         debugPrivates:false
     },
     
