@@ -41,7 +41,7 @@ label.error {
  */
 .validity-summary-container { display:none; }
 .validity-summary-output ul { }
-.validity-erroneous { border:solid 2px #f56600 !important; }
+.validity-erroneous,.validity-erroneous TD { border:solid 2px #f56600 !important; }
 
 
 
