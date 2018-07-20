@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <title>Custom Output</title>
+    <script type="text/javascript" src="../lib/jquery.js"></script>
+    <script type="text/javascript" src="../lib/jquery.validity.js"></script>
+    <script type="text/javascript">
+        (function(){
+            $.validity.outputs.custom = {
+                start:function(){ 
+                    $("input:text")
+                        .css({border:'1px solid green'})
+                        .removeClass('fail');
+                },
+                
+                end:function(results) {
+                    // If not valid and scrollTo is enabled, scroll the page to the first error.
+                    if (!results.valid && $.validity.settings.scrollTo) {
+                        location.hash = $(".fail:eq(0)").attr('id')
+                    }
+                },
+                
+                raise:function($obj, msg){
+                    alert(msg);
+                    $obj
+                        .animate({ borderWidth: "10px" }, 1000)
+                        .css({borderColor:'red'})
+                        .addClass('fail');
+                },
+                
+                // Just raise the error on the last input.
+                raiseAggregate:function($obj, msg){ 
+                    this.raise($($obj.get($obj.length - 1)), msg); 
+                }
+            }
+            
+            $.validity.setup({ outputMode:'custom' });
+        })();
+          
+        // Instruct validity to validate the page by requiring 
+        // the input matched by a jQuery selector.
+        $(function() { $("form").validity("#text"); });
+    </script>
+  </head>
+  <body>
+    <form action="customoutput.htm" method="post">
+      This field is required:
+      <input type="text" id="text" name="text" style="border:solid 1px green" />
+      <input type="submit" />
+    </form>
+  </body>
+</html>

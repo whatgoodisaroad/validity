@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Example Time!</title>
+    <link rel="Stylesheet" href="css/jquery.validity.css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body { background:transparent; overflow:hidden; }
+
+        .formPad { padding:1em; }
+    </style>
+    <script src="js/jquery-1.6.2.min.js"></script>
+    <script src="js/jQuery.validity.min.js"></script>
+    <script>
+        $(function() {
+            var val = location.href.match(/val=(.+)$/)[1];
+            
+            if (val) {
+                $("#theValue").text(val);
+            }
+            else {
+                $("#valHeader").hide();
+            }
+        });
+        
+    </script>
+</head>
+<body>
+    <h2>It validated!</h2>
+    <div id="valHeader">
+        The value "<span id="theValue"></span>" passed validation.
+    </div>
+    <div>
+        <a href="sample.htm">Go Again...</a>
+    </div>
+</body>
+</html>

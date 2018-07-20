@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <title>Conditional</title>
+        <link rel="Stylesheet" type="text/css" href="../lib/jquery.validity.css" />
+        <script type="text/javascript" src="../lib/jquery.js"></script>
+        <script type="text/javascript" src="../lib/jquery.validity.js"></script>
+        <script type="text/javascript">
+            $(function() { 
+                $("form").validity(function() { 
+                    if ($("#maillist").attr("checked")) {
+                        $("#email")
+                            .require("We'll need #{field} if you want to be on the mailing list.")
+                            .match("email");
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <form action="conditional.htm" method="get">
+            <input type="checkbox" id="maillist" name="maillist" />
+            
+            <label for="maillist">
+                Yes, I'd like to recieve updates: 
+            </label>
+            
+            <br />
+            
+            <label for="email">
+                My email:
+            </label>
+            
+            <input type="text" id="email" name="email" title="your address" />
+            
+            <br />
+            
+            <input type="submit" value="Submit" />
+        </form>
+    </body>
+</html>

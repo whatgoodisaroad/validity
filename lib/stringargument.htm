@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <title>String Argument</title>
+        <link type="text/css" rel="Stylesheet" href="../lib/jquery.validity.css" />
+        <script type="text/javascript" src="../lib/jquery.js"></script>
+        <script type="text/javascript" src="../lib/jquery.validity.js"></script>
+        <script type="text/javascript">
+            $(function() { 
+                $("form").validity("input:text, select");
+            });
+        </script>
+    </head>
+    <body>
+        <form method="get" action="stringargument.htm">
+            <label for="PetName">Name of Pet:</label>
+            <input type="text" id="PetName" name="PetName" title="name" />
+            <br /><br />
+            
+            <label for="PetType">Type of Pet:</label>
+            <select id="PetType" name="PetType" title="type">
+                <option selected="selected"></option>
+                <option>Dog</option>
+                <option>Cat</option>
+                <option>Bird</option>
+                <option>Lizard</option>
+                <option>Panda</option>
+            </select>
+            <br /><br />
+            
+            <label for="Petfoodbrand">Brand of Petfood:</label>
+            <input type="text" id="Petfoodbrand" name="Petfoodbrand" title="brand" />
+            <br /><br />
+            
+            <input type="submit" value="Submit" />
+        </form>
+    </body>
+</html>

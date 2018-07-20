@@ -1,0 +1,2318 @@
+﻿<html>
+    <head>
+        <title>jQuery.validity Guide & Documentation</title>
+    </head>
+    
+    <link rel="SHORTCUT ICON" href="../favicon.ico"/>
+    
+    <link rel="stylesheet" type="text/css" href="../lib/sty.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/jquery.validity.css" />
+    
+    <script type="text/javascript" src="../lib/jquery.js"></script>
+
+    <script type="text/javascript" src="../lib/prettify.js"></script>
+    <script type="text/javascript" src="../lib/lang-css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../lib/prettify.css" />
+    <!--[if IE]>
+        <style type="text/css">
+            #content { 
+                width:768px; 
+            }
+        </style>
+    <![endif]-->
+    <script type="text/javascript">
+        $(function() { prettyPrint(); });
+    </script>
+    
+    <script type="text/javascript" src="../lib/src.js"></script>
+    
+    <body>
+        <div id="content">
+            <img id="logo" src="../lib/validity.logo.png" alt="jQuery.validity" />
+            <h1>jQuery.validity Guide & Documentation</h1>
+            
+            <hr />
+            
+            <h2>Table of Contents:</h2>
+            <ul>
+                <li><a href="#Introduction">Introduction</a></li>
+                <li><a href="#Setup">Setup</a></li>
+                <li><a href="#AssigningValidation">Assigning Validation</a></li>
+                <ul>
+                    <li><a href="#TheValidityMethod">The Validity Method</a></li>
+                    <ul>
+                        <li><a href="#UsingAFunctionArgument">Using a Function Argument</a>
+                            <ul>
+                                <li><a href="#BasicFunctions">Basics</a></li>
+                                <li><a href="#UnderstandingChains">Understanding Chains</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#UsingAStringArgument">Using a String Argument</a></li>
+                    </ul>
+                    <li><a href="#UsingValidityWithAjax">Using Validity With Ajax</a></li>
+                </ul>
+                <li><a href="#Validators">Validators</a></li>
+                <ul>
+                    <li><a href="#CommonValidators">Common Validators</a>
+                    <ul>
+                        <li><a href="#Require">Require</a></li>
+                        <li><a href="#Match">Match</a></li>
+                        <li><a href="#Range">Range</a></li>
+                        <li><a href="#GreaterThan">Greater Than/Greater Than or Equal To</a></li>
+                        <li><a href="#LessThan">Less Than/Less Than or Equal To</a></li>
+                        <li><a href="#Length">Max Length/Min Length</a></li>
+                        <li><a href="#NonHtml">Non HTML</a></li>
+                    </ul>
+                    <li><a href="#AggregateValidators">Aggregate Validators</a></li>
+                    <ul>
+                        <li><a href="#Equal">Equal</a></li>
+                        <li><a href="#Distinct">Distinct</a></li>
+                        <li><a href="#Sum">Sum/Sum Max/Sum Min</a></li>
+                    </ul>
+                    <li><a href="#SpecializedValidation">Specialized Validation</a></li>
+                    <ul>
+                        <li><a href="#Assert">Assert</a></li>
+                    </ul>
+                </ul>
+                <li><a href="#TokenizedMessages">Tokenized Messages</a></li>
+                <ul>
+                    <li><a href="#UnderstandingTokens">Understanding</a></li>
+                    <li><a href="#TokenPractices">Best Practices</a></li>
+                </ul>
+                <li><a href="#OutputModes">Output Modes</a></li>
+                <ul>
+                    <li><a href="#Label">Label</a></li>
+                    <li><a href="#Modal">Modal</a></li>
+                    <li><a href="#Summary">Summary</a></li>
+                </ul>
+                <li><a href="#CustomizingValidity">Customizing Validity Itself</a></li>
+                <ul>
+                    <li><a href="#AdaptingCSS">Adapting the CSS</a></li>
+                    <ul>
+                        <li><a href="#LabelCSS">Label</a></li>
+                        <li><a href="#ModalCSS">Modal</a></li>
+                        <li><a href="#SummaryCSS">Summary</a></li>
+                    </ul>
+                    <li><a href="#EditingMessages">Customizing Messages</a></li>
+                    <li><a href="#ExtendingMatchSupport">Customizing/Extending Match Validator Support</a></li>
+                    <li><a href="#LanguagePackages">Language Packages/Internationalization</a></li>
+                    <li><a href="#CustomOutputMode">Writing a Custom Output Mode</a></li>
+                </ul>
+                <li><a href="#Miscellaneous">Miscellaneous</a></li>
+                <ul>
+                    <li><a href="#SetupFunction">The Setup Function</a></li>
+                </ul>
+            </ul>
+            
+            <hr />
+            
+            <h2 id="Introduction">Introduction:</h2>
+            <p>
+                jQuery.validity is a plugin designed to aid in the configuration of clientside form-validation.
+                Validity was concieved with three goals:
+            </p>
+            <ol>
+                <li>
+                    <strong>Easy Setup:</strong> Validity employs the principle of <em>Convention Over Configuration</em> to
+                    aid in keeping code manageable and semantic. Very little work is required to enable Validity
+                    for a page.
+                </li>
+                <li>
+                    <strong>Unobtrusive JavaScript:</strong> Using Validity will have little to no effect on the semantics
+                    of your markup. Additionally, Validity will degrade gracefully and leave no residuals in browser
+                    environments where JavaScript is disabled or unsupported.
+                </li>
+                <li>
+                    <strong>Customizable Appearence:</strong> Validity is an effort to deliver a solid core-library of 
+                    validation tools that can be used in any web-design. Therefore, in order to be truly versatile, validation 
+                    logic is separated
+                    from the way it displays errors. With Validity, you, the developer, have full control
+                    of error message handling and adapting it to the design of your page.
+                </li>
+            </ol>
+            <p>
+                In style, validity makes use of jQuery's selector engine and follows its pattern of method chaining. 
+                If you know jQuery, then learning to use validity will be easy.
+            </p>
+            
+            <hr />
+            
+            <h2 id="Setup">Setup:</h2>
+            <p>
+                In order to use Validity on a page, you will need to import the jQuery JavaScript library as well as jQuery.validity itself.
+                Additionally, you will need to import the CSS styles for the error handling.
+            </p>
+            <p>
+                As a simple example suppose we start with the following HTML document with a simple form:
+            </p>
+            <pre class="prettyprint lang-html">
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Simple&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;form method="get" action="simple.htm"&gt;
+            Number of Vehicles:
+            &lt;input type="text" id="vehicles" name="vehicles" title="Vehicle Count" /&gt;
+            &lt;br /&gt;&lt;br /&gt;
+            Date of birth:
+            &lt;input type="text" id="dob" name="dob" title="Birthday" /&gt;
+            &lt;br /&gt;&lt;br /&gt;
+            &lt;input type="submit" /&gt;
+        &lt;/form&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+            </pre>
+            <p>
+                As you can see, there is no validation logic attached to the form. To import Validity we add the 
+                following code to the document's head.
+            </p>
+            <pre class="prettyprint lang-html">
+&lt;link type="text/css" rel="Stylesheet" href="jquery.validity.css" /&gt;
+
+&lt;script type="text/javascript" src="jquery.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="jquery.validity.js"&gt;&lt;/script&gt;
+
+&lt;script type="text/javascript"&gt;
+    // Select all of the forms on the page (in this case the only one)
+    // and call 'validity' on the result.
+    $(function() { 
+        $("form").validity(function() {
+            
+        });
+    });
+&lt;/script&gt;
+            </pre>
+            <p>
+                Once jQuery, jQuery.validity and the validity styles are imported we can specify the validation
+                logic using the <b>validity method</b>. Normally, this the validity method is called on 
+                jQuery objects of HTML forms and accepts a function as argument. As you can see, in the 
+                code above, a jQuery selector finds the form and then the validity method is called with
+                an empty anonymous function as argument.
+            </p>
+            <p>
+                Inside the function argument we can specify the validation code.
+            </p>
+            <p>
+                Let's say that we want to require both of the fields. Also, we want to restrict the first
+                field to be in the form of a number between 4 and 12. The second field will need to be a date 
+                and that date will have to be at some point in the past.
+            </p>
+            <p>
+                Validation methods are covered in greater detail later on in this document, but for now we can
+                specify validation with the following use of the 'validity' method.
+            </p>
+            <pre class="prettyprint lang-js">
+$("form").validity(function() {
+    $("#vehicles")                      // The first input:    
+        .require()                          // Required:
+        .match("number")                    // In the format of a number:
+        .range(4, 12);                      // Between 4 and 12 (inclusively):
+    
+    $("#dob")                           // The second input:
+        .require()                          // Required:
+        .match("date")                      // In the format of a date:
+        .lessThanOrEqualTo(new Date());     // In the past (less than or equal to today):
+});
+            </pre>
+            
+            <p>
+                That's all of the code that needs to be written to have a form validated by validity.
+                Putting it all together, the interactive example below is produced. 
+            </p>
+            
+            <div class="ex_w_src">    
+                <div>[<a href="#_">View Source</a>]</div>
+                <iframe id="setup-iframe" src="../lib/simple.htm"></iframe>
+                <pre id="setup-src" class="prettyprint lang-html">
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Simple&lt;/title&gt;
+        &lt;link type="text/css" rel="Stylesheet" href="../../jquery.validity.css" /&gt;
+        &lt;script type="text/javascript" src="../../jquery.js"&gt; &lt;/script&gt;
+        &lt;script type="text/javascript" src="../../jquery.validity.js"&gt; &lt;/script&gt;
+        &lt;script type="text/javascript"&gt;
+            $(function() { 
+                $("form").validity(function() {
+                    $("#vehicles")
+                        .require()
+                        .match("number")
+                        .range(4, 12);
+                    
+                    $("#dob")
+                        .require()
+                        .match("date")
+                        .lessThanOrEqualTo(new Date());
+                });
+            });
+        &lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;form method="get" action="simple.htm"&gt;
+            Number of Vehicles:
+            &lt;input type="text" id="vehicles" name="vehicles" title="Vehicle Count" /&gt;
+            &lt;br /&gt;&lt;br /&gt;
+            Date of birth:
+            &lt;input type="text" id="dob" name="dob" title="Birthday" /&gt;
+            &lt;br /&gt;&lt;br /&gt;
+            &lt;input type="submit" /&gt;
+        &lt;/form&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+                </pre>
+            </div>
+            
+            <p>
+                <b>Note:</b> As of versiom 1.0.2+ you'll also need to put the arrow.gif image in
+                the same directory as the stylesheet. (Otherwise the label output mode will not 
+                render correctly. See <a href="#LabelCSS">Label Output Mode Styles</a>.)
+            </p>
+            
+            <hr />
+            
+            <h2 id="AssigningValidation">Assigning Validation:</h2>
+            
+            <p>
+                There are multiple ways to assign validation logic to a form.
+                
+                <ul>
+                    <li>
+                        <p>In the <a href="#Setup">Setup</a> example the validity method is used with a <b>function argument</b>. For example:</p>
+                        
+                        <pre id="setup-src" class="prettyprint lang-js">
+// The validity method is being called on the form.
+$("form").validity(function() {
+
+    // This function is being passed into the validity method.
+    // Validation logic can go here.
+    
+});
+                        </pre>
+                        
+                        <p>More on this technique below under <a href="#UsingAFunctionArgument">Using a Function Argument</a>.</p>
+                    </li>
+                    <li>
+                        <p>The validity method can also be called with a <b>string argument</b>. For example:</p>
+                        
+                        <pre id="setup-src" class="prettyprint lang-js">
+// The validity method is being called on the form with a string argument.
+$("form").validity("input:text, select");
+                        </pre>
+                        
+                        <p>More on this technique below under <a href="#UsingAStringArgument">Using a String Argument</a>.</p>
+                    </li>
+                    <li>
+                        <p>Furthermore, validity can be used <b>without the validity method</b>, for 
+                        instance, when validating Ajax.</p>
+                        
+                        <p>More on this technique below under <a href="#UsingValidityWithAjax">Using Validity with Ajax</a>.</p>
+                    </li>
+                </ul>
+            </p>
+
+            <hr />
+            
+            <h3 id="TheValidityMethod">The Validity Method</h3>
+            
+            <p>
+                The validity method is defined on all jQuery objects, however
+                it will only effect <b>form</b> elements. You may use it to select one or more forms
+                and register the validation for each. There are two argument types that the method
+                will accept: a function and a string.
+            </p>
+            
+            <hr />
+
+            
+            <h4 id="UsingAFunctionArgument">Using a Function Argument</h4>
+            
+            <p>
+                In almost all cases your argument into the validity
+                method will be a function. Within the function you will call the validator methods.
+            </p>
+            
+            <p>
+                The advantage of using a function argument for validation lies in your access to the
+                jQuery selector engine for specifying rules.
+            </p>
+            
+            <p style="font-size:small;">
+                <b>For Advanced Users:</b> the other advantage to function arguments is your ability
+                to use JavaScript control structures (such as if...else blocks, iterators, etc.).
+                In other words, the function passed into the validity method is <b>executed</b> just like
+                any other JavaScript function. If your validation rules are conditional, nonlinear or otherwise
+                complicated you can write whatever logic you need to. An example of a conditional validation
+                scenario is below with the checkbox.
+            </p>
+            
+            <hr />
+            
+            <h5 id="BasicFunctions">Basics</h5>
+            
+            <p>
+                A simple validation scenario allows you to simply select individual 
+                inputs and setup validation on each. For example:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$('#my-form').validity(function() {
+
+    // Required and has to be a number.
+    $("#text-box-one")
+        .require()
+        .match("number");
+    
+    // Not required, but it has to be a date
+    $("#text-box-two")
+        .match("date");
+        
+});
+            </pre>
+            
+            <p>
+                You may also take advantage of the selector engine and validate several inputs
+                with a single statement. For instance, if a page has several inputs that need to 
+                represent percentages, and that all need to add up to 100%, then the following
+                code may be appropriate.
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$('#my-other-form').validity(function() {
+
+    // All of the interesting inputs will be under a percentage class, so:
+    $(".percentage")
+        .require()          // Each is required 
+        .match("number")    // Each must be numeric
+        .sum(100);          // The sum of all of them should be 100%.
+        
+});
+            </pre>
+            
+            <p>
+                Furthermore, you can use JavaScript control structures to conditionally 
+                validate. In the following interactive example, an if...then structure 
+                is used to require an email input only if the checkbox is checked.
+            </p>
+            
+            <div class="ex_w_src">    
+                <div>[<a href="#_">View Source</a>]</div>
+                <iframe id="conditional-iframe" src="../lib/conditional.htm"></iframe>
+                <pre id="conditional-src" class="prettyprint lang-html">
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Conditional&lt;/title&gt;
+        &lt;link rel="Stylesheet" type="text/css" href="../../jquery.validity.css" /&gt;
+        &lt;script type="text/javascript" src="../../jquery.js"&gt;&lt;/script&gt;
+        &lt;script type="text/javascript" src="../../jquery.validity.js"&gt;&lt;/script&gt;
+        &lt;script type="text/javascript"&gt;
+            $(function() { 
+                $("form").validity(function() { 
+                    if ($("#maillist").attr("checked")) {
+                        $("#email")
+                            .require("We'll need #{field} if you want to be on the mailing list.")
+                            .match("email");
+                    }
+                });
+            });
+        &lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;form action="conditional.htm" method="get"&gt;
+            &lt;input type="checkbox" id="maillist" name="maillist" /&gt;
+            
+            &lt;label for="maillist"&gt;
+                Yes, I'd like to recieve updates: 
+            &lt;/label&gt;
+            
+            &lt;br /&gt;
+            
+            &lt;label for="email"&gt;
+                My email:
+            &lt;/label&gt;
+            
+            &lt;input type="text" id="email" name="email" title="your address" /&gt;
+            
+            &lt;br /&gt;
+            
+            &lt;input type="submit" value="Submit" /&gt;
+        &lt;/form&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+                </pre>
+            </div>
+            
+            <p>
+                This is an example of using JavaScript control structures in the validity 
+                method.
+            </p>
+            
+            <hr />
+            
+            <h5 id="UnderstandingChains">Understanding Chains</h5>
+            
+            <p>
+                You may have noticed that the validator functions can be called on the
+                results of other validator methods in the manner of jQuery function chaining.
+                For instance:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+// Selector:       1st:      2nd:            3rd:         Chain ends:
+$("#some_textbox").require().match("number").range(24, 64);
+            </pre>
+            
+            <p>
+                The basic mechanism involved with chains is that functions later in a chain
+                will only do validation if the previous ones succeed.
+            </p>
+            
+            <p>
+                In other words, in the 
+                above code snippet, if the input does not have a value (i.e. 
+                <code>require()</code> fails and raises an error) then validity is smart enough 
+                to not check the format when it gets to <code>match("number")</code>. 
+                It would be meaningless to complain about the format if there 
+                was no value to check.
+            </p>
+            
+            <p>
+                In this fashion you can assign the validator methods in the order of <b>most 
+                essential first</b>, and then do the more specific rules later in the chain.
+            </p>
+            
+            <p style="font-size:small;">
+                Requiring a value is more essentiall than restricting it to the format of a 
+                number. Restricting its format is more essential than checking its range.
+            </p>
+            
+            <hr />
+            
+            <h4 id="UsingAStringArgument">Using a String Argument</h4>
+            
+            <p>
+                If you only need to require some of the inputs, and you don't 
+                need to format-check them, you can simply pass a string 
+                into the validity method. 
+            </p>
+            
+            <p>
+                The string needs to be a jQuery selector
+                expression that would select the elements you wish to validate.
+            </p>
+            
+            <p>
+                In the following interactive example, we validate the page
+                with the statement: 
+            </p>
+            
+            <pre class="prettyprint">
+$("form").validity("input:text, select"); 
+            </pre>
+            
+            <p>
+                This is because the string argument would select all of the inputs we need.
+            </p>
+            
+            <div class="ex_w_src">    
+                <div>[<a href="#_">View Source</a>]</div>
+                <iframe id="stringargument-iframe" src="../lib/stringargument.htm" style="height:200px"></iframe>
+                <pre id="stringargument-src" class="prettyprint lang-html">
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;String Argument&lt;/title&gt;
+        &lt;link type="text/css" rel="Stylesheet" href="../../jquery.validity.css" /&gt;
+        &lt;script type="text/javascript" src="../../jquery.js"&gt;&lt;/script&gt;
+        &lt;script type="text/javascript" src="../../jquery.validity.js"&gt;&lt;/script&gt;
+        &lt;script type="text/javascript"&gt;
+            $(function() { 
+                $("form").validity("input:text, select");
+            });
+        &lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;form method="get" action="stringargument.htm"&gt;
+            &lt;label for="PetName"&gt;Name of Pet:&lt;/label&gt;
+            &lt;input type="text" id="PetName" name="PetName" title="name" /&gt;
+            &lt;br /&gt;&lt;br /&gt;
+            
+            &lt;label for="PetType"&gt;Type of Pet:&lt;/label&gt;
+            &lt;select id="PetType" name="PetType" title="type"&gt;
+                &lt;option selected="selected"&gt;&lt;/option&gt;
+                &lt;option&gt;Dog&lt;/option&gt;
+                &lt;option&gt;Cat&lt;/option&gt;
+                &lt;option&gt;Bird&lt;/option&gt;
+                &lt;option&gt;Lizard&lt;/option&gt;
+                &lt;option&gt;Panda&lt;/option&gt;
+            &lt;/select&gt;
+            &lt;br /&gt;&lt;br /&gt;
+            
+            &lt;label for="Petfoodbrand"&gt;Brand of Petfood:&lt;/label&gt;
+            &lt;input type="text" id="Petfoodbrand" name="Petfoodbrand" title="brand" /&gt;
+            &lt;br /&gt;&lt;br /&gt;
+            
+            &lt;input type="submit" value="Submit" /&gt;
+        &lt;/form&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+                </pre>
+            </div>
+            
+            <p>
+                If we wished to make the petfood input optional, we could modify
+                the string the same way we'd craft a jQuery selector to exclude this
+                input. For example:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$("form").validity("input:text:not(#Petfoodbrand), select");
+            </pre>
+            
+            <hr />
+            
+            <h3 id="UsingValidityWithAjax">Using Validity with Ajax</h3>
+            
+            <p>
+                If your page uses Ajax and cannot bind to a form in the way described 
+                above, or you otherwise wish not to use the validity method, you will
+                need to manually call validity's <b>start</b> and <b>end</b> functions.                
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.start();
+
+// And:
+
+var result = $.validity.end();
+            </pre>
+            
+            <p>
+                These functions are really quite easy to use.
+            </p>
+            
+            <p>
+                Essentially, the <b>start</b> function should be called before any validator 
+                methods. The <b>end</b> function should be called after all the validator
+                methods have been called, and it returns an object representing the
+                results of the validation.
+            </p>
+            
+            <p>
+                The result object that is returned by the end function bears two properties:
+                <b>valid</b> and <b>errors</b>. 
+            </p>
+
+            <ul>
+                <li>
+                    <b>valid</b> is a boolean representing whether no errors occurred between the times 
+                    that start and end were called. If there were no errors, valid will be 'true'. 
+                </li>
+                
+                <li>
+                    <b>errors</b> is an integer representing how many errors occurred. If valid is 'true' then 
+                    errors will be '0'.
+                </li>
+            </ul>
+            
+            <p>
+                For example, some code that would validate inputs without 
+                a form might look like this:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+// This is the validation function:
+function validateMyAjaxInputs() {
+
+    // Start validation:
+    $.validity.start();
+    
+    // Validator methods go here:
+    
+    // For instance:
+    $("#my_textbox").require();
+    
+    // etc.
+    
+    // All of the validator methods have been called:
+    // End the validation session:
+    var result = $.validity.end();
+    
+    // Return whether it's okay to proceed with the Ajax:
+    return result.valid;
+}
+
+
+// This is the function wired into the click event of some link or button:
+function ajaxButtonClicked() {
+
+    // First check whether the inputs are valid:
+    if (validateMyAjaxInputs()) {
+    
+        // Do ajax:
+        // ...
+        
+    }
+}
+            </pre>
+            
+            <hr />
+            
+            <h2 id="Validators">Validators</h2>
+            
+            <p>
+                Validity defines various methods onto jQuery objects for
+                validation. We'll call these validator methods.
+            </p>
+            
+            <hr />
+            
+            <h3 id="CommonValidators">Common Validators</h3>
+            
+            <p>
+                The common validator methods all deal specifically with 
+                individual inputs. Any of them can be called on jQuery 
+                objects of several inputs. Each input will be validated 
+                indivdiually.
+            </p>
+            
+            <p>
+                In other words, we could use jQuery several times to select each 
+                input and call the 'require' validator method each time. 
+                Alternatively, and more elegantly, we could simply select all of 
+                the needed inputs and call 'require' once on that.
+            </p>
+            
+            <pre class="prettyprint lang-js">
+// For example:
+
+// Wirting:
+$('#input-1').require();
+$('#input-2').require();
+$('#input-3').require();
+$('#input-4').require();
+$('#input-5').require();
+
+// Would be equivalent to:
+$("#input-1, #input-2, #input-3, #input-4, #input-5").require();
+
+// Or, if there are no other inputs than these five:
+$("input").require();
+
+// The power is in the selector.
+            </pre>
+            
+            
+            <p>
+                Below are summarized the various common validator methods.
+            </p>
+            
+            <hr />
+            
+            <h4 id="Require">Require:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").require( ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                This is the most basic validation method. It merely checks to ensure that 
+                inputs have values. If any do not have a value (i.e. <code>value.length</code> is zero) 
+                an error is raised for that input and the form should not be submitted.
+            </p>
+            
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Require all inputs, use the default error message.
+$("input:text").require();
+            </pre>
+            
+            <pre class="prettyprint lang-js">
+// A specific error message is attached to a specific input.
+$("#ssn").require("Your Social Security Number is required to proceed.");
+            </pre>
+            
+            <hr />
+            
+            <h4 id="Match">Match:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").match( 'patternName'|RegExp, ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>patternName</code>: 
+                    A named pattern to match against. A list of the named formats that are 
+                    built into validity can be found below.
+                </li>
+                <li>
+                    <code>RegExp</code>:
+                    Instead of a named pattern, you may enter a RegExp object to use for 
+                    testing the value. 
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Tests that the inputs conform to the specified format. This is achieved 
+                by passing in a Regexp to match the value against. validity also includes 
+                several common Regexps that you may use by merely passing in their name 
+                as a string.
+            </p>
+            
+            <p>
+                The built-in Regexp names are: 
+            </p>
+            
+            <dl>
+                <dt>
+                    <code>integer</code>
+                </dt>
+                <dd>
+                    Will match only positive, whole numbers.
+                </dd>
+                
+                <dt>
+                    <code>date</code>
+                </dt>
+                <dd>
+                    Will only match dates in the American mm/dd/yyyy format. To support other
+                    date formats refer to the <a href="#LanguagePackages">Internationalization
+                    Section</a> later on in this document.
+                </dd>
+                
+                <dt>
+                    <code>email</code>
+                </dt>
+                <dd>
+                    Matches email addresses.
+                </dd>
+                
+                <dt>
+                    <code>usd</code>
+                </dt>
+                <dd>
+                    Matches U.S. Dollar amounts.
+                </dd>
+                
+                <dt>
+                    <code>url</code>
+                </dt>
+                <dd>
+                    Matches web-addresses.
+                </dd>
+                
+                <dt>
+                    <code>number</code>
+                </dt>
+                <dd>
+                    Matches a number. It could be an integer or float, positive or negative or in 
+                    scientific-notation.
+                </dd>
+                
+                <dt>
+                    <code>zip</code>
+                </dt>
+                <dd>
+                    Matches an U.S. Postal Code (in both 5 and 9 digit forms).
+                </dd>
+                
+                <dt>
+                    <code>phone</code>
+                </dt>
+                <dd>
+                    Matches an U.S. Domestic Phone number.
+                </dd>
+                
+                <dt>
+                    <code>guid</code>
+                </dt>
+                <dd>
+                    Matches a globally unique identifier. Should be formatted such as <br /> <code>{3F2504E0-4F89-11D3-9A0C-0305E82C3301}</code>
+                </dd>
+                
+                <dt>
+                    <code>time12</code>
+                </dt>
+                <dd>
+                    Matches a time in 12-hour format.
+                </dd>
+                
+                <dt>
+                    <code>time24</code>
+                </dt>
+                <dd>
+                    Matches a time in 24-hour format.
+                </dd>
+            </dl>
+            
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Make sure that all inputs under the 'date' class are 
+// properly formatted. (Given they bear a value.) If any 
+// fail, they will be tagged with a default error message 
+// associated with the 'date' pattern.
+$('input.date').match('date');
+            </pre>
+            
+            <pre class="prettyprint lang-js">
+// Same as the previous example, but the dates are now required also.
+$('input.date')
+    .require()
+    .match('date');
+            </pre>
+            
+            <pre class="prettyprint lang-js">
+// Ensures that an input named 'employeeId' conforms to a 
+// special, company-specific pattern, and specifies a 
+// helpful message.
+$('#employeeId').match(/^\d{2}[-]\d{4}$/, "Employee Ids must be in the form XX-XXXX.");
+            </pre>
+            
+            <pre class="prettyprint lang-js">
+// Same as the previous example, but the message is <a href="#TokenizedMessages">tokenized</a>:
+$('#employeeId').match(/^\d{2}[-]\d{4}$/, "#{field} must be in the form XX-XXXX.");
+            </pre>
+            
+            <hr />
+            
+            <h4 id="Range">Range:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").range( min, max, ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>min</code>: 
+                    The <b>inclusive</b> lower-bound for valid values.
+                </li>
+                <li>
+                    <code>max</code>:
+                    The <b>inclusive</b> upper-bound for valid values.
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Will restrict the value to an inclusive numeric or date range. The min and max 
+                arguments should be either <b>both</b> numbers or <b>both</b> JavaScript date objects.
+            </p>
+            
+            <p>
+                Since the range validator expects either numbers or dates you should use range
+                after a match validator so that you may be sure that the values which are 
+                range-checked will be in a valid format.
+            </p>
+            
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Restrict valid values to an inclusive numeric range.
+$("#percentage")
+    .match(/^\d+\.?\d*%?/, "Must be formatted like a percent.")
+    .range(0, 100);
+            </pre>
+            
+            <pre class="prettyprint lang-js">
+// Restrict valid values to an inclusive temporal range.
+$("#DayDuringClintonAdministration")
+    .match('date')
+    .range(new Date("01/20/1993"), new Date("01/20/2001"));
+            </pre>
+            
+            <hr />
+            
+            <h4 id="GreaterThan">Greater Than/Greater Than or Equal To:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").greaterThan( min, ['message'] )</pre>
+            <pre>jQuery("selector").greaterThanOrEqualTo( min, ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>min</code>: 
+                    The lower-bound for valid values.
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Restricts the value to be larger than the specified minimum.
+            </p>
+            
+            <p>
+                Since the greaterThan/greaterThanOrEqualTo validator expects either numbers or dates you should use it
+                after a match validator so that you may be sure that the values which are 
+                checked will be in a valid format.
+            </p>
+            
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Validates a cost input, that it must be more than zero.
+$("#cost")
+    .match("usd")
+    .greaterThan(0);
+            </pre>
+
+            <pre class="prettyprint lang-js">
+// Validates a velocity input, that it must be greater than or equal to zero.
+$("#velocity")
+    .match("number")
+    .greaterThanOrEqualTo(0, "You cannot have negative velocity.");
+            </pre>
+                        
+            <hr />
+            
+            <h4 id="LessThan">Less Than/Less Than or Equal To:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").lessThan( max, ['message'] )</pre>
+            <pre>jQuery("selector").lessThanOrEqualTo( max, ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>max</code>: 
+                    The upper-bound for valid values.
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Restricts the value to be smaller than the specified minimum.
+            </p>
+            
+            <p>
+                Since the lessThan/lessThanOrEqualTo validator expects either numbers or dates you should use it
+                after a match validator so that you may be sure that the values which are 
+                checked will be in a valid format.
+            </p>
+            
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Validates an angle input, that it must be less than 180.
+$("#angle")
+    .match("number")
+    .lessThan(180);
+            </pre>
+            
+            <pre class="prettyprint lang-js">
+// Validates a hours input, that it must be less than or equal to 24.
+$("#HoursPerDay")
+    .match("integer")
+    .lessThanOrEqualTo(24, "#{field} cannot be more than #{max}.");
+    
+// The resulting <a href="#TokenizedMessages">tokenized</a> message could be "Hours Per Day cannot be more than 24."
+            </pre>
+
+            <hr />
+            
+            <h4 id="Length">Max Length/Min Length:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").maxLength( max, ['message'] )</pre>
+            <pre>jQuery("selector").minLength( min, ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>max</code>: 
+                    The upper-bound for the length of valid values.
+                </li>
+                <li>
+                    <code>min</code>: 
+                    The lower-bound for the length of valid values.
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Restricts the length of the value to the specified maximum or minimum. 
+                This validator is useful to restrict input values to the max-length 
+                allowed by a database schema. 
+            </p>
+
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Limit the length of a value to be less than 255:
+$("textarea#description").maxLength(255);
+            </pre>
+            
+            <pre class="prettyprint lang-js">
+// Specify a minimum length for the value:
+$("#detailedExplaination")
+    .minLength(1000, "You need to give more detail.");
+            </pre>
+                        
+            <hr />
+            
+            <h4 id="NonHtml">Non HTML:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").nonHtml( ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Disallows the angle brackets necessary for XSS attacks.
+            </p>
+
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Disallow HTML in the specified input:
+$("#myBiography").nonHtml();
+            </pre>
+            
+            <hr />
+            
+            <h3 id="AggregateValidators">Aggregate Validators</h3>
+            
+            <p>
+                Aggregate validators are able to do validation rules that involve 
+                more than one input. In a similar way to how aggregate functions in 
+                SQL take several records and gather them into one result, aggregate
+                validators can take several HTML elements and determine whether they
+                are valid with regard to eachother.
+            </p>
+            
+            <p>
+                This feature of validity takes advantage of the jQuery selection 
+                engine to gather multiple results.
+            </p>
+            
+            <hr />
+            
+            <h4 id="Equal">Equal:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").equal( [transform], ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>transform</code>:  
+                    Optional transform function to apply to each value before testing. 
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Ensure that the values of all matched elements are equal to each other. 
+                This is an aggregate validator, meaning that it should be applied to 
+                groups of inputs.
+            </p>
+            
+            <p>
+                A common use for the equal validator is in 
+                password-confirmation scenarios, where a form should not be submitted if 
+                a user fails to reenter his or her password correctly. 
+            </p>
+
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Write a jQuery selector that results in both the password and its confirmation,
+// make sure that they conform to your password conditions with the match validator,
+// then validate that result with 'equal'.
+$("text[type='password']")
+    .match(mySpecialPasswordRegex, myPasswordFormatMessage)
+    .equal("Passwords do not match.");
+            </pre>
+            
+            <pre class="prettyprint lang-js">
+// We can also extract the important part of a value, and test the equality only on that.
+// For instance, we might want phone numbers to be equal disregarding whether they
+// use '.' or '-' to separate groups, or have the area code in parentheses.
+$("input.phone")
+    .match("phone")
+    .equal(
+        function(val) { 
+            return val.replace(/[-.()]/, '');
+        },
+        "All phone numbers must be the same."
+    );
+            </pre>
+            
+            <hr />
+            
+            <h4 id="Distinct">Distinct:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").distinct( [transform], ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>transform</code>:  
+                    Optional transform function to apply to each value before testing. 
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Ensures that the values of all matched elements are distinct from 
+                each other. In other words, validate that no value is repeated among 
+                the matched elements.
+            </p>
+            
+            <p>
+                If any of the matched elements do not have a value that element will not be tested.
+                Consequently, the <code>distinct</code> validator will work with inputs that are or
+                are not required.
+            </p>
+
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Find all the inputs meant to hold Vehicle Identification Numbers.
+// Since every VIN should be different, a repeat should be treated as invaid.
+$("input.vin").distinct("A VIN Number was repeated.");
+            </pre>
+            
+            <pre class="prettyprint lang-js">
+// We can also use a transform to normalize values.
+// For instance, if we wish to ignore case 
+// (i.e. if "abc" and "ABC" should be treated as a repeat)
+// we can pass in a transform that makes all values upper-case.
+// An example of this might be network interface hardware addresses.
+
+// We'll allow the values to be in upper or lower case, 
+// but treat those as the same value.
+$("input.macAddress")
+    .match(/([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}/, "Must be a valid MAC address.")
+    .distinct(
+        function(val) { 
+            return val.toUpperCase();
+        },
+        "A hardware address was repeated."
+    );
+            </pre>
+            
+            <hr />
+            
+            <h4 id="Sum">Sum/Sum Max/Sum Min:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").sum( sum, ['message'] )</pre>
+            <pre>jQuery("selector").sumMax( max, ['message'] )</pre>
+            <pre>jQuery("selector").sumMin( min, ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>sum</code>:  
+                    The value that the sum of matched elements should be equal to. 
+                </li>
+                <li>
+                    <code>max</code>:  
+                    The <b>inclusive</b> upper-bound for the sum of matched elements 
+                </li>
+                <li>
+                    <code>min</code>:  
+                    The <b>inclusive</b> lower-bound for the sum of matched elements 
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                 Validate that the numeric sum of the value of all matched elements is 
+                 equal to a given value or bounded by a specified max or min. If any 
+                 value is not parseable as a number it will be ignored.
+            </p>
+
+            <h5>Examples:</h5>
+            <pre class="prettyprint lang-js">
+// Find inputs representing the three interior angles of a triangle.
+$("input.triangleAngle")
+  .require()
+  .match("number")
+  .sum(180, "A triangle's angles should add up to 180 degrees.");
+            </pre>
+
+
+            <pre class="prettyprint lang-js">
+// Find inputs representing the how you intend to distribute 100,000 dollars among
+// several people without having to distribute all of it.
+$("input.distribution")
+  .match("usd")
+  .sumMax(100000, "You can't distribute more than you have on hand.");
+            </pre>
+            
+            <hr />
+            
+            <h3 id="SpecializedValidation">Specialized Validation:</h3>
+            
+            <p>
+                Validity supplies validator methods that cover the most common scenarios, but it
+                also offers a tool to write your own custom validator with <code>assert</code>.
+            </p>
+            
+            <p>
+                <code>assert</code> is at once the most complicated and most capable validator in the validity suite.
+                It's use is thoroughly outlined below.
+            </p>
+            
+            <hr />
+            
+            <h4 id="Assert">Assert:</h4>
+            
+            <h5>Signature:</h5>
+            <pre>jQuery("selector").assert( expression|function, ['message'] )</pre>
+            
+            <h5>Arguments:</h5>
+            <ul>
+                <li>
+                    <code>expression</code>:  
+                    Any expression that will result in a boolean. When expression evaluates
+                    to true the validator succeeds. Keep in mind, when passing an expression
+                    rather than a function, assert will act like an aggregate validator. That 
+                    is to say, the truth or falsehood of expression will determine the 
+                    validity of ALL matched elements.
+                </li>
+                <li>
+                    <code>function</code>:  
+                    A javascript function object which will accept a DOM Element and return
+                    true or false representing whether that DOM element was valid. Keep in 
+                    mind that when passing a function rather than an expression assert will
+                    act like a common (non-aggregate) validator. That is to say that the 
+                    function will be applied to each and every matched element and their 
+                    validity is determined individually.
+                </li>
+                <li>
+                    <code>message</code>:  
+                    An optional message to display if an element fails. While this argument is
+                    optional, it is strongly encouraged for use with the assert validator.
+                </li>
+            </ul>
+            
+            <h5>Overview:</h5>
+            <p>
+                Assert allows you to validate inputs using your own customized logic, but still 
+                let validity display the error messages. If what you need is not provided among 
+                validity's built-in validator methods, you can write it yourself with assert. 
+                (In fact, any of the built in functions could be replicated with assert. It's that
+                powerful.)
+            </p>
+            
+            <p>
+                There are two general ways to use assert: you can pass in an expression argument 
+                (which evaluates into a boolean), or you can pass in a JavaScript function object. 
+                It is important to understand that assert will act like an aggregate validator when
+                an expression is passed, but will act like a common (non-aggregate) validator 
+                when a function object is passed.
+            </p>
+            
+            <h5>Examples:</h5>
+            
+            <p>
+                To illustrate these techniques, we can write a validator to determine whether a
+                set of inputs are all evens or all odds:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$(function() {
+    $("form").validity(function() {
+        // Store the information in local variables:
+        // These are booleans:
+        var allEvens = (
+            parseFloat($("#box1").val()) % 2 == 0 &&
+            parseFloat($("#box2").val()) % 2 == 0 &&
+            parseFloat($("#box3").val()) % 2 == 0 &&
+            parseFloat($("#box4").val()) % 2 == 0
+        );
+        var allOdds = (
+            parseFloat($("#box1").val()) % 2 == 1 &&
+            parseFloat($("#box2").val()) % 2 == 1 &&
+            parseFloat($("#box3").val()) % 2 == 1 &&
+            parseFloat($("#box4").val()) % 2 == 1
+        );
+        
+        // Pass the OR of those two booleans as the expression argument into assert.
+        // This will cause the inputs to be considered all valid or all invalid.
+        $("#box1, #box2, #box3, #box4")
+            .match("integer")
+            .assert(
+                (allEvens || allOdds), 
+                "The inputs can either have all even numbers or all odd numbers. Not mixed."
+            );
+    });
+});
+            </pre>
+            
+            <p>
+                As another example, we can pass a function object to perform common, 
+                non-aggregate validation. In the below example we can individually
+                determine whether any of the selected inputs is a palindrome:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+// First create the functions that will be used in validation.
+        
+// Helper to reverse a string:
+function reverse(s){
+    var  r = "";
+    var  l = s.length;
+    for (var i = l; i > 0; i--){
+        r += s.charAt(i-1);
+    }
+    return r;
+}
+
+// Returns whether the value of the passed element is a palindrome:
+// Notice that this function is meant to accept the DOM element, 
+// not the value of the DOM element.
+function isPalindrome(element){
+    return element.value == reverse(element.value);
+}
+            
+$(function() {
+    $("form").validity(function() {
+        // Instruct assert to use this function to test each input.
+        // Notice that we're passing the function itself 
+        // rather than the result of the function.
+        // (i.e. "isPalindrome" not "isPalindrome()" )
+        $(":text").assert(
+            isPalindrome, 
+            "#{field} must be a palindrome."
+        );
+    });
+});
+            </pre>
+
+            <hr />
+            
+            <h2 id="TokenizedMessages">Tokenized Messages</h2>
+            
+            <p>
+                Validity will attempt to generate helpful error messages based on how
+                you validate what inputs. This feature is intended to minimize the number
+                of error messages you'll be required to write yourself and to keep 
+                validation messages consistent.
+            </p>
+            
+            <p>
+                <b>Note:</b> Validity will still grant you full control over the messages. You will
+                not be forced to use this feature, although it can be used to simplify your code.
+            </p>
+            
+            <hr />
+            
+            <h3 id="UnderstandingTokens">Understanding Tokenized Messages</h3>
+            
+            <p>
+                The mechanism validity uses to generate these messages is a library of 
+                default message strings that contain tokens. For example, validity contains
+                the following string as a default message for required field errors:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+"#{field} is required."
+            </pre>
+            
+            <p>
+                The #{field} part at the beginning of the string is a token to be replaced with
+                the title of the input for which the error is being created. In this way, a
+                required field error being generated for an input titled "your name" will generate
+                the message "Your name is required."
+            </p>
+            
+            <p>
+                Similary, the tokenized message for range validators is:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+"#{field} must be between #{min} and #{max}."
+            </pre>
+            
+            <p>
+                As you can see, there are tokens for the min and the max so that those values can
+                be inserted into the error message. An example result message might be: "Age of 
+                car must be between 10 and 60."
+            </p>
+            
+            <p>
+                Because every validator method allows you to pass in your own validation message to
+                override the default, you may use tokens when you do this. For instance, if you use
+                the match validator with your own regular expression to validate multiple inputs you
+                might use a tokenized message in the following way:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$("input.ssn").match(
+    /^\d{3}-\d{2}-\d{4}$/, 
+    "#{field} needs to be in the format of a Social Security Number."
+);
+            </pre>
+            
+            <p>
+                In this way you can have validity generate several messages for each input. The above
+                statement might generate the error messages: "Your SSN needs to be in the format of 
+                a Social Security Number.", "Cosigner A SSN needs to be in the format of a Social Security 
+                Number.", and "Cosigner B SSN needs to be in the format of a Social Security Number."
+            </p>
+            
+            <p>
+                Note: All default messages can be rewritten or modified to fit the parlance of your site.
+                For information on how to do this refer to the <a href="#EditingMessages">Customizing 
+                Messages</a> section later on in this document.
+            </p>
+            
+            <hr />
+            
+            <h3 id="TokenPractices">Best Practices</h3>
+            
+            <p>
+                A significant part of how Validity generates error messages involves figuring out what the 
+                name of the input should be. Validity needs to guess the name of an input in order to insert 
+                that into the #{field} token of a tokenized message. It is important to understand how Validity
+                makes this guess in order that you can help it to guess correctly.
+            </p>
+            
+            <ol>
+                <li>
+                    <p>
+                        Validity will first look at the "title" attribute of an input. If an input has a title 
+                        attribute Validity will assume that is its name. For example, if validity had to guess
+                        the name of the following input it will assume that it's "User Name" because that is 
+                        the value of the title attribute.
+                    </p>
+                    
+                    <pre class="prettyprint">
+&lt;input id="not_helpful" name="not_helpful" title="User Name" /&gt;
+                    </pre>
+                    
+                    <p>
+                        Using the title attribute in this way is the preferrable method. If you're able to
+                        set the title attribute of an input, you're advised to do so this way.
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        Validity will next look at the "id" attribute of the element. If the id attribute appears 
+                        to be in "Upper Camel Case" format (sometimes called Pascal Case)
+                        it will take that value and split it into words by inserting a space before each capital letter.
+                    </p>
+                    
+                    <p>
+                        For example, if Validity had to guess the name of the following input, it will assume that it's
+                        "User Name" because the value of the id attribute is in Upper Camel Case form and there is
+                        no "title" attribute.
+                    </p>
+                    
+                    <pre class="prettyprint">
+&lt;input id="UserName" name="UserName" /&gt;
+                    </pre>
+                </li>
+                
+                <li>
+                    <p>
+                        If the previous two checks have failed, Validity will check whether the id is in the form
+                        of lower-case words separated by underscores. If Validity finds this format, it will replace
+                        each underscore with a space and capitalize the first letter of each word.
+                    </p>
+                    
+                    <p>
+                        For example, Validity would assume the that name for the following input is "User Name".
+                    </p>
+                    
+                    <pre class="prettyprint">
+&lt;input id="user_name" name="user_name" /&gt;
+                    </pre>
+                </li>
+                
+                <li>
+                    <p>
+                        If Validity has failed the previous three tests, it will use a default field name which is 
+                        built-in. This default name is:
+                    </p>
+                    
+                    <pre class="prettyprint lang-js">
+defaultFieldName: "This field"
+                    </pre>
+                    
+                    <p>
+                        Often, if Validity ends up using the default field 
+                        name, the error messages will still be helpful and natural-looking because, with the label and 
+                        modal output modes at least, error messages are positioned right next to the input to which they
+                        refer.
+                    </p>
+                </li>
+                
+                <li>
+                    <p>
+                        Lastly, if you are not able to set the title attribute or do not have the ability to give your 
+                        inputs meaningful ids and you don't wish the default field name to be used, you can always pass 
+                        a specific non-tokenized string of your message into the validator call. Each and every validator 
+                        will accept a string as its last argument to be used as the message.
+                    </p>
+                </li>
+            </ol>
+        
+            <hr />
+            
+            <h2 id="OutputModes">Output Modes</h2>
+            
+            <p>
+                Although Validity is able to validate inputs, its other role is to display errors appropriately and 
+                consistently. The logic that Validity uses to display errors is wrapped up into what's called an output
+                mode. There are three output modes included with validity, each of which are summarized in the following 
+                sections.
+            </p>
+            
+            <p>
+                You are also able to write your own output mode and get full control to how messages are displayed.
+                For a full explanation of how to do this see the <a href="#CustomOutputMode">Writing a Custom Output 
+                Mode</a> section later in this document.
+            </p>
+            
+            <p>
+                You may instruct Validity which output mode you would like to use using the setup function. For example,
+                to enable the "summary" output mode, the following code would be appropriate:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.setup({ outputMode:"summary" });
+            </pre>
+            
+            <hr  />
+            
+            <h3 id="Label">Label</h3>
+            
+            <p>
+                Label is the default output mode in Validity. If you do not specify another output mode using the setup
+                function, label will be what is used.
+            </p>
+            
+            <p>
+                When this output mode creates an error message, it will create an HTML label element with the CSS 
+                class "error", the "for" attribute set to the id of the input it is being created for and the text of 
+                the error message. This label element is then positioned after the input it has been created for.
+            </p>
+            
+            <p>
+                The advantage of this output mode is that it will place error messages very helpfully next to the offending
+                inputs. Additionally, it does not require anything to be setup in advance (aside from the styles in the CSS 
+                file).
+            </p>
+            
+            <p>
+                Although it's default, you would be able to enable the label output mode with the code:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.setup({ outputMode:"label" });
+            </pre>
+            
+            <hr  />
+            
+            <h3 id="Modal">Modal</h3>
+            
+            <p>
+                The Modal output mode acts similarly to Label - however, instead of inserting the error message into the
+                HTML next to the input, it will position the message so that it hovers near the input.
+            </p>
+            
+            <p>
+                In this way, using the Modal output mode will not mess up the layout of your site. Modal is very useful 
+                in web-designs involving tightly-knit tables or small areas.
+            </p>
+            
+            <p>
+                You can enable the modal output mode with the code:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.setup({ outputMode:"modal" });
+            </pre>
+            
+            <p>
+                By default, modal error messages will disappear when they've been clicked. This behavior can be disabled with 
+                the following code:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.setup({ modalErrorsClickable:false });
+            </pre>
+            
+            <hr  />
+            
+            <h3 id="Summary">Summary</h3>
+            
+            <p>
+                The Summary output mode behaves quite differently from Label or Modal. Summary will gather all of the 
+                validation messages and compile them into a summary to be displayed when validation has concluded.
+                Instead of placing the messages next to the inputs, it will highlight the input and the message will
+                appear in the summary.
+            </p>
+            
+            <p>
+                This is very useful in web pages with long forms to fill out, where it's important to keep the look
+                clean and professional.
+            </p>
+            
+            <p>
+                Also unlike Label and Modal, the Summary output mode requires a small amount of markup in order to 
+                operate. You will need to insert the following code wherever you want the summary of messages to 
+                appear:
+            </p>
+            
+            <pre class="prettyprint">
+&lt;div class="validity-summary-container"&gt;
+    Here's a summary of the validation failures:
+    &lt;ul&gt;&lt;/ul&gt;
+&lt;/div&gt;
+            </pre>
+            
+            <p>
+                The text in this code snippet ("<code>Here's a summary of the validation failures:</code>") is a message
+                that is meant to explain that it's part of a summary of validation errors. This message will not be shown
+                if there are no errors. You are encouraged to edit this message as you see fit.
+            </p>
+            
+            <p>
+                Essentially, the element with CSS class of <code>validity-summary-container</code> is shown or hidden depending whether
+                there are any errors. The actual messages will be insterted into their individual <code>&lt;li/&gt;</code> 
+                elements into the <code>&lt;ul/&gt;</code> element inside of the container element.
+            </p>
+            
+            <p>
+                You can enable the summary output mode with the code:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.setup({ outputMode:"summary" });
+            </pre>
+            
+            <hr />
+            
+            <h2 id="CustomizingValidity">Customizing Validity Itself</h2>
+            
+            <p>
+                Architectually, Validity is written along the programming principle of Separation of Concerns. In this way, 
+                Validity is able to allow developers to customize and replace components simply and safely. Here we summarize
+                and guide through the different ways Validity can be modified.
+            </p>
+            
+            <hr />
+            
+            <h3 id="AdaptingCSS">Adapting the CSS</h3>
+            
+            <p>
+                The simplest way to modify Validity is to adapt the CSS to the look of your site. As much as possible, Validity
+                lets CSS decide how things look so that it can be safely modified without forcing you to hack JavaScript.
+            </p>
+            
+            <p>
+                Validity comes with a boilerplate CSS file (jquery.validity.css). You may simply include this file on your site as
+                a stylesheet reference, but are encouraged to copy and paste the styles from it into your own CSS file where you 
+                can edit them freely.
+            </p>
+            
+            <p>
+                The CSS file contains three groups of styles. (One for each of the output modes. See <a href="#OutputModes">Output 
+                Modes</a>.) The groups you decide to copy over and modify should depend on which Output Modes you are using.
+            </p>
+            
+            
+            <hr />
+            
+            <h4 id="LabelCSS">Label</h4>
+            
+            <p>
+                The Label output mode uses a single style. The selector for this style is <code>label.error</code>, therefore
+                it will be applied to all HTML label elements with the CSS class <code>error</code>.
+            </p>
+            
+            <p>
+                The boilerplate CSS for this style is nothing special. It specifies some colors and a background image that
+                grants the label an arrow-shaped corner on the left side. It also makes use of unstandardized properties
+                that give the labels rounded corners in non-Internet-Explorer browsers. Below is an example:
+            </p>
+            
+            <div class="example">
+                <input type="text" value="This is a bad input." /><label class="error">This is a validation message.</label>
+            </div>
+            
+            <p>
+                The complete CSS style for the Label output mode is below:
+            </p>
+            
+            <pre class="prettyprint lang-css">
+label.error { 
+    color:#fff; 
+    margin-left:2px;     
+    background-image:url('arrow.gif');
+    background-position:left center;
+    background-repeat:no-repeat;
+    padding:2px;
+    padding-left:18px;
+    -moz-border-radius:4px;
+    -webkit-border-radius: 4px;
+}
+            </pre>
+            
+            <p>
+                To adapt the look of the label output mode, this style is all that must be changed.
+            </p>
+            
+            <hr />
+            
+            <h4 id="ModalCSS">Modal</h4>
+            
+            <p>
+                The Modal output mode uses two styles by default. These styles are built around the
+                <code>validity-modal-msg</code> CSS class. When Validity generates a Modal message, 
+                it will be placed under this class.
+            </p>
+            
+            <p>
+                For the most part these styles determine the appearence of the messages (i.e. Background
+                Color, Border, Padding, etc.), but it is important to note the <code>position:absolute;</code>
+                statement. This property is necessary for the Modal errors to be positioned near the inputs.
+                If you edit this style, do not change the position property.
+            </p>
+            
+            <p>
+                The other style used by Modal is an hover pseudoclass that highlights the error messages to 
+                indicate that they might be clicked. If you disable the <code>modalErrorsClickable</code> setting (see 
+                <a href="#Modal">Modal</a>) you may wish to remove this style.
+            </p>
+            
+            <p>
+                Below is an example:
+            </p>
+            
+            <div class="example">
+                <input type="text" value="This is a bad input." /><div class="validity-modal-msg" style="position:static;display:inline;">This is a validation message.</label>
+            </div>
+            
+            <p>
+                The complete CSS styles for the Modal output mode are below:
+            </p>
+            
+            <pre class="prettyprint lang-css">
+.validity-modal-msg { 
+    position:absolute; 
+    z-index:2; 
+    background-color:#999; 
+    border:solid 1px #000; 
+    padding:4px;
+    cursor:pointer; 
+}
+
+.validity-modal-msg:hover { 
+    background-color:#aaa; 
+}
+            </pre>
+            
+            <hr />
+            
+            <h4 id="SummaryCSS">Summary</h4>
+            
+            <p>
+                The Summary output mode uses three styles. The first two styles change the summary,
+                whereas the third is for highlighting inputs that have errors.
+            </p>
+            
+            <p>
+                The complete CSS styles for the Summary output mode are below:
+            </p>
+            
+            <pre class="prettyprint lang-css">
+.validity-summary-container { display:none; }
+.validity-summary-output ul { }
+.validity-erroneous { border:solid 2px #f56600 !important; }
+            </pre>
+            
+            <p>
+                When adapting these styles, the only property that should <b>not</b> be changed is the <code>display:none;</code>
+                which is applied to elements with the CSS class <code>validity-summary-container</code>. This will keep the 
+                summary hidden by default so that it will not be shown when the page loads.
+            </p>
+            
+            <p>
+                The <code>UL</code> element inside the container will house the errors. If you would like to modify the 
+                bullet-style or anything else to do with the list this second style will be where to do it.
+            </p>
+            
+            <div class="example">
+                <input type="text" value="This is a bad input." class="validity-erroneous" />
+                <div class="validity-summary-container" style="display:block;">
+                    This is the summary:
+                    <ul>
+                        <li>Here's a validation message.</li>
+                        <li>Here's another validation message.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr />
+            
+            <h3 id="EditingMessages">Customizing Messages</h3>
+            
+            <p>
+                You can modify the default error messages that are built into Validity. If you dislike the wording of any 
+                of these default messages you may override them easily. Executing the following code will overrite all of 
+                the messages.
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.extend($.validity.messages, {
+    require:"#{field} is required.",
+
+    // Format validators:
+    match:"#{field} is in an invalid format.",
+    integer:"#{field} must be a positive, whole number.",
+    date:"#{field} must be formatted as a date.",
+    email:"#{field} must be formatted as an email.",
+    usd:"#{field} must be formatted as a US Dollar amount.",
+    url:"#{field} must be formatted as a URL.",
+    number:"#{field} must be formatted as a number.",
+    zip:"#{field} must be formatted as a zipcode ##### or #####-####.",
+    phone:"#{field} must be formatted as a phone number ###-###-####.",
+    guid:"#{field} must be formatted as a guid like {3F2504E0-4F89-11D3-9A0C-0305E82C3301}.",
+    time24:"#{field} must be formatted as a 24 hour time: 23:00.",
+    time12:"#{field} must be formatted as a 12 hour time: 12:00 AM/PM",
+
+    // Value range messages:
+    lessThan:"#{field} must be less than #{max}.",
+    lessThanOrEqualTo:"#{field} must be less than or equal to #{max}.",
+    greaterThan:"#{field} must be greater than #{min}.",
+    greaterThanOrEqualTo:"#{field} must be greater than or equal to #{min}.",
+    range:"#{field} must be between #{min} and #{max}.",
+
+    // Value length messages:
+    tooLong:"#{field} cannot be longer than #{max} characters.",
+    tooShort:"#{field} cannot be shorter than #{min} characters.}",
+
+    // Aggregate validator messages:
+    equal:"Values don't match.",
+    distinct:"A value was repeated.",
+    sum:"Values don't add to #{sum}.",
+    sumMax:"The sum of the values must be less than #{max}.",
+    sumMin:"The sum of the values must be greater than #{min}.",
+
+    nonHtml:"#{field} cannot contain Html characters.",
+
+    generic:"Invalid."
+});
+            </pre>
+            
+            <p>
+                With the above code snippet, you may edit any of the strings and Validity will subsequently
+                use that for the default message. As an alternative syntax you may simply edit the strings 
+                in the following way:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.messages.match = "The format of #{field} is totally wrong.";
+            </pre>
+            
+            <p>
+                Please note that the #{field} token is never used in aggregate validator messages because they
+                do not deal with any particular field. (See <a href="#TokenizedMessages">Tokenized Messages</a>.)
+            </p>
+            
+            <hr />
+            
+            <h3 id="ExtendingMatchSupport">Customizing/Extending Match Validator Support</h3>
+            
+            <p>
+                You can add more format checkers to the Validity match validator with the following syntax.
+            </p>
+            
+            <pre class="prettyprint lang-js scroll">
+// Adds match validator support to format-check against list of email addresses 
+// separated by semicolons.
+// Lovingly borrowed from http://regexlib.com/REDetails.aspx?regexp_id=1007
+
+// Add the pattern:
+$.validity.patterns.emailList = /^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$/;
+
+// Add the message under the same name:
+$.validity.messages.emailList = "#{field} must be formatted as a series of email-addresses separated by semicolons.";
+            </pre>
+            
+            <p>
+                As you can see, we add the pattern under the name <code>emailList</code> and also add a message
+                under the same name. Now that that's been executed, we can pass that name into the match validator.
+                For example:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+// You can simply use the name of your new format and pass it in as a string:
+$("#ListOfEmailAddresses")
+    .require()
+    .match("emailList");
+            </pre>
+            
+            <p>
+                Note that, when adding a format to the match validator, adding the message is optional, but 
+                recommended.
+            </p>
+            
+            <p>
+                Using the same syntax, you are also able to override the Regular Expressions used by the built-in
+                formats.
+            </p>
+            
+            <hr />
+            
+            <h3 id="LanguagePackages">Language Packages/Internationalization</h3>
+            
+            <p>
+                Because of the many ways that Validity can be customized, writing an Internationalization package
+                is relatively simple. As an example the following code will install a
+                Russian-language package which will change the validation messages into Russian and change some of 
+                the match-validator expressions:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.extend($.validity.messages, {
+    require:"#{field} обязательное поле.",
+    match:"#{field} неправильный формат.",
+    integer:"#{field} должно быть положительным числом.",
+    date:"#{field} должно быть отформатирован как дата. (число.месяц.Год, 04.05.2006)",
+    email:"#{field} должно быть отформатированы как адреса электронной почты.",
+    usd:"#{field} должно быть отформатированы как деньги США.",
+    url:"#{field} должно быть отформатированы как URL.",
+    number:"#{field} должно быть отформатирован в виде числа.",
+    zip:"#{field} должно быть отформатированы как почтовый индекс. (###)",
+    phone:"#{field} должно быть отформатированы как телефонный номер.",
+    guid:"#{field} должно быть отформатированы как GUID (как {3F2504E0-4F89-11D3-9A0C-0305E82C3301}).",
+    time24:"#{field} должно быть отформатированы 24-часовой.",
+    time12:"#{field} должно быть отформатированы 12-часовой. (12:00 AM/PM)",
+
+    // Value range messages:
+    lessThan:"#{field} должно быть меньше #{max}.",
+    lessThanOrEqualTo:"#{field} должно быть меньше или равным #{max}.",
+    greaterThan:"#{field} должно быть больше #{min}.",
+    greaterThanOrEqualTo:"#{field} должно быть больше или равно #{min}.",
+    range:"#{field} должно быть между #{min} и #{max}.",
+
+    // Value length messages:
+    tooLong:"#{field} может быть не более #{max} букв.",
+    tooShort:"#{field} может быть не меньше #{min} букв.}",
+
+    // Aggregate validator messages:
+    equal:"Значения не равны.",
+    distinct:"Было повторено значения.",
+    sum:"Показатели не добавить до #{sum}.",
+    sumMax:"Сумма значений должно быть меньше #{max}.",
+    sumMin:"Сумма значений должно быть больше #{min}.",
+
+    nonHtml:"#{field} не может содержать символы HTML.",
+
+    generic:"Неверно."
+});
+
+$.validity.setup({ defaultFieldName:"поле" });
+
+$.extend($.validity.patterns, {
+    // Based off of http://en.wikipedia.org/wiki/Calendar_date
+    date:/^([012]\d|30|31)\.([01]\d)\.\d{1,4}$/, 
+    
+    // Russian postal codes, based off of http://en.wikipedia.org/wiki/List_of_postal_codes_in_Russia
+    zip: /^\d{3}$/,
+    
+    // Russian phone number pattern from http://regexlib.com/REDetails.aspx?regexp_id=1463
+    phone: /((8|\+7)-?)?\(?\d{3,5}\)?-?\d{1}-?\d{1}-?\d{1}-?\d{1}-?\d{1}((-?\d{1})?-?\d{1})?/
+});
+            </pre>
+            
+            <hr />
+            
+            <h3 id="CustomOutputMode">Writing a Custom Output Mode</h3>
+            
+            <p>
+                A major goal of Validity is to allow complete control over how validation messages
+                appear so that they can look like they belong in your site. If adapting the CSS 
+                of any of the existing output modes isn't sufficient to make it look right
+                you can write your own output mode from the ground up.
+            </p>
+            
+            <p>
+                This may sound difficult, but thanks to Validity's philosophy of Separation of Interests
+                it's really rather trivial. It involves two steps: first you install your custom output 
+                mode, then you enable it.
+            </p>
+            
+            <p>
+                Here's a template for creating your own custom output mode. The code is actually very 
+                sparce, but may look complex on account of all the comments:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+(function(){
+
+    // The output mode will be named whatever you assign it to.
+    // In this example, since we're assigning it to 'myOutputMode'
+    // it will be called 'myOutputMode'.
+    $.validity.outputs.myOutputMode = {
+    
+        // The start function will be called when validation starts.
+        // This allows you to prepare the page for validation, for instance
+        // you might remove any validation messages that are already on the page.
+        start:function(){ 
+        
+        },
+        
+        // The end function is called when validation has concluded.
+        // This allows you to flush any buffers or do anything you need to
+        // after all of the validators have been called.
+        // results will be the results object.
+        // results.valid is a boolean representing whether the form is valid.
+        // results.errors is an integer of how many errors there are.
+        end:function(results) { 
+        
+        },
+        
+        // The raise function is called to raise an error for a specific input.
+        // The first argument is a jQuery object of the input to raise the error message for.
+        // The second argument is the string of the error message.
+        raise:function($obj, msg){
+        
+        },
+        
+        // The raiseAggregate function is similar to the raise function, except that
+        // the $obj argument will be a jQuery object of several inputs, 
+        // all of which are invalid aggregately.
+        raiseAggregate:function($obj, msg){ 
+        
+        },
+    }
+})();
+
+// Now enable the output mode we just installed.
+$.validity.setup({ outputMode:'myOutputMode' });
+            </pre>
+            
+            <p>
+                As an example, here is an output mode that will raise a JavaScript alert box, and then
+                animate the border of the bad input:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+// First install the new output mode:
+(function(){
+    
+    // We'll decide to install our custom output mode under the name 'custom':
+    $.validity.outputs.custom = {
+        
+        // In this case, the start function will just reset the inputs:
+        start:function(){ 
+        
+            $("input:text")
+                .css({border:'1px solid green'})
+                .removeClass('fail');
+                
+        },
+        
+        end:function(results) { 
+        
+            // If not valid and scrollTo is enabled, scroll the page to the first error.
+            if (!results.valid && $.validity.settings.scrollTo) {
+                location.hash = $(".fail:eq(0)").attr('id')
+            }
+            
+        },
+        
+        // Our raise function will display the error and animate the text-box:
+        raise:function($obj, msg){
+            
+            // Make the JavaScript alert box with the message:
+            alert(msg);
+            
+            // Animate the border of the text box:
+            $obj
+                .animate({ borderWidth: "10px" }, 1000)
+                .css({borderColor:'red'})
+                .addClass('fail');
+                
+        },
+        
+        // Our aggregate raise will just raise the error on the last input:
+        raiseAggregate:function($obj, msg){ 
+        
+            this.raise($($obj.get($obj.length - 1)), msg); 
+            
+        }
+    }
+})();
+
+// Now enable the output mode we just installed.
+$.validity.setup({ outputMode:'custom' });
+
+// Our custom output mode is installed and will be used whenever Validity is run.
+            </pre>
+            
+            <p>
+                Below is an example of this output mode in action. Try submitting it without 
+                entering anything in the text-box.
+            </p>
+            
+            <div class="ex_w_src">    
+                <div>[<a href="#_">View Source</a>]</div>
+                <iframe id="setup-iframe" src="../lib/customoutput.htm"></iframe>
+                <pre id="setup-src" class="prettyprint lang-html">
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Custom Output&lt;/title&gt;
+    &lt;script type="text/javascript" src="../../jquery.js"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript" src="../../jquery.validity.js"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript"&gt;
+        (function(){
+            $.validity.outputs.custom = {
+                start:function(){ 
+                    $("input:text")
+                        .css({border:'1px solid green'})
+                        .removeClass('fail');
+                },
+                
+                end:function(results) {
+                    // If not valid and scrollTo is enabled, scroll the page to the first error.
+                    if (!results.valid && $.validity.settings.scrollTo) {
+                        location.hash = $(".fail:eq(0)").attr('id')
+                    }
+                },
+                
+                raise:function($obj, msg){
+                    alert(msg);
+                    $obj
+                        .animate({ borderWidth: "10px" }, 1000)
+                        .css({borderColor:'red'})
+                        .addClass('fail');
+                },
+                
+                // Just raise the error on the last input.
+                raiseAggregate:function($obj, msg){ 
+                    this.raise($($obj.get($obj.length - 1)), msg); 
+                }
+            }
+            
+            $.validity.setup({ outputMode:'custom' });
+        })();
+          
+        // Instruct validity to validate the page by requiring 
+        // the input matched by a jQuery selector.
+        $(function() { $("form").validity("#text"); });
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;form action="customoutput.htm" method="post"&gt;
+      This field is required:
+      &lt;input type="text" id="text" name="text" style="border:solid 1px green" /&gt;
+      &lt;input type="submit" /&gt;
+    &lt;/form&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+                </pre>
+            </div>
+            
+            <p>
+                Using the template above, you can easily make your own output mode and package it nicely
+                in its own, reuseable, easily shared JavaScript file.
+            </p>
+            
+            <hr />
+            
+            <h2 id="Miscellaneous">Miscellaneous</h2>
+            
+            <hr />
+            
+            <h3 id="SetupFunction">The Setup Function</h3>
+            
+            <p>
+                Validity supplies a setup function to let you modify global Validity settings. The syntax for this 
+                function, and all of the settings you have access to are below:
+            </p>
+            
+            <pre class="prettyprint lang-js">
+$.validity.setup({
+    // You may change the output mode with this property.
+    outputMode: "label",
+
+    // The this property is set to true, validity will scroll the browser viewport
+    // so that the first error is visible when validation fails.
+    scrollTo: false,
+
+    // If this setting is true, modal errors will disappear when they are clicked on.
+    modalErrorsClickable: true,
+
+    // If a field name cannot be otherwise inferred, this will be used.
+    defaultFieldName: "This field"
+});
+            </pre>
+            
+            <p>
+                You may edit any or all of these settings at once.
+            </p>
+            
+            <hr />
+        </div>
+        <span id="scrollback">
+            [<a href="#">Scroll back to the top</a>]
+        </span>
+        
+        
+        
+<!-- Google Analytics Hotness -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-8413863-2");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+        
+        
+    </body>
+</html>

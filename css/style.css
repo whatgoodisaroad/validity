@@ -1,0 +1,50 @@
+html { 
+  background:url('../img/debut_light_@2X.png');
+  background-attachment:fixed;
+}
+
+body {
+  padding-top: 60px;
+  background:transparent; 
+}
+
+h1,h2,h3,h4,h5,h6 { color:#444; }
+      
+.hero-unit {
+  
+  
+  
+  -webkit-box-shadow:0 1px 3px rgba(0, 0, 0, 0.5),inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  -moz-box-shadow:0 1px 3px rgba(0, 0, 0, 0.5),inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  box-shadow:0 1px 3px rgba(0, 0, 0, 0.5),inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.columns.hero-unit { padding:0; }
+.columns.hero-unit > div { padding:1em; }
+.columns.hero-unit pre { border:none; background:transparent; text-shadow:none; }
+.columns.hero-unit p { font-size:10pt; line-height:16px; color:#000; }
+
+.mapping {
+  text-align:center;
+  font-size:64pt;
+  padding:12px 0;
+  font-weight:bold;
+  text-shadow: 0px 1px 1px #222;
+  color:#6799CD;
+}
+
+pre { color:#222; font-size:14px; line-height:22px; }
+pre span.h { 
+  color:#000;
+  background:#6799CD;
+  padding:2px 12px; 
+  margin:0 -13px; 
+  border:1px solid #5985B3;
+
+}
+
+iframe { width:100%; border:none; }
+
+footer { text-align:center; }
+
+#contributors-list span:after { content:" "; }
