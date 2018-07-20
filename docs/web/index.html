@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>jQuery Validity</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    
+  </head>
+
+  <body>
+
+    
+    <div class="container">
+
+      <div class="hero-unit">
+    
+        
+        <center>
+            <img src="img/validity.logo.png" />
+            <p>
+                Form validation <i>your way.</i>
+            </p>
+            <p>
+                <a class="btn primary large" href="https://github.com/whatgoodisaroad/validity">Download &raquo;</a>
+                <a class="btn success large" href="Demos/index.htm">
+                    Documentation &raquo;
+                </a>
+            </p>
+        </center>
+        
+        
+      </div>
+
+      <div class="row">
+        <div class="span5 columns hero-unit">
+            <div>
+                <h3>Setting it up...</h3>
+                <p>
+                    In Validity, validation is an event.
+                </p>
+                <p>
+                    So, validation code is bound to a form.
+                </p>
+            </div>
+        </div>
+        <div class="span2 columns mapping">
+            &rarr;
+        </div>
+        <div class="span9 columns hero-unit">
+            <div>
+                <pre>
+<span class="c">// Simply select the form in jQuery</span>
+<span class="c">// and call the validity function on it.</span>
+<span class="h">$("#myFormId").validity(function() {</span>
+
+    <span class="c">// In here, </span>
+    <span class="c">// specify how the validation is to be done.</span>
+
+<span class="h">});</span>
+                </pre>
+            </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="span5 columns hero-unit">
+            <div>
+                <h3>Required Input...</h3>
+                <p>
+                    To insist that the input with id "user_name" has a value.
+                </p>
+            </div>
+        </div>
+        <div class="span2 columns mapping">
+            &rarr;
+        </div>
+        <div class="span9 columns hero-unit">
+            <div>
+                <pre>
+$("#myFormId").validity(function() {
+
+    <span class="c">// Select the input, </span>
+    <span class="c">// and call a validator method on it.</span>
+    <span class="h">$("#user_name").require();</span>
+    
+});
+                </pre>
+            </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="span5 columns hero-unit">
+            <div>
+                <h3>Input Format...</h3>
+                <p>
+                    To insist that the input named "quantity" has a 
+                    <i>numeric</i> value or no value at all.
+                </p>
+            </div>
+        </div>
+        <div class="span2 columns mapping">
+            &rarr;
+        </div>
+        <div class="span9 columns hero-unit">
+            <div>
+                <pre>
+$("#myFormId").validity(function() {
+
+    <span class="h">$("#quantity").match("number");</span>
+    
+});
+                </pre>
+            </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="span5 columns hero-unit">
+            <div>
+                <h3>One Input, Many Rules...</h3>
+                <p>
+                    What if we want to insist that quantity has a value
+                    <i>and</i> that the value is numeric? We can combine these
+                    validators.
+                </p>
+                <p>
+                    Validator methods follow the same chaining pattern as
+                    jQuery; we can just call one after another.
+                </p>
+            </div>
+        </div>
+        <div class="span2 columns mapping">
+            &rarr;
+        </div>
+        <div class="span9 columns hero-unit">
+            <div>
+                <pre>
+$("#myFormId").validity(function() {
+
+    <span class="c">// Call the validators in sequence</span>
+    <span class="c">// starting with the most important.</span>
+    <span class="h">$("#quantity")</span>
+        <span class="h">.require()</span>
+        <span class="h">.match("number");</span>
+    
+});
+                </pre>
+            </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="span5 columns hero-unit">
+            <div>
+                <h3>How about an example?</h3>
+            </div>
+        </div>
+        <div class="span2 columns mapping">
+            &rarr;
+        </div>
+        <div class="span9 columns hero-unit">
+            <div>
+                <pre>
+<span class="c">&lt;!DOCTYPE html&gt;</span>
+<span class="c">&lt;html&gt;</span>
+<span class="c">&lt;head&gt;</span>
+    <span class="c">&lt;title&gt;Example Time!&lt;/title&gt;</span>
+    <span class="c">&lt;link rel="Stylesheet" href="jquery.validity.css" /&gt;</span>
+    <span class="c">&lt;script src="jquery-1.6.2.min.js"&gt;&lt;/script&gt;</span>
+    <span class="c">&lt;script src="jquery.validity.min.js"&gt;&lt;/script&gt;</span>
+    <span class="h">&lt;script&gt;</span>
+        <span class="h">$(function() {</span>
+            <span class="h">$("form").validity(function() {</span>
+                <span class="h">$("#quantity")</span>
+                    <span class="h">.require()</span>
+                    <span class="h">.match("number");</span>
+            <span class="h">});    </span>
+        <span class="h">});    </span>
+    <span class="h">&lt;/script&gt;</span>
+<span class="c">&lt;/head&gt;</span>
+<span class="c">&lt;body&gt;</span>
+    <span class="c">&lt;form method="get" action=""&gt;</span>
+        <span class="c">&lt;input type="text" id="quantity" /&gt;</span>
+        <span class="c">&lt;br /&gt;</span>
+        <span class="c">&lt;input type="submit" /&gt;</span>
+    <span class="c">&lt;/form&gt;</span>
+<span class="c">&lt;/body&gt;</span>
+<span class="c">&lt;/html&gt;</span>
+                </pre>
+            </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="span5 columns hero-unit">
+            <div>
+                <h3>Try it!</h3>
+            </div>
+        </div>
+        <div class="span2 columns mapping">
+            &rarr;
+        </div>
+        <div class="span9 columns hero-unit">
+            <div>
+                <iframe src="sample.htm"></iframe>
+            </div>
+        </div>
+      </div>
+        
+      <footer>
+        <p>Many thanks to those who have contributed to the project: <div id="contributors-list"></div></p>
+
+        <p><a class="btn primary large" href="https://github.com/whatgoodisaroad/validity">Download &raquo;</a></p>
+
+        <p>
+            &copy; 
+            <a href="http://thatscaptaintoyou.com/">Wyatt Allen</a> 
+            <span id="year"></span>
+            <script>
+                document.getElementById('year').innerText = (new Date()).getFullYear();
+            </script>
+        </p>
+      </footers>
+    </div>
+
+    <script src='js/jquery-1.9.0.min.js'></script>
+    <script src='js/contributors.js'></script>
+    <script>
+        $("#contributors-list").contributors("whatgoodisaroad", "validity");
+    </script>
+    <!-- Google Analytics Hotness -->
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        try {
+        var pageTracker = _gat._getTracker("UA-8413863-2");
+        pageTracker._trackPageview();
+        } catch(err) {}
+    </script>
+  </body>
+</html>
