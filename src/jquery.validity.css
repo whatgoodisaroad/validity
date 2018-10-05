@@ -39,7 +39,7 @@ label.error {
  * an extra bit of text (or anything really) that explains what the summary is.
  * '.validity-erroneous' is applied to every input that fails.
  */
-.validity-summary-container { display:none; }
+.validity-summary-container { }
 .validity-summary-output ul { }
 .validity-erroneous { border:solid 2px #f56600 !important; }
 

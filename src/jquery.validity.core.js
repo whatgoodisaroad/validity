@@ -99,6 +99,7 @@ $.validity = {
     messages:{
 
         require:"#{field} is required.",
+        requireOne:"At least one field is required.",
 
         // Format validators:
         match:"#{field} is in an invalid format.",
@@ -322,6 +323,22 @@ $.fn.extend({
             },
             msg || $.validity.messages.require
         );
+    },
+
+    // At least one of these fields should be filled
+    requireOne:function(msg) {
+        var valid = validate(
+            this,
+            (function() {
+                var group = this;
+                // Uses serializeArray to filter out unchecked checkboxes
+                return !!($(group).serializeArray().filter(function(e) { return e.value }).length);
+            }).bind(this),
+            // Uses bind to ignore validate(), we don't want validation errors
+            // when some inputs are not filled, only when none are.
+            msg || $.validity.messages.requireOne
+        );
+        return valid.length ? this : [];
     },
 
     // Validate whether the field matches a regex.
