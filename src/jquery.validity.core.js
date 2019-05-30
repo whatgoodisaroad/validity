@@ -775,9 +775,7 @@ $.fn.extend({
                      
                      // raise the error - aggregate will use last repeated value
                      raiseAggregateError(
-                        $reduction.filter(
-                            "[value=\'" + repeatedVal[i] + "\']"
-                        ),
+                        $reduction,
                         msg
                     );
                 }
