@@ -285,7 +285,7 @@ $.fn.extend({
 
                     // If the user entered a validation function then just call
                     // that at the appropriate time:
-                    else if ($.isFunction(arg)) {
+                    else if (typeof arg === "function") {
                         f = arg;
                     }
 
@@ -349,7 +349,7 @@ $.fn.extend({
             // Some of the named rules can be functions, such as 'date'. If the 
             // discovered rule is a function use it as such. Otherwise, assume 
             // it's a RegExp.
-            $.isFunction(rule) ?
+            typeof rule === "function" ?
 
                 function(obj) {
                     return !obj.value.length || rule(obj.value);
@@ -652,7 +652,7 @@ $.fn.extend({
         if ($reduction.length) {
 
             // Figure out what arguments were specified.
-            if ($.isFunction(arg0)) {
+            if (typeof arg0 === "function") {
                 transform = arg0;
 
                 if (typeof (arg1) == "string") {
@@ -722,7 +722,7 @@ $.fn.extend({
         if ($reduction.length) {
 
             // Figure out what arguments were specified.
-            if ($.isFunction(arg0)) {
+            if (typeof arg0 === "function") {
                 transform = arg0;
 
                 if (typeof (arg1) == "string") {
@@ -930,7 +930,7 @@ $.fn.extend({
 
             // In the case that 'expression' is a function,  use it as a 
             // regimen on each matched element individually:
-            if ($.isFunction(expression)) {
+            if (typeof expression === "function") {
                 return validate(
                     this,
                     expression,
