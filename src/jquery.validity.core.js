@@ -1091,7 +1091,7 @@ function infer(field) {
         ret = arr.join(" ");
     }
 
-    return $.trim(ret);
+    return String.prototype.trim(ret);
 }
 
 // Capitalize the first character of the string argument.
