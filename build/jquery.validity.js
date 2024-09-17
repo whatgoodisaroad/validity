@@ -1,11 +1,11 @@
 /*
- * jQuery.validity ﻿v1.4.6
+ * jQuery.validity ﻿v1.4.7
  * http://validity.thatscaptaintoyou.com/
  * https://github.com/whatgoodisaroad/validity
  * 
  * Dual licensed under MIT and GPL
  *
- * Date: 2014-07-04 (Friday, 04 July 2014)
+ * Date: 2015-05-27 (Wednesday, 27 May 2015)
  */
 (function($, undefined) {
 
@@ -58,6 +58,8 @@ var
                 val + "";
         },
         
+        tooltipCustomClass: null,
+
         debugPrivates:false
     },
     
@@ -1143,6 +1145,10 @@ __private = {
         start:function() {
             $("." + $.validity.outputs.tooltip.tooltipClass)
                 .remove();
+            if ($.validity.settings.tooltipCustomClass) {
+                $("." + $.validity.outputs.tooltip.tooltipCustomClass)
+                    .remove();
+            }
         },
         
         end:function(results) {
@@ -1161,8 +1167,14 @@ __private = {
             pos.left += $obj.width() + 18;
             pos.top += 8;
             
+            var tooltipClasses = '\"validity-tooltip ';
+            if ($.validity.settings.tooltipCustomClass) {
+                tooltipClasses += $.validity.settings.tooltipCustomClass;
+            }
+            tooltipClasses += '\"';
+
             var tooltip = $(
-                "<div class=\"validity-tooltip\">" + 
+                "<div class=" + tooltipClasses + ">" +
                     msg +
                     "<div class=\"validity-tooltip-outer\">" +
                         "<div class=\"validity-tooltip-inner\"></div>" + 
@@ -1309,6 +1321,7 @@ __private = {
                     
                 // Create one and position it next to the input.
                 $("<div/>")
+                    .attr('id', 'validity-modal-msg-' + off.left + '-' + off.top)
                     .addClass(errorClass)
                     .css(errorStyle)
                     .text(msg)
