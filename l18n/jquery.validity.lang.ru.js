@@ -22,7 +22,7 @@
 
     // Value length messages:
     tooLong:"#{field} может быть не более #{max} букв.",
-    tooShort:"#{field} может быть не меньше #{min} букв.}",
+    tooShort:"#{field} может быть не меньше #{min} букв.",
 
     // Aggregate validator messages:
     equal:"Значения не равны.",
