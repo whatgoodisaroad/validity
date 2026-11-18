@@ -30,7 +30,7 @@ $.extend($.validity.messages, {
     alphabet:"#{field} contient des caratères interdits.",
 
     minCharClass:"#{field} ne doit pas contenir plus de #{min} #{charClass} caractères.",
-    maxCharClass:"#{field} ne doit pas contenir moins de #{min} #{charClass} caractères.",
+    maxCharClass:"#{field} ne doit pas contenir moins de #{max} #{charClass} caractères.",
     
     // Aggregate validator messages:
     equal:"Les valeurs ne correspondent pas.",
