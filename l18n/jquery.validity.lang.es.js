@@ -29,8 +29,8 @@ $.extend($.validity.messages, {
     nonHtml:"#{field} no debe contener caracteres HTML.",
     alphabet:"#{field} contiene caracteres prohibidos.",
 
-    minCharClass:"#{field} no debe contener más de #{min} caracteres {#}charclass.",
-    maxCharClass:"#{field} no debe contener menos de #{min} caracteres #{charClass}.",
+    minCharClass:"#{field} no debe contener más de #{min} caracteres #{charclass}.",
+    maxCharClass:"#{field} no debe contener menos de #{max} caracteres #{charClass}.",
 
     // Aggregate validator messages:
     equal:"Los valores no coinciden.",
