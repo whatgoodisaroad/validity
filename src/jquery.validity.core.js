@@ -763,7 +763,7 @@ $.fn.extend({
 
             if (!valid) {
                 // Remove duplicates of duplicates
-                repeatedVal = $.unique(repeatedVal);
+                repeatedVal = Array.from(new Set(repeatedVal));
                 
                 // For all repeated values found...
                 for (
