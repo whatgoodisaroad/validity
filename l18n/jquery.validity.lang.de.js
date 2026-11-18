@@ -18,7 +18,7 @@ $.extend($.validity.messages, {
   // Value range messages:
   lessThan:"#{field} muss weniger sein als #{max}.",
   lessThanOrEqualTo:"#{field} muss weniger sein als oder gleich an #{max}.",
-  greaterThan:"#{field} muss größer sein dan #{min}.",
+  greaterThan:"#{field} muss größer sein als #{min}.",
   greaterThanOrEqualTo:"#{field} muss größer sein dan oder gleich an #{min}.",
   range:"#{field} muss sein zwischen #{min} und #{max}.",
 
